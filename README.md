@@ -2,6 +2,31 @@
 
 Browser-native CSV diagnosis and repair by **Faceless Blur** — *where broken data goes to heal.* Optional **Pro** discharge downloads via Stripe Checkout.
 
+**Local path:** `C:\Users\tomca\facelessblur` (site repo; split from `table-fixer`).  
+**Ops / Video-Pipeline:** still at `C:\Users\tomca\table-fixer`.
+
+## GitHub + Cloudflare cutover
+
+Production is Cloudflare Pages (`wrangler.toml` → project name `csv-hospital`, output `dist`).
+
+When ready to connect a remote and repoint hosting:
+
+```powershell
+cd C:\Users\tomca\facelessblur
+# Install GitHub CLI if needed, then:
+gh auth login
+gh repo create facelessblur --private --source=. --remote=origin --push
+```
+
+Then in Cloudflare Dashboard → Pages → `csv-hospital` (facelessblur.com):
+
+1. Connect / switch the Git repository to the new `facelessblur` remote.
+2. Build command: `npm run build` · output directory: `dist`.
+3. Confirm env vars (live Freemius/Stripe, `CLIENT_URL=https://facelessblur.com`, unlock secrets).
+4. Deploy once from this repo and verify `https://facelessblur.com/` and `/hospital`.
+
+Do not delete `table-fixer` until that production deploy succeeds.
+
 ## Setup
 
 ```bash
