@@ -30,7 +30,7 @@ const DIRECTORY_OPS = [
     id: 3,
     kind: 'glitched',
     label: 'Glitched Reality',
-    status: 'SIGNAL_DETECTED',
+    status: 'ACTIVE',
   },
   {
     id: 4,
