@@ -1,0 +1,8 @@
+# Cloudflare Pages SPA: serve React for client routes.
+# React Router: / = Root Directory hub, /hospital = CSV Hospital.
+#
+# /api/* is handled by Pages Functions (see /functions/api/*).
+# Do NOT map /api/* to a static 404 — that caused POST 405 on facelessblur.com.
+/cure        /index.html   200
+/hospital    /index.html   200
+/*           /index.html   200

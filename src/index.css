@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/*
+  Faceless Blur — original minimalist neon-hacker identity
+  Master template: CSV Hospital screenshot (pure black + neon cyan)
+*/
+@theme {
+  --font-mono: "Courier New", Courier, ui-monospace, monospace;
+  --font-display: "Courier New", Courier, ui-monospace, monospace;
+  --color-void: #000000;
+  --color-mist: #d1d5db;
+  --color-signal: #00ffc2;
+  --color-signal-dim: #00c99a;
+  --color-warn: #ff6b4a;
+  --color-glass: #0a0a0a;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-mono);
+  background: #000000;
+  color: #f3f4f6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Flat black — no gradients, no patterns */
+.fb-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: #000000;
+}
+
+.fb-glass {
+  background: #0a0a0a;
+  border: 1px solid #00ffc2;
+}
+
+/* Shared nav brand title — readable hierarchy */
+.fb-brand {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #00ffc2;
+  text-decoration: none;
+}
+
+.fb-brand:hover {
+  text-decoration: underline;
+}
+
+/* Same size as .fb-brand — for header companions (e.g. Portfolio Hub) */
+.fb-brand-meta {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+/* Directory rows, tool body copy, footer instructions — one shared scale */
+.fb-body {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Secondary copy — bright enough on black */
+.fb-muted {
+  color: #d1d5db;
+}
+
+/* Tertiary / status — still clearly legible */
+.fb-status {
+  color: #c8cdd6;
+}
+
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background: #00ffc2;
+  color: #000000;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fb-btn:hover {
+  filter: brightness(1.05);
+}
+
+.fb-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.fb-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #e5e7eb;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #6b7280;
+  cursor: pointer;
+}
+
+.fb-btn-ghost:hover {
+  border-color: #00ffc2;
+  color: #00ffc2;
+}
+
+.fb-btn-ghost:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.fb-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #d1d5db;
+}
+
+.fb-accent {
+  color: #00ffc2;
+}

@@ -1,0 +1,14 @@
+node_modules
+dist
+.DS_Store
+*.local
+.env
+.env.local
+.data
+release
+alerts_seen.json
+client_secret.json
+client_secrets.json
+credentials.json
+youtube_token.json
+token.json

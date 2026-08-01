@@ -1,0 +1,41 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), usb=()"
+        },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
+        { "key": "X-DNS-Prefetch-Control", "value": "off" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://checkout.stripe.com https://hooks.stripe.com https://*.freemius.com https://checkout.freemius.com; img-src 'self' data: https://*.stripe.com https://*.freemius.com; font-src 'self' data: https://fonts.gstatic.com https://*.stripe.com https://*.stripecdn.com https://*.freemius.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.freemius.com; script-src 'self' https://js.stripe.com https://*.stripe.com https://checkout.freemius.com https://*.freemius.com 'unsafe-inline'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.stripe.com https://checkout.freemius.com https://*.freemius.com; connect-src 'self' https://api.stripe.com https://*.stripe.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.freemius.com https://checkout.freemius.com; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" },
+        { "key": "Pragma", "value": "no-cache" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/hospital", "destination": "/index.html" },
+    { "source": "/cure", "destination": "/index.html" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}

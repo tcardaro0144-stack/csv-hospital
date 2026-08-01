@@ -1,0 +1,11 @@
+# Cloudflare Pages (facelessblur.com)
+# Build: npm run build → output dir: dist
+# API: /functions (Pages Functions) — e.g. POST /api/support-triage
+#
+# Discord Interactions Worker (HTTP webhook, no Gateway):
+#   workers/discord-interactions/wrangler.toml
+#   npm run discord:deploy
+name = "csv-hospital"
+compatibility_date = "2025-07-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"

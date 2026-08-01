@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta
+      name="google-site-verification"
+      content="ywCbXLQ2XJcVKUaFjmc6fK96eaoD6_53QERVr80vWYA"
+    />
+    <meta name="author" content="Faceless Blur" />
+    <meta
+      name="keywords"
+      content="CSV Hospital, CSV cleaner, fix CSV, trim CSV, remove empty rows, Faceless Blur, browser CSV tool, privacy-first data cleaning"
+    />
+
+    <title>Faceless Blur — AI Developer Ecosystem &amp; Browser Tools</title>
+    <meta
+      name="description"
+      content="Faceless Blur builds anonymous, AI-run utilities. Launch CSV Hospital to clean messy CSV files entirely in your browser — no upload required."
+    />
+    <link rel="canonical" href="https://facelessblur.com/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Faceless Blur" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Faceless Blur — AI Developer Ecosystem &amp; Browser Tools"
+    />
+    <meta
+      property="og:description"
+      content="Faceless Blur builds anonymous, AI-run utilities. Launch CSV Hospital to clean messy CSV files entirely in your browser — no upload required."
+    />
+    <meta property="og:url" content="https://facelessblur.com/" />
+    <meta property="og:image" content="https://facelessblur.com/favicon.svg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Faceless Blur — AI Developer Ecosystem &amp; Browser Tools"
+    />
+    <meta
+      name="twitter:description"
+      content="Faceless Blur builds anonymous, AI-run utilities. Launch CSV Hospital to clean messy CSV files entirely in your browser — no upload required."
+    />
+    <meta name="twitter:image" content="https://facelessblur.com/favicon.svg" />
+
+    <!-- Organization + WebSite structured data (home). Hospital page swaps WebApplication via Seo.jsx -->
+    <script type="application/ld+json" id="jsonld-page">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://facelessblur.com/#organization",
+            "name": "Faceless Blur",
+            "url": "https://facelessblur.com",
+            "description": "Anonymous, AI-run developer ecosystem building browser-local utilities and indie games.",
+            "logo": "https://facelessblur.com/favicon.svg"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://facelessblur.com/#website",
+            "url": "https://facelessblur.com",
+            "name": "Faceless Blur",
+            "publisher": { "@id": "https://facelessblur.com/#organization" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "WebApplication",
+            "name": "CSV Hospital",
+            "url": "https://facelessblur.com/hospital",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript. Runs entirely in the browser.",
+            "description": "CSV Hospital diagnoses and repairs broken CSV files in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file.",
+            "isAccessibleForFree": true,
+            "creator": { "@id": "https://facelessblur.com/#organization" },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!--
+      Freemius Checkout Overlay SDK — classic global script (NOT type="module").
+      Exposes window.FS for UpgradeButton / freemiusCheckout.js.
+    -->
+    <script
+      id="freemius-checkout-sdk"
+      src="https://checkout.freemius.com/js/v1/"
+      onerror="console.error('[freemius] failed to fetch checkout.freemius.com/js/v1/ — check Network tab / adblock')"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!--
+      Init FS.Checkout with product keys only.
+      Overlay open() + Sandbox { token, ctx } run from UpgradeButton (no redirects).
+    -->
+    <script>
+      ;(function () {
+        console.log('FS object:', window.FS)
+
+        if (!window.FS || !window.FS.Checkout) {
+          console.error(
+            '[freemius] window.FS is undefined — CDN script did not expose the global.',
+          )
+          return
+        }
+
+        // Live product keys only — do not pass sandbox here.
+        // Overlay open() decides live vs sandbox in freemiusCheckout.js.
+        window.fsCheckout = new window.FS.Checkout({
+          product_id: '34967',
+          plan_id: '57500',
+          public_key: 'pk_96bd363d5fbf016bebe4795ecda42',
+        })
+        console.log('[freemius] FS.Checkout initialized (live overlay ready)', window.fsCheckout)
+      })()
+    </script>
+  </body>
+</html>

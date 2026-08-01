@@ -1,0 +1,9 @@
+# Faceless Blur - https://facelessblur.com
+User-agent: *
+Allow: /
+Allow: /hospital
+
+Disallow: /api/
+Disallow: /cure
+
+Sitemap: https://facelessblur.com/sitemap.xml

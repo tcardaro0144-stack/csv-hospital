@@ -1,0 +1,36 @@
+# Faceless Blur — Discord Interactions Worker (HTTP webhook, no Gateway)
+# Deploy: npm run discord:deploy
+# Dev:    npm run discord:worker:dev
+#
+# After deploy, set Discord Developer Portal → General Information →
+# Interactions Endpoint URL to the Worker URL (workers.dev or custom route).
+#
+# Keeps Pages (csv-hospital / facelessblur.com) separate — this Worker only
+# handles Discord Ed25519-signed POSTs.
+
+name = "faceless-discord"
+main = "src/index.js"
+compatibility_date = "2025-07-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+# Prefer CLOUDFLARE_ACCOUNT_ID in .env; this pins the account for non-interactive deploys
+account_id = "a96c66cf5128a2ae427691858a41896a"
+
+# Non-secret defaults (override with `wrangler secret` / deploy script for tokens)
+[vars]
+AI_MODEL = "@cf/meta/llama-3.1-8b-instruct"
+DISCORD_APP_NAME = "Faceless Bridge"
+
+# Workers AI binding — no API token needed inside the Worker for inference
+[ai]
+binding = "AI"
+
+# Optional: serve on facelessblur.com (requires zone access for facelessblur.com).
+# Uncomment after the domain is on this Cloudflare account:
+#
+# [[routes]]
+# pattern = "facelessblur.com/api/discord/interactions"
+# zone_name = "facelessblur.com"
+#
+# Then set Interactions Endpoint URL to:
+#   https://facelessblur.com/api/discord/interactions

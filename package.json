@@ -1,0 +1,46 @@
+{
+  "name": "csv-hospital",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "vite",
+    "dev:server": "node server/index.js",
+    "build": "npm run sitemap && vite build",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "preview": "vite preview",
+    "start:server": "node server/index.js",
+    "package:freemius": "node scripts/package-freemius.mjs",
+    "release:freemius": "npm run build && node scripts/package-freemius.mjs --skip-build",
+    "test:make-webhook": "node scripts/test-make-webhook.mjs",
+    "discord:bot": "node scripts/run-discord-bot.mjs",
+    "discord:deploy": "node scripts/deploy-discord-worker.mjs",
+    "discord:worker:dev": "npx wrangler dev -c workers/discord-interactions/wrangler.toml",
+    "discord:commands": "node scripts/register-discord-commands.mjs"
+  },
+  "dependencies": {
+    "@freemius/checkout": "^1.4.1",
+    "@stripe/react-stripe-js": "^6.8.0",
+    "@stripe/stripe-js": "^9.10.0",
+    "cors": "^2.8.5",
+    "discord-interactions": "^4.4.0",
+    "discord.js": "^14.27.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "openai": "^6.48.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.18.1",
+    "stripe": "^22.3.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.0",
+    "tailwindcss": "^4.1.11",
+    "vite": "^7.0.5",
+    "wrangler": "^4.114.0"
+  }
+}
