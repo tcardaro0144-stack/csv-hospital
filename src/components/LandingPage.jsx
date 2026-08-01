@@ -7,8 +7,8 @@ const PAGE_SIZE = 3
 
 /**
  * Root directory ops (1-based display ids).
- * [04] Glitched Reality — unredacted teaser with glitch CSS (verify on page 2 locally before deploy).
- * Other classified slots stay [REDACTED]; the 4th row has focus/hover interaction.
+ * Page 1: [01]–[03] with Glitched Reality fully revealed in slot 3.
+ * Page 2: only [04] [REDACTED].
  */
 const DIRECTORY_OPS = [
   {
@@ -28,22 +28,12 @@ const DIRECTORY_OPS = [
   },
   {
     id: 3,
-    kind: 'redacted',
-    status: 'LOCKED',
-  },
-  {
-    id: 4,
     kind: 'glitched',
     label: 'Glitched Reality',
     status: 'SIGNAL_DETECTED',
   },
   {
-    id: 5,
-    kind: 'redacted',
-    status: 'LOCKED',
-  },
-  {
-    id: 6,
+    id: 4,
     kind: 'redacted',
     status: 'LOCKED',
   },
@@ -54,14 +44,32 @@ function padId(id) {
 }
 
 function RedactedRow({ id, status }) {
+  const [active, setActive] = useState(false)
+  const isFourth = id === 4
+
   return (
     <div
-      className="fb-body fb-status fb-redact-row flex flex-col gap-1 px-2 py-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+      className={`fb-body fb-status fb-redact-row flex flex-col gap-1 px-2 py-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4 ${
+        isFourth ? 'fb-redact-row--fourth' : ''
+      } ${isFourth && active ? 'fb-glitch-active' : ''}`}
       aria-disabled="true"
       data-redaction={id}
+      onMouseEnter={() => isFourth && setActive(true)}
+      onMouseLeave={() => isFourth && setActive(false)}
+      onFocus={() => isFourth && setActive(true)}
+      onBlur={() => isFourth && setActive(false)}
+      tabIndex={isFourth ? 0 : undefined}
     >
-      <span className="text-gray-200">
-        [{padId(id)}] <span className="fb-redact-bars">[REDACTED]</span>
+      <span className={`text-gray-200 ${isFourth && active ? 'fb-glitch-text' : ''}`}>
+        [{padId(id)}]{' '}
+        <span
+          className={
+            isFourth && active ? 'fb-redact-bars fb-glitch-label' : 'fb-redact-bars'
+          }
+          data-text="[REDACTED]"
+        >
+          [REDACTED]
+        </span>
       </span>
       <span className="text-gray-300">[STATUS: {status}]</span>
     </div>
@@ -73,11 +81,10 @@ function GlitchedRealityRow({ op }) {
 
   return (
     <div
-      className={`fb-body fb-redact-row fb-redact-row--fourth flex flex-col gap-1 border border-transparent px-2 py-2 transition hover:border-[#00ffc2]/50 hover:bg-[#00ffc2]/5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4 ${
+      className={`fb-body fb-glitch-row flex flex-col gap-1 border border-transparent px-2 py-2 transition hover:border-[#00ffc2]/50 hover:bg-[#00ffc2]/5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4 ${
         active ? 'fb-glitch-active' : ''
       }`}
       aria-disabled="true"
-      data-redaction={op.id}
       data-codename={op.label}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
@@ -217,7 +224,7 @@ export default function LandingPage() {
 
             <p className="fb-body fb-muted mt-4">
               {isPage2
-                ? '$ scan ./ops/page_2 — [04] Glitched Reality signal'
+                ? '$ scan ./ops/page_2 — [04] classified / locked'
                 : '$ ls ./ops — enter [01] to launch CSV Hospital'}
             </p>
           </div>

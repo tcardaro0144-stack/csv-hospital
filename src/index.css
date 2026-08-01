@@ -230,6 +230,8 @@ body {
 }
 
 .fb-glitch-active .fb-glitch-label,
+.fb-glitch-row:hover .fb-glitch-label,
+.fb-glitch-row:focus .fb-glitch-label,
 .fb-redact-row--fourth:hover .fb-glitch-label,
 .fb-redact-row--fourth:focus .fb-glitch-label {
   animation: fb-glitch-jitter 0.45s steps(2, end) infinite;
@@ -253,6 +255,8 @@ body {
 }
 
 .fb-glitch-active .fb-glitch-label::before,
+.fb-glitch-row:hover .fb-glitch-label::before,
+.fb-glitch-row:focus .fb-glitch-label::before,
 .fb-redact-row--fourth:hover .fb-glitch-label::before,
 .fb-redact-row--fourth:focus .fb-glitch-label::before {
   opacity: 0.7;
@@ -262,6 +266,8 @@ body {
 }
 
 .fb-glitch-active .fb-glitch-label::after,
+.fb-glitch-row:hover .fb-glitch-label::after,
+.fb-glitch-row:focus .fb-glitch-label::after,
 .fb-redact-row--fourth:hover .fb-glitch-label::after,
 .fb-redact-row--fourth:focus .fb-glitch-label::after {
   opacity: 0.7;
