@@ -79,6 +79,22 @@ body {
   color: #d1d5db;
 }
 
+/* Neon terminal readout — hub signal green + soft glow */
+.fb-terminal-glow {
+  color: var(--color-signal);
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--color-signal) 55%, transparent),
+    0 0 10px color-mix(in srgb, var(--color-signal) 35%, transparent),
+    0 0 18px color-mix(in srgb, var(--color-signal) 18%, transparent);
+}
+
+.fb-terminal-glow .fb-body,
+.fb-terminal-glow p,
+.fb-terminal-glow span {
+  color: inherit;
+  text-shadow: inherit;
+}
+
 /* Tertiary / status — still clearly legible */
 .fb-status {
   color: #c8cdd6;

@@ -88,18 +88,17 @@ export default function CyberCubeHeavenPage() {
           </section>
 
           <section
-            className="fb-glass rounded-lg border border-[#00ffc2]/30 p-5 sm:p-6"
+            className="fb-glass fb-terminal-glow rounded-lg border border-[#00ffc2]/30 p-5 sm:p-6"
             aria-label="Public broadcast status"
             id="release"
           >
-            <p className="fb-body text-[#00ffc2]">$ status --public_broadcast</p>
-            <p className="fb-body mt-4 text-gray-200">
-              <span className="text-[#00ffc2]">-&gt;</span> awaiting final video
-              deployment before opening public frequencies
+            <p className="fb-body">$ status --public_broadcast</p>
+            <p className="fb-body mt-4">
+              -&gt; awaiting final video deployment before opening public
+              frequencies
             </p>
-            <p className="fb-body mt-2 text-gray-200">
-              <span className="text-[#00ffc2]">-&gt;</span> check back via root
-              directory for status updates
+            <p className="fb-body mt-2">
+              -&gt; check back via root directory for status updates
             </p>
           </section>
 
