@@ -1,31 +1,8 @@
-# Cloudflare Pages — Faceless Blur (static site)
-# Project: facelessblur · Domain: facelessblur.com
-#
-# Static-only deploy — there is NO /functions directory.
-# Cloudflare must not compile Pages Functions for this project.
-#
-# Build (CI / dashboard):
-#   npm run build
-# Output:
-#   dist/
-#
-# Deploy:
-#   npm run deploy:pages
-#
-# VITE_* build vars: Cloudflare Dashboard → Pages → facelessblur →
-#   Settings → Environment variables (Build scope). See .env.pages.example.
-#
-# API / support triage for local: Express (`npm run dev:server`).
-# Discord Interactions Worker (separate):
-#   workers/discord-interactions/wrangler.toml · npm run discord:deploy
+# Cloudflare Pages — facelessblur (static site)
+# Build: npm run build → dist/
+# Deploy: npm run deploy:pages
+# Discord Worker config lives in workers/discord-interactions/wrangler.toml
 
 name = "facelessblur"
 compatibility_date = "2025-07-01"
 pages_build_output_dir = "dist"
-
-# Public site defaults (documentation + future tooling). Not used by a
-# Functions worker while this project remains static-only.
-[vars]
-CLIENT_URL = "https://facelessblur.com"
-SITE_URL = "https://facelessblur.com"
-NODE_ENV = "production"
