@@ -3,7 +3,7 @@ import { ROUTES } from './routes.js'
 /**
  * Full Root Directory list — all four slots are always defined here.
  * [01] CSV Hospital (link)
- * [02] Cyber Cube Heaven (static)
+ * [02] Cyber Cube Heaven (link → teaser / early access)
  * [03] Glitched Reality (revealed — was redacted)
  * [04] [REDACTED] (locked; also featured on /2)
  */
@@ -18,10 +18,11 @@ export const DIRECTORY_OPS = [
   },
   {
     id: 2,
-    kind: 'static',
+    kind: 'link',
     label: 'Cyber Cube Heaven',
-    status: 'IN_DEVELOPMENT',
-    statusClass: 'text-amber-300',
+    status: 'EARLY_ACCESS',
+    statusClass: 'text-amber-300 group-hover:text-amber-200',
+    to: ROUTES.CYBER_CUBE_HEAVEN,
   },
   {
     id: 3,

@@ -28,6 +28,13 @@ export const SEO_PAGES = {
     path: '/hospital',
     type: 'website',
   },
+  cyberCubeHeaven: {
+    title: 'Cyber Cube Heaven — Early Access | Faceless Blur',
+    description:
+      'Cyber Cube Heaven: neon-grid arcade survival from Faceless Blur. Atmospheric mainframe world, custom-tuned mobile controls, Summer Engine — pre-register for early access.',
+    path: '/cyber-cube-heaven',
+    type: 'website',
+  },
 }
 
 function ensureMeta(selector, attrs) {

@@ -4,7 +4,7 @@ import { allDirectoryOps } from '../directoryOps.js'
 /**
  * Home (/) — Root Directory hub.
  * Explicitly maps all 4 directory slots:
- *   [01] CSV Hospital · [02] Cyber Cube Heaven ·
+ *   [01] CSV Hospital · [02] Cyber Cube Heaven (early access) ·
  *   [03] Glitched Reality (ACTIVE) · [04] [REDACTED]
  */
 export default function LandingPage() {
@@ -15,7 +15,7 @@ export default function LandingPage() {
       pageIndex={0}
       ops={ops}
       seoKey="home"
-      footerHint="$ ls ./ops — [03] Glitched Reality ACTIVE · enter [01] for CSV Hospital"
+      footerHint="$ ls ./ops — enter [01] CSV Hospital · [02] Cyber Cube Heaven · [03] Glitched Reality ACTIVE"
     />
   )
 }
