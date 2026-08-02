@@ -14,7 +14,7 @@ This folder is already a git repo on branch `main`:
 | Path | `C:\Users\tomca\facelessblur` |
 | Branch | `main` |
 | Secrets | `.env` is gitignored — never commit it |
-| Remote | None yet — add `origin` when you push to GitHub |
+| Remote | `origin` → `https://github.com/tcardaro0144-stack/facelessblur.git` |
 
 Verify anytime:
 
