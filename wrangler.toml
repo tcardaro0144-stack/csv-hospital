@@ -20,7 +20,6 @@
 #   workers/discord-interactions/wrangler.toml · npm run discord:deploy
 
 name = "facelessblur"
-account_id = "a96c66cf5128a2ae427691858a41896a"
 compatibility_date = "2025-07-01"
 pages_build_output_dir = "dist"
 
