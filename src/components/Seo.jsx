@@ -8,7 +8,7 @@ import {
 
 /**
  * Route-level SEO for the SPA. Renders nothing — updates document head.
- * @param {'home' | 'hospital'} pageKey
+ * @param {'home' | 'directoryPage2' | 'hospital'} pageKey
  */
 export default function Seo({ pageKey = 'home' }) {
   useEffect(() => {

@@ -23,6 +23,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://facelessblur.com').replace(
 /** @type {{ path: string, changefreq: string, priority: string }[]} */
 const PAGES = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/2', changefreq: 'monthly', priority: '0.6' },
   { path: '/hospital', changefreq: 'weekly', priority: '0.9' },
 ]
 

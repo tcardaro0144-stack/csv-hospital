@@ -14,6 +14,13 @@ export const SEO_PAGES = {
     path: '/',
     type: 'website',
   },
+  directoryPage2: {
+    title: 'Faceless Blur — Root Directory (Page 2)',
+    description:
+      'Faceless Blur Root Directory page 2 — classified operations. Slot [04] remains locked.',
+    path: '/2',
+    type: 'website',
+  },
   hospital: {
     title: 'CSV Hospital — Free In-Browser CSV Cleaner | Faceless Blur',
     description:

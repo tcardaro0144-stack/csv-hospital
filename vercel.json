@@ -35,6 +35,7 @@
   ],
   "rewrites": [
     { "source": "/hospital", "destination": "/index.html" },
+    { "source": "/2", "destination": "/index.html" },
     { "source": "/cure", "destination": "/index.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
