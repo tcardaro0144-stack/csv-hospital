@@ -29,9 +29,9 @@ export const SEO_PAGES = {
     type: 'website',
   },
   cyberCubeHeaven: {
-    title: 'Cyber Cube Heaven — Early Access | Faceless Blur',
+    title: 'Cyber Cube Heaven — Coming Soon | Faceless Blur',
     description:
-      'Cyber Cube Heaven: neon-grid arcade survival from Faceless Blur. Atmospheric mainframe world, custom-tuned mobile controls, Summer Engine — pre-register for early access.',
+      'Cyber Cube Heaven: neon-grid arcade survival from Faceless Blur. Atmospheric mainframe world, custom-tuned mobile controls, Summer Engine — final build shipping soon.',
     path: '/cyber-cube-heaven',
     type: 'website',
   },

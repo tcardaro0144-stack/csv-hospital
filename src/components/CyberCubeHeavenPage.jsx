@@ -3,21 +3,22 @@ import { Link } from 'react-router-dom'
 import Seo from './Seo.jsx'
 import { ROUTES } from '../routes.js'
 
-const EARLY_ACCESS_KEY = 'fb_cch_early_access_email'
+const LAUNCH_NOTIFY_KEY = 'fb_cch_launch_notify_email'
 
 /**
- * Cyber Cube Heaven teaser — routed at /cyber-cube-heaven
+ * Cyber Cube Heaven — routed at /cyber-cube-heaven
  * Terminal / Root Directory visual language (black + neon cyan).
+ * Final build shipping soon — not an early-access / beta track.
  */
 export default function CyberCubeHeavenPage() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState(() => {
     if (typeof window === 'undefined') return 'idle'
-    return window.localStorage.getItem(EARLY_ACCESS_KEY) ? 'done' : 'idle'
+    return window.localStorage.getItem(LAUNCH_NOTIFY_KEY) ? 'done' : 'idle'
   })
   const [error, setError] = useState(null)
 
-  function handleEarlyAccess(e) {
+  function handleNotify(e) {
     e.preventDefault()
     setError(null)
     const trimmed = email.trim().toLowerCase()
@@ -27,7 +28,7 @@ export default function CyberCubeHeavenPage() {
       return
     }
     try {
-      window.localStorage.setItem(EARLY_ACCESS_KEY, trimmed)
+      window.localStorage.setItem(LAUNCH_NOTIFY_KEY, trimmed)
     } catch {
       /* ignore quota / private mode */
     }
@@ -54,8 +55,8 @@ export default function CyberCubeHeavenPage() {
                 Where everyone is welcome — neon grid · Summer Engine
               </p>
             </div>
-            <span className="fb-brand-meta shrink-0 rounded-full border border-amber-300/60 px-3 py-1 text-amber-300">
-              EARLY_ACCESS
+            <span className="fb-brand-meta shrink-0 rounded-full border border-[#00ffc2]/60 px-3 py-1 text-[#00ffc2]">
+              COMING_SOON
             </span>
           </div>
         </header>
@@ -116,30 +117,30 @@ export default function CyberCubeHeavenPage() {
 
           <section
             className="fb-glass rounded-lg border border-[#00ffc2]/30 p-5 sm:p-6"
-            aria-labelledby="cch-access"
-            id="early-access"
+            aria-labelledby="cch-release"
+            id="release"
           >
-            <p className="fb-body text-[#00ffc2]">$ ./pre_register --channel early_access</p>
-            <h2 id="cch-access" className="mt-4 text-lg font-semibold text-white">
-              Pre-registration / early access
+            <p className="fb-body text-[#00ffc2]">$ ./status --release final_build</p>
+            <h2 id="cch-release" className="mt-4 text-lg font-semibold text-white">
+              Final build — shipping soon
             </h2>
-            <p className="fb-body fb-muted mt-2">
-              Leave a signal. When builds open beyond the operators&apos; desk,
-              you&apos;ll be on the list.
+            <p className="fb-body mt-2 text-gray-200">
+              No beta track. No drip access. When it drops, it&apos;s the full
+              Cyber Cube Heaven release.
+            </p>
+            <p className="fb-body fb-muted mt-3">
+              Optional: leave an address for a one-shot launch ping.
             </p>
 
             {status === 'done' ? (
               <div className="mt-6 rounded border border-[#00ffc2]/40 bg-[#00ffc2]/5 px-4 py-3">
                 <p className="fb-body text-[#00ffc2]">
-                  [OK] Signal logged. Early access queue updated.
-                </p>
-                <p className="fb-body fb-muted mt-2 text-sm">
-                  No spam. No upload of gameplay data from this form — just your
-                  address on this device until the live list is wired.
+                  [OK] Launch notify armed. You&apos;ll hear when the final build
+                  is live.
                 </p>
               </div>
             ) : (
-              <form className="mt-6 space-y-4" onSubmit={handleEarlyAccess} noValidate>
+              <form className="mt-6 space-y-4" onSubmit={handleNotify} noValidate>
                 <label className="block">
                   <span className="fb-body fb-muted text-sm">email@node</span>
                   <input
@@ -162,7 +163,7 @@ export default function CyberCubeHeavenPage() {
                   </p>
                 ) : null}
                 <button type="submit" className="fb-page-btn w-full sm:w-auto">
-                  enqueue --early-access
+                  notify --on-launch
                 </button>
               </form>
             )}
