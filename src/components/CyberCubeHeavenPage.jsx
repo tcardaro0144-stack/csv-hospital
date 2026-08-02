@@ -1,41 +1,13 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Seo from './Seo.jsx'
 import { ROUTES } from '../routes.js'
 
-const LAUNCH_NOTIFY_KEY = 'fb_cch_launch_notify_email'
-
 /**
  * Cyber Cube Heaven — routed at /cyber-cube-heaven
  * Terminal / Root Directory visual language (black + neon cyan).
- * Final build shipping soon — not an early-access / beta track.
+ * Final build shipping soon — public frequencies still closed.
  */
 export default function CyberCubeHeavenPage() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState(() => {
-    if (typeof window === 'undefined') return 'idle'
-    return window.localStorage.getItem(LAUNCH_NOTIFY_KEY) ? 'done' : 'idle'
-  })
-  const [error, setError] = useState(null)
-
-  function handleNotify(e) {
-    e.preventDefault()
-    setError(null)
-    const trimmed = email.trim().toLowerCase()
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setError('Invalid address — retry with a valid email.')
-      setStatus('error')
-      return
-    }
-    try {
-      window.localStorage.setItem(LAUNCH_NOTIFY_KEY, trimmed)
-    } catch {
-      /* ignore quota / private mode */
-    }
-    setStatus('done')
-    setEmail('')
-  }
-
   return (
     <div className="relative min-h-screen bg-black">
       <Seo pageKey="cyberCubeHeaven" />
@@ -117,56 +89,18 @@ export default function CyberCubeHeavenPage() {
 
           <section
             className="fb-glass rounded-lg border border-[#00ffc2]/30 p-5 sm:p-6"
-            aria-labelledby="cch-release"
+            aria-label="Public broadcast status"
             id="release"
           >
-            <p className="fb-body text-[#00ffc2]">$ ./status --release final_build</p>
-            <h2 id="cch-release" className="mt-4 text-lg font-semibold text-white">
-              Final build — shipping soon
-            </h2>
+            <p className="fb-body text-[#00ffc2]">$ status --public_broadcast</p>
+            <p className="fb-body mt-4 text-gray-200">
+              <span className="text-[#00ffc2]">-&gt;</span> awaiting final video
+              deployment before opening public frequencies
+            </p>
             <p className="fb-body mt-2 text-gray-200">
-              No beta track. No drip access. When it drops, it&apos;s the full
-              Cyber Cube Heaven release.
+              <span className="text-[#00ffc2]">-&gt;</span> check back via root
+              directory for status updates
             </p>
-            <p className="fb-body fb-muted mt-3">
-              Optional: leave an address for a one-shot launch ping.
-            </p>
-
-            {status === 'done' ? (
-              <div className="mt-6 rounded border border-[#00ffc2]/40 bg-[#00ffc2]/5 px-4 py-3">
-                <p className="fb-body text-[#00ffc2]">
-                  [OK] Launch notify armed. You&apos;ll hear when the final build
-                  is live.
-                </p>
-              </div>
-            ) : (
-              <form className="mt-6 space-y-4" onSubmit={handleNotify} noValidate>
-                <label className="block">
-                  <span className="fb-body fb-muted text-sm">email@node</span>
-                  <input
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    value={email}
-                    onChange={(ev) => {
-                      setEmail(ev.target.value)
-                      if (status === 'error') setStatus('idle')
-                    }}
-                    placeholder="operator@domain.net"
-                    className="fb-body mt-2 w-full rounded border border-[#00ffc2]/40 bg-black px-3 py-3 text-gray-100 outline-none placeholder:text-gray-600 focus:border-[#00ffc2] focus:ring-1 focus:ring-[#00ffc2]/40"
-                  />
-                </label>
-                {error ? (
-                  <p className="fb-body text-sm text-[#ff6b4a]" role="alert">
-                    [ERR] {error}
-                  </p>
-                ) : null}
-                <button type="submit" className="fb-page-btn w-full sm:w-auto">
-                  notify --on-launch
-                </button>
-              </form>
-            )}
           </section>
 
           <p className="fb-body fb-muted text-sm">
