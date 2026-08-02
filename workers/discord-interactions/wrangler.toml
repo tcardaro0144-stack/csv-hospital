@@ -5,7 +5,7 @@
 # After deploy, set Discord Developer Portal → General Information →
 # Interactions Endpoint URL to the Worker URL (workers.dev or custom route).
 #
-# Keeps Pages (csv-hospital / facelessblur.com) separate — this Worker only
+# Keeps Pages (facelessblur / facelessblur.com) separate — this Worker only
 # handles Discord Ed25519-signed POSTs.
 
 name = "faceless-discord"

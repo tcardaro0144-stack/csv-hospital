@@ -1,12 +1,5 @@
 {
   "version": 1,
-  "include": ["/api/*"],
-  "exclude": [
-    "/sitemap.xml",
-    "/robots.txt",
-    "/favicon.svg",
-    "/assets/*",
-    "/_headers",
-    "/_redirects"
-  ]
+  "exclude": ["/*"],
+  "include": []
 }

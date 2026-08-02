@@ -1,11 +1,32 @@
-# Cloudflare Pages (facelessblur.com)
-# Build: npm run build → output dir: dist
-# API: /functions (Pages Functions) — e.g. POST /api/support-triage
+# Cloudflare Pages — Faceless Blur (static site)
+# Project: facelessblur · Domain: facelessblur.com
 #
-# Discord Interactions Worker (HTTP webhook, no Gateway):
-#   workers/discord-interactions/wrangler.toml
-#   npm run discord:deploy
-name = "csv-hospital"
+# Static-only deploy — there is NO /functions directory.
+# Cloudflare must not compile Pages Functions for this project.
+#
+# Build (CI / dashboard):
+#   npm run build
+# Output:
+#   dist/
+#
+# Deploy:
+#   npm run deploy:pages
+#
+# VITE_* build vars: Cloudflare Dashboard → Pages → facelessblur →
+#   Settings → Environment variables (Build scope). See .env.pages.example.
+#
+# API / support triage for local: Express (`npm run dev:server`).
+# Discord Interactions Worker (separate):
+#   workers/discord-interactions/wrangler.toml · npm run discord:deploy
+
+name = "facelessblur"
+account_id = "a96c66cf5128a2ae427691858a41896a"
 compatibility_date = "2025-07-01"
-compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
+
+# Public site defaults (documentation + future tooling). Not used by a
+# Functions worker while this project remains static-only.
+[vars]
+CLIENT_URL = "https://facelessblur.com"
+SITE_URL = "https://facelessblur.com"
+NODE_ENV = "production"

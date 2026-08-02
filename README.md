@@ -89,14 +89,16 @@ git status
 
 Open the repo on GitHub and confirm `README.md`, `src/`, `wrangler.toml` are present and `.env` is **absent**.
 
-### 4) Link the repo to Cloudflare Pages (`csv-hospital` / facelessblur.com)
+### 4) Link the repo to Cloudflare Pages (`facelessblur` / facelessblur.com)
 
-Production already uses Cloudflare Pages (see `wrangler.toml`: project name `csv-hospital`, output `dist`).
+Production should use Cloudflare Pages project **`facelessblur`** (see `wrangler.toml`: `name = "facelessblur"`, output `dist`).
+
+> **Legacy note:** The site was first shipped as Pages project `csv-hospital`. If that project still owns `facelessblur.com`, rename it to `facelessblur` in the dashboard (Settings → rename), **or** create a new Pages project named `facelessblur`, attach the custom domain, deploy from this repo, then remove the domain from `csv-hospital`.
 
 1. Open [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Pages**.
-2. Open the existing project **`csv-hospital`** (custom domain `facelessblur.com`).
+2. Open / create the project **`facelessblur`** (custom domain `facelessblur.com`).
 3. Go to **Settings** → **Builds & deployments** (wording may be “Build configuration” / “Source”).
-4. **Connect / change Git repository** to the new GitHub repo `facelessblur` (authorize Cloudflare’s GitHub app if prompted).
+4. **Connect / change Git repository** to the GitHub repo `facelessblur` (authorize Cloudflare’s GitHub app if prompted).
 5. Set build settings:
 
 | Setting | Value |
@@ -111,7 +113,17 @@ Production already uses Cloudflare Pages (see `wrangler.toml`: project name `csv
    - Live Freemius / Stripe / unlock / AI / Discord secrets as you use today  
    Never paste these into git.
 
-7. Save, then **Deployments → Retry deployment** (or push an empty commit / “Create deployment” from `main`).
+7. Save, then **Deployments → Retry deployment** (or trigger a new deploy from `main`).
+
+CLI deploy target (after the dashboard project exists as `facelessblur` and your API token has **Pages → Edit**):
+
+```powershell
+cd C:\Users\tomca\facelessblur
+# Put Production secrets in the Pages dashboard first — see .env.pages.example
+npm run deploy:pages
+```
+
+Env map for the new project: [`.env.pages.example`](.env.pages.example) (build-time `VITE_*` + encrypted runtime secrets).
 
 ### 5) Discord Interactions Worker (if used)
 
@@ -138,8 +150,8 @@ Only after this passes may you treat `table-fixer` as ops-only (Video-Pipeline) 
 | Item | Value |
 |------|--------|
 | Local repo | `C:\Users\tomca\facelessblur` |
-| Suggested GitHub name | `facelessblur` (private) |
-| Cloudflare Pages project | `csv-hospital` |
+| GitHub | `tcardaro0144-stack/facelessblur` |
+| Cloudflare Pages project | `facelessblur` (legacy name was `csv-hospital`) |
 | Domain | `facelessblur.com` |
 | Build | `npm run build` → `dist` |
 | Ops / YouTube pipeline | `C:\Users\tomca\table-fixer` |

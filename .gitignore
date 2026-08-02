@@ -12,3 +12,6 @@ client_secrets.json
 credentials.json
 youtube_token.json
 token.json
+
+# Cloudflare Pages must stay static — never ship a repo-root /functions worker
+/functions/
