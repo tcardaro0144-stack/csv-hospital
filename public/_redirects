@@ -1,4 +1,0 @@
-# Cloudflare Pages — static SPA.
-# Do NOT use "/* /index.html 200" — Pages treats that as an infinite redirect loop.
-# Client routes (/hospital, /2, /cure, …) are served via dist/200.html
-# (copied from index.html after vite build — see scripts/spa-fallback.mjs).
