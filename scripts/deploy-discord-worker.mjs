@@ -120,7 +120,7 @@ function main() {
 
 Next steps:
   1. Copy the Worker URL from the deploy output (*.workers.dev)
-     or https://facelessblur.com/api/discord/interactions if you enabled [[routes]]
+     or https://csvhospital.com/api/discord/interactions if you enabled [[routes]]
   2. Discord Developer Portal → General Information → Interactions Endpoint URL
   3. Save (Discord sends a PING — Worker returns PONG after signature verify)
   4. npm run discord:commands   # register /ask /frontline /bridge /ping

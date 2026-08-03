@@ -8,7 +8,7 @@ import {
 /**
  * Official Freemius Overlay Checkout integration (in-page modal, no redirect).
  * SDK is loaded globally in index.html: <script src="https://checkout.freemius.com/js/v1/">
- * facelessblur.com always opens LIVE checkout (no /api/freemius-sandbox call).
+ * csvhospital.com always opens LIVE checkout (no /api/freemius-sandbox call).
  */
 export default function UpgradeButton({ disabled = false, isLoading = false }) {
   const locked = disabled || isLoading

@@ -738,7 +738,7 @@ app.listen(port, () => {
     `  Freemius checkout: ${isFreemiusSandboxEnabled() ? 'SANDBOX' : 'LIVE'} · product ${getFreemiusProductId()} · plan ${getFreemiusPlanId()}`,
   )
   console.log(
-    `  Make.com webhook: ${getMakeWebhookUrl() ? 'configured (facelessblur.com triggers)' : 'not set'}`,
+    `  Make.com webhook: ${getMakeWebhookUrl() ? 'configured (csvhospital.com triggers)' : 'not set'}`,
   )
   const discord = startDiscordBot({ manager, guardian })
   const afterDiscord = discord?.whenReady

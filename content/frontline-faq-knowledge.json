@@ -1,7 +1,7 @@
 {
   "schema_version": "frontline.faq.v1",
   "source": "Faceless Blur / CSV Hospital",
-  "site": "https://facelessblur.com",
+  "site": "https://csvhospital.com",
   "utility_path": "/hospital",
   "audience": "Frontline AI public support knowledge base",
   "tone_notes": [
@@ -61,7 +61,7 @@
           "id": "hospital.what_is_it",
           "question": "What is CSV Hospital?",
           "tags": ["hospital", "features", "overview"],
-          "answer": "CSV Hospital is Faceless Blur’s local in-browser CSV cleaning and triage utility at https://facelessblur.com/hospital. It accepts messy CSV datasets, removes empty rows, trims whitespace, standardizes headers, applies basic cell sanitization, and lets you download a repaired file on your device."
+          "answer": "CSV Hospital is Faceless Blur’s local in-browser CSV cleaning and triage utility at https://csvhospital.com/hospital. It accepts messy CSV datasets, removes empty rows, trims whitespace, standardizes headers, applies basic cell sanitization, and lets you download a repaired file on your device."
         },
         {
           "id": "hospital.browser_based",
@@ -127,7 +127,7 @@
           "id": "privacy.security_posture",
           "question": "What security posture should visitors expect?",
           "tags": ["privacy", "security", "waf"],
-          "answer": "The public site uses standard web security headers and rate limits on support/API routes. CSV Hospital still relies on your device and browser for local processing. Treat downloads and purchases like any other web checkout: use a trusted browser, keep the site origin (facelessblur.com) in view, and never share license or payment secrets in public chat."
+          "answer": "The public site uses standard web security headers and rate limits on support/API routes. CSV Hospital still relies on your device and browser for local processing. Treat downloads and purchases like any other web checkout: use a trusted browser, keep the site origin (csvhospital.com) in view, and never share license or payment secrets in public chat."
         }
       ]
     },
@@ -157,7 +157,7 @@
           "id": "billing.paid_still_locked",
           "question": "I paid but download is still locked. What should I do?",
           "tags": ["billing", "troubleshooting", "unlock"],
-          "answer": "Finish Freemius checkout and remain on /hospital until clearance shows. Refresh the page once if needed. Confirm you are on facelessblur.com/hospital (not a stale tab). If it still fails, contact support with the purchase email and approximate payment time for human review."
+          "answer": "Finish Freemius checkout and remain on /hospital until clearance shows. Refresh the page once if needed. Confirm you are on csvhospital.com/hospital (not a stale tab). If it still fails, contact support with the purchase email and approximate payment time for human review."
         },
         {
           "id": "billing.refunds",
@@ -187,7 +187,7 @@
           "id": "trouble.basic_steps",
           "question": "Basic troubleshooting steps?",
           "tags": ["troubleshooting", "steps"],
-          "answer": "1) Hard-refresh /hospital. 2) Retry with a smaller sample CSV to isolate size/format issues. 3) Ensure Freemius overlays/pop-ups are not blocked. 4) Try another browser or disable extensions that interfere with scripts/storage. 5) Clear only site data for facelessblur.com if unlock state looks corrupted, then complete checkout again if needed. 6) If support chat fails, wait a moment and retry; persistent API errors should be escalated to a human."
+          "answer": "1) Hard-refresh /hospital. 2) Retry with a smaller sample CSV to isolate size/format issues. 3) Ensure Freemius overlays/pop-ups are not blocked. 4) Try another browser or disable extensions that interfere with scripts/storage. 5) Clear only site data for csvhospital.com if unlock state looks corrupted, then complete checkout again if needed. 6) If support chat fails, wait a moment and retry; persistent API errors should be escalated to a human."
         },
         {
           "id": "trouble.download_name",
@@ -199,7 +199,7 @@
           "id": "trouble.support_unavailable",
           "question": "Support chat says unavailable or hiccup?",
           "tags": ["troubleshooting", "support", "frontline"],
-          "answer": "Frontline support uses POST /api/support-triage. If you see a temporary hiccup, wait a moment and send again. Check that you are on https://facelessblur.com and online. If errors persist, try another network/browser and escalate with the approximate time of the failure."
+          "answer": "Frontline support uses POST /api/support-triage. If you see a temporary hiccup, wait a moment and send again. Check that you are on https://csvhospital.com and online. If errors persist, try another network/browser and escalate with the approximate time of the failure."
         }
       ]
     }

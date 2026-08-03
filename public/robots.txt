@@ -1,4 +1,4 @@
-# Faceless Blur - https://facelessblur.com
+# Faceless Blur - https://csvhospital.com
 User-agent: *
 Allow: /
 Allow: /hospital
@@ -6,4 +6,4 @@ Allow: /hospital
 Disallow: /api/
 Disallow: /cure
 
-Sitemap: https://facelessblur.com/sitemap.xml
+Sitemap: https://csvhospital.com/sitemap.xml

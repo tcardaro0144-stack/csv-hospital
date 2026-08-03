@@ -3,7 +3,7 @@
  * Updates document head on route changes (no react-helmet dependency).
  */
 
-export const SITE_URL = 'https://facelessblur.com'
+export const SITE_URL = 'https://csvhospital.com'
 export const SITE_NAME = 'Faceless Blur'
 
 export const SEO_PAGES = {

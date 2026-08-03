@@ -1,7 +1,7 @@
 # CSV Hospital — Product Notes
 
 ## What it is
-CSV Hospital is Faceless Blur's local in-browser CSV cleaning and triage utility at https://facelessblur.com/hospital.
+CSV Hospital is Faceless Blur's local in-browser CSV cleaning and triage utility at https://csvhospital.com/hospital.
 
 ## Tech & formats
 - Browser-based processing (JavaScript in the page)

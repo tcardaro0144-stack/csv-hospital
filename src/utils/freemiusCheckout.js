@@ -1,7 +1,7 @@
 /**
  * Freemius Overlay helpers — in-page modal only (no redirect URLs).
  *
- * Production / facelessblur.com: always LIVE (no /api/freemius-sandbox).
+ * Production / csvhospital.com: always LIVE (no /api/freemius-sandbox).
  * Sandbox minting is DEV-only when VITE_FREEMIUS_SANDBOX=true.
  */
 
@@ -22,7 +22,7 @@ export const FREEMIUS_CHECKOUT_CONFIG = {
 
 /**
  * Live checkout = no sandbox token, no config API call.
- * Forced on facelessblur.com and all production builds.
+ * Forced on csvhospital.com and all production builds.
  */
 export function isClientFreemiusLiveMode() {
   // Production builds never use sandbox minting.
@@ -30,7 +30,7 @@ export function isClientFreemiusLiveMode() {
 
   if (typeof window !== 'undefined') {
     const host = String(window.location.hostname || '').toLowerCase()
-    if (host === 'facelessblur.com' || host.endsWith('.facelessblur.com')) {
+    if (host === 'csvhospital.com' || host.endsWith('.csvhospital.com')) {
       return true
     }
   }

@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
-const SITE_URL = (process.env.SITE_URL || 'https://facelessblur.com').replace(
+const SITE_URL = (process.env.SITE_URL || 'https://csvhospital.com').replace(
   /\/$/,
   '',
 )

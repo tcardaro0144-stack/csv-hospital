@@ -39,7 +39,7 @@ git status
 # Expect: "On branch main" / "nothing to commit, working tree clean"
 # If you changed files: git add -A && git status  (confirm .env is NOT listed)
 # Then commit:
-#   git -c user.name="Tom" -c user.email="tom@facelessblur.com" commit -m "Your message"
+#   git -c user.name="Tom" -c user.email="tom@csvhospital.com" commit -m "Your message"
 ```
 
 Set your real git identity once (optional, global):
@@ -89,14 +89,14 @@ git status
 
 Open the repo on GitHub and confirm `README.md`, `src/`, `wrangler.toml` are present and `.env` is **absent**.
 
-### 4) Link the repo to Cloudflare Pages (`facelessblur` / facelessblur.com)
+### 4) Link the repo to Cloudflare Pages (`facelessblur` / csvhospital.com)
 
 Production should use Cloudflare Pages project **`facelessblur`** (see `wrangler.toml`: `name = "facelessblur"`, output `dist`).
 
-> **Legacy note:** The site was first shipped as Pages project `csv-hospital`. If that project still owns `facelessblur.com`, rename it to `facelessblur` in the dashboard (Settings → rename), **or** create a new Pages project named `facelessblur`, attach the custom domain, deploy from this repo, then remove the domain from `csv-hospital`.
+> **Legacy note:** The site was first shipped as Pages project `csv-hospital`. If that project still owns `csvhospital.com`, rename it to `facelessblur` in the dashboard (Settings → rename), **or** create a new Pages project named `facelessblur`, attach the custom domain, deploy from this repo, then remove the domain from `csv-hospital`.
 
 1. Open [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Pages**.
-2. Open / create the project **`facelessblur`** (custom domain `facelessblur.com`).
+2. Open / create the project **`facelessblur`** (custom domain `csvhospital.com`).
 3. Go to **Settings** → **Builds & deployments** (wording may be “Build configuration” / “Source”).
 4. **Connect / change Git repository** to the GitHub repo `facelessblur` (authorize Cloudflare’s GitHub app if prompted).
 5. Set build settings:
@@ -109,7 +109,7 @@ Production should use Cloudflare Pages project **`facelessblur`** (see `wrangler
 | Root directory | `/` (repo root) |
 
 6. **Settings → Environment variables** (Production): keep / set live values, including at least:
-   - `CLIENT_URL` = `https://facelessblur.com`
+   - `CLIENT_URL` = `https://csvhospital.com`
    - Live Freemius / Stripe / unlock / AI / Discord secrets as you use today  
    Never paste these into git.
 
@@ -138,8 +138,8 @@ Only after Pages is healthy, if the Worker should stay on the same Cloudflare ac
 
 ### 6) Verify production
 
-1. Open `https://facelessblur.com/` — hub / landing loads.
-2. Open `https://facelessblur.com/hospital` — CSV Hospital tool loads.
+1. Open `https://csvhospital.com/` — hub / landing loads.
+2. Open `https://csvhospital.com/hospital` — CSV Hospital tool loads.
 3. Hard-refresh or purge cache if you still see an old shell (**Caching → Configuration → Purge Everything**).
 4. Spot-check Freemius overlay / support chat if you rely on them.
 
@@ -152,7 +152,7 @@ Only after this passes may you treat `table-fixer` as ops-only (Video-Pipeline) 
 | Local repo | `C:\Users\tomca\facelessblur` |
 | GitHub | `tcardaro0144-stack/facelessblur` |
 | Cloudflare Pages project | `facelessblur` (legacy name was `csv-hospital`) |
-| Domain | `facelessblur.com` |
+| Domain | `csvhospital.com` |
 | Build | `npm run build` → `dist` |
 | Ops / YouTube pipeline | `C:\Users\tomca\table-fixer` |
 
@@ -172,11 +172,11 @@ This starts:
 ## Stripe configuration
 
 1. Create a [Stripe account](https://dashboard.stripe.com/register).
-2. For **facelessblur.com production**, use **Live mode** keys (`sk_live_...`, `pk_live_...`) and a live Price ID.
+2. For **csvhospital.com production**, use **Live mode** keys (`sk_live_...`, `pk_live_...`) and a live Price ID.
 3. Go to **Products** → **Add product** → name it "CSV Hospital Pro" → set a one-time price.
 4. Set `STRIPE_PRICE_ID=price_...` and `STRIPE_SECRET_KEY` / `VITE_STRIPE_PUBLISHABLE_KEY` in `.env` (or Vercel env).
 5. Set `UNLOCK_SECRET` to a long random string (signs the HttpOnly unlock cookie).
-6. Set `CLIENT_URL=https://facelessblur.com` in production.
+6. Set `CLIENT_URL=https://csvhospital.com` in production.
 7. (Optional local webhooks) Run `stripe listen --forward-to localhost:4242/api/webhook` and put the printed `whsec_...` in `STRIPE_WEBHOOK_SECRET`.
 8. Restart `npm run dev` (or redeploy).
 
@@ -186,7 +186,7 @@ There is **no in-app test-mode / payment bypass**. Download unlock always requir
 
 When using Stripe **test** keys locally, you can pay with card `4242 4242 4242 4242`, any future expiry, any CVC.
 
-On **facelessblur.com**, configure live Stripe keys only. There is no UI toggle or mock unlock.
+On **csvhospital.com**, configure live Stripe keys only. There is no UI toggle or mock unlock.
 
 ## Free vs Pro
 

@@ -101,5 +101,5 @@ run('npx', [
 ])
 
 console.log('[deploy:pages] Done — project facelessblur')
-console.log('  Verify: https://facelessblur.com/ (after domain is attached)')
+console.log('  Verify: https://csvhospital.com/ (after domain is attached)')
 console.log('  Env map: .env.pages.example')

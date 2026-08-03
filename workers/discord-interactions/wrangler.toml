@@ -5,7 +5,7 @@
 # After deploy, set Discord Developer Portal → General Information →
 # Interactions Endpoint URL to the Worker URL (workers.dev or custom route).
 #
-# Keeps Pages (facelessblur / facelessblur.com) separate — this Worker only
+# Keeps Pages (facelessblur / csvhospital.com) separate — this Worker only
 # handles Discord Ed25519-signed POSTs.
 
 name = "faceless-discord"
@@ -25,12 +25,12 @@ DISCORD_APP_NAME = "Faceless Bridge"
 [ai]
 binding = "AI"
 
-# Optional: serve on facelessblur.com (requires zone access for facelessblur.com).
+# Optional: serve on csvhospital.com (requires zone access for csvhospital.com).
 # Uncomment after the domain is on this Cloudflare account:
 #
 # [[routes]]
-# pattern = "facelessblur.com/api/discord/interactions"
-# zone_name = "facelessblur.com"
+# pattern = "csvhospital.com/api/discord/interactions"
+# zone_name = "csvhospital.com"
 #
 # Then set Interactions Endpoint URL to:
-#   https://facelessblur.com/api/discord/interactions
+#   https://csvhospital.com/api/discord/interactions

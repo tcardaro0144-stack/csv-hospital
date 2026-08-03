@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs'
 
-const base = 'https://facelessblur.com'
+const base = 'https://csvhospital.com'
 const html = await (await fetch(`${base}/hospital`)).text()
 const jsMatch = html.match(/assets\/(index-[^"']+\.js)/)
 const report = {
