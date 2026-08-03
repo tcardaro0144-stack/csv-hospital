@@ -15,3 +15,9 @@ token.json
 
 # Cloudflare Pages must stay static — never ship a repo-root /functions worker
 /functions/
+
+# Python (csv-hospital remote starter)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
