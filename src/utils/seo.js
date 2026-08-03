@@ -22,16 +22,16 @@ export const SEO_PAGES = {
     type: 'website',
   },
   hospital: {
-    title: 'CSV Hospital — Free In-Browser CSV Cleaner | Faceless Blur',
+    title: 'CSV Hospital — Is Your Data Terminally Messy?',
     description:
-      'CSV Hospital diagnoses and repairs broken CSV files in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device.',
+      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device. An A T.J.C. Production.',
     path: '/hospital',
     type: 'website',
   },
   cyberCubeHeaven: {
     title: 'Cyber Cube Heaven — Coming Soon | Faceless Blur',
     description:
-      'Cyber Cube Heaven: neon-grid arcade survival from Faceless Blur. Atmospheric mainframe world, custom-tuned mobile controls, Summer Engine — final build shipping soon.',
+      'Cyber Cube Heaven: neon-grid arcade survival — A T.J.C. Production. Atmospheric mainframe world, custom-tuned mobile controls — final build shipping soon.',
     path: '/cyber-cube-heaven',
     type: 'website',
   },

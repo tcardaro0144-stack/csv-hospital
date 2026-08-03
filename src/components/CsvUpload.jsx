@@ -8,11 +8,13 @@ export default function CsvUpload({
   isLoading = false,
   disabled = false,
   readyFileName = null,
+  variant = 'terminal',
 }) {
   const inputRef = useRef(null)
   const dragCounterRef = useRef(0)
   const suppressClickRef = useRef(false)
   const [isDragging, setIsDragging] = useState(false)
+  const medical = variant === 'medical'
 
   function emitFile(file) {
     if (!file || disabled || isLoading) return
@@ -68,7 +70,7 @@ export default function CsvUpload({
   }
 
   return (
-    <div className="w-full max-w-xl">
+    <div className={medical ? 'w-full max-w-2xl' : 'w-full max-w-xl'}>
       <div
         role="button"
         tabIndex={disabled || isLoading ? -1 : 0}
@@ -85,15 +87,27 @@ export default function CsvUpload({
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={[
-          'fb-glass flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed px-6 py-10 text-center transition-colors',
-          isDragging
-            ? 'border-[#00ffc2] bg-[#00ffc2]/10'
-            : readyFileName
-              ? 'border-[#00ffc2]'
-              : 'border-gray-700 hover:border-[#00ffc2]',
-          disabled || isLoading ? 'pointer-events-none opacity-60' : '',
-        ].join(' ')}
+        className={
+          medical
+            ? [
+                'csvh-dropzone flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-colors',
+                isDragging
+                  ? 'border-[var(--csvh-cross)] bg-[var(--csvh-cross-soft)]'
+                  : readyFileName
+                    ? 'border-[var(--csvh-blue)] bg-white'
+                    : 'border-[var(--csvh-silver)] bg-white/80 hover:border-[var(--csvh-blue)]',
+                disabled || isLoading ? 'pointer-events-none opacity-60' : '',
+              ].join(' ')
+            : [
+                'fb-glass flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed px-6 py-10 text-center transition-colors',
+                isDragging
+                  ? 'border-[#00ffc2] bg-[#00ffc2]/10'
+                  : readyFileName
+                    ? 'border-[#00ffc2]'
+                    : 'border-gray-700 hover:border-[#00ffc2]',
+                disabled || isLoading ? 'pointer-events-none opacity-60' : '',
+              ].join(' ')
+        }
       >
         <input
           ref={inputRef}
@@ -106,24 +120,32 @@ export default function CsvUpload({
 
         {isLoading ? (
           <>
-            <div className="mb-3 h-8 w-8 animate-spin rounded-full border-2 border-[#00ffc2] border-t-transparent" />
-            <p className="fb-body fb-muted font-medium">
+            <div
+              className={
+                medical
+                  ? 'mb-3 h-8 w-8 animate-spin rounded-full border-2 border-[var(--csvh-blue)] border-t-transparent'
+                  : 'mb-3 h-8 w-8 animate-spin rounded-full border-2 border-[#00ffc2] border-t-transparent'
+              }
+            />
+            <p className={medical ? 'csvh-drop-title' : 'fb-body fb-muted font-medium'}>
               Running triage…
             </p>
           </>
         ) : readyFileName ? (
           <>
-            <p className="fb-body font-medium text-[#00ffc2]">{readyFileName}</p>
-            <p className="fb-body fb-muted mt-1">
+            <p className={medical ? 'csvh-drop-title text-[var(--csvh-blue)]' : 'fb-body font-medium text-[#00ffc2]'}>
+              {readyFileName}
+            </p>
+            <p className={medical ? 'csvh-drop-sub' : 'fb-body fb-muted mt-1'}>
               Stabilized — drop or browse to re-admit
             </p>
           </>
         ) : (
           <>
-            <p className="fb-body font-medium text-[#00ffc2]">
-              Drop CSV here or click to admit
+            <p className={medical ? 'csvh-drop-title' : 'fb-body font-medium text-[#00ffc2]'}>
+              {medical ? 'Drop your CSV on the gurney' : 'Drop CSV here or click to admit'}
             </p>
-            <p className="fb-body fb-muted mt-1">
+            <p className={medical ? 'csvh-drop-sub' : 'fb-body fb-muted mt-1'}>
               .csv only · max 5 MB · one-step procedure
             </p>
           </>

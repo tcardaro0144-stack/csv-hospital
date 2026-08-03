@@ -24,7 +24,7 @@ export default function CyberCubeHeavenPage() {
                 Cyber Cube Heaven
               </h1>
               <p className="fb-body fb-muted mt-1">
-                Where everyone is welcome — neon grid · Summer Engine
+                Where everyone is welcome — neon grid
               </p>
             </div>
             <span className="fb-brand-meta shrink-0 rounded-full border border-[#00ffc2]/60 px-3 py-1 text-[#00ffc2]">
@@ -36,12 +36,13 @@ export default function CyberCubeHeavenPage() {
         <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
           <section className="fb-glass rounded-lg p-5 sm:p-6" aria-labelledby="cch-world">
             <p className="fb-body text-[#00ffc2]">
-              FACELESS_BLUR_OS // OPS/[02]_CYBER_CUBE_HEAVEN
+              OPS/[02]_CYBER_CUBE_HEAVEN
             </p>
-            <p className="fb-body fb-muted mt-3">
-              $ cat ./world.md_
-              <span className="ml-0.5 inline-block animate-pulse text-[#00ffc2]">▌</span>
-            </p>
+            <div className="mt-6 flex flex-col items-center text-center">
+              <p className="fb-body text-2xl font-bold tracking-tight text-[#00ffc2] sm:text-3xl">
+                A T.J.C. Production
+              </p>
+            </div>
 
             <h2 id="cch-world" className="mt-8 text-lg font-semibold text-white">
               Atmospheric mainframe
@@ -55,8 +56,8 @@ export default function CyberCubeHeavenPage() {
               came.
             </p>
             <p className="fb-body fb-muted mt-4">
-              Built with Summer Engine. Brand signal stays loud — welcome to the
-              cube, even when the grid wants you gone.
+              Brand signal stays loud — welcome to the cube, even when the grid
+              wants you gone.
             </p>
           </section>
 
