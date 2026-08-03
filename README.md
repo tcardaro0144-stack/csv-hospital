@@ -306,3 +306,4 @@ curl -X POST http://localhost:5200/api/support-triage \
 - React + Vite + Tailwind CSS
 - Stripe Checkout Elements / Express Checkout
 - Vercel serverless (`api/`) + Express for local dev
+
