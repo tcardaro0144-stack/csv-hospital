@@ -37,10 +37,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/hospital", "destination": "/index.html" },
-    { "source": "/cyber-cube-heaven", "destination": "/index.html" },
-    { "source": "/2", "destination": "/index.html" },
-    { "source": "/cure", "destination": "/index.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
