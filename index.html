@@ -96,43 +96,18 @@
     </script>
 
     <!--
-      Freemius Checkout Overlay SDK — classic global script (NOT type="module").
-      Exposes window.FS for UpgradeButton / freemiusCheckout.js.
+      Optional Freemius CDN fallback. Primary path: @freemius/checkout via Vite
+      (src/utils/freemiusCheckout.js). CDN exposes window.FS if the npm path fails.
     -->
     <script
       id="freemius-checkout-sdk"
       src="https://checkout.freemius.com/js/v1/"
-      onerror="console.error('[freemius] failed to fetch checkout.freemius.com/js/v1/ — check Network tab / adblock')"
+      defer
+      onerror="console.warn('[freemius] CDN script failed — npm @freemius/checkout will be used')"
     ></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-    <!--
-      Init FS.Checkout with product keys only.
-      Overlay open() + Sandbox { token, ctx } run from UpgradeButton (no redirects).
-    -->
-    <script>
-      ;(function () {
-        console.log('FS object:', window.FS)
-
-        if (!window.FS || !window.FS.Checkout) {
-          console.error(
-            '[freemius] window.FS is undefined — CDN script did not expose the global.',
-          )
-          return
-        }
-
-        // Live product keys only — do not pass sandbox here.
-        // Overlay open() decides live vs sandbox in freemiusCheckout.js.
-        window.fsCheckout = new window.FS.Checkout({
-          product_id: '34967',
-          plan_id: '57500',
-          public_key: 'pk_96bd363d5fbf016bebe4795ecda42',
-        })
-        console.log('[freemius] FS.Checkout initialized (live overlay ready)', window.fsCheckout)
-      })()
-    </script>
   </body>
 </html>

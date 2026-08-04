@@ -5,6 +5,7 @@ import ProDownloadGate from './ProDownloadGate.jsx'
 import StripePaymentPanel from './StripePaymentPanel.jsx'
 import SupportChat from './SupportChat.jsx'
 import Seo from './Seo.jsx'
+import UpgradeButton from './UpgradeButton.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
 
@@ -370,12 +371,20 @@ export default function CurePage() {
               <h3>Triage preview is free</h3>
               <p>
                 Drop a CSV, see the vitals (rows in / rows out / columns / empty rows
-                excised). Download unlocks after checkout on this page — no file leaves
-                your browser for cleaning.
+                excised). Download unlocks after Freemius checkout on this page — no
+                file leaves your browser for cleaning.
               </p>
-              <button type="button" className="csvh-cta" onClick={openAdmitWard}>
-                [ ADMIT &amp; HEAL YOUR CSV ]
-              </button>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <UpgradeButton
+                  className="csvh-cta"
+                  label="[ PURCHASE DATA-HEALING PASS ]"
+                  busyLabel="[ OPENING FREEMIUS… ]"
+                  isLoading={isCheckingOut}
+                />
+                <button type="button" className="csvh-cta csvh-cta-secondary" onClick={openAdmitWard}>
+                  [ ADMIT &amp; HEAL YOUR CSV ]
+                </button>
+              </div>
             </div>
           </div>
         </section>

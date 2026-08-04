@@ -6,17 +6,21 @@ import {
 } from '../utils/freemiusCheckout.js'
 
 /**
- * Official Freemius Overlay Checkout integration (in-page modal, no redirect).
- * SDK is loaded globally in index.html: <script src="https://checkout.freemius.com/js/v1/">
- * csvhospital.com always opens LIVE checkout (no /api/freemius-sandbox call).
+ * Freemius Overlay Checkout trigger — Purchase Authorized User Access /
+ * data-healing (discharge) pass. Uses @freemius/checkout via openFreemiusCheckout.
  */
-export default function UpgradeButton({ disabled = false, isLoading = false }) {
+export default function UpgradeButton({
+  disabled = false,
+  isLoading = false,
+  className = 'fb-btn disabled:cursor-not-allowed disabled:opacity-60',
+  label = 'Purchase Authorized User Access',
+  busyLabel = 'Opening checkout…',
+}) {
   const locked = disabled || isLoading
   const [opening, setOpening] = useState(false)
   const [overlayError, setOverlayError] = useState(null)
 
   async function handleOverlayClick(e) {
-    // Stop any navigation/redirect — overlay modal only
     e.preventDefault()
     e.stopPropagation()
     if (locked || opening) return
@@ -54,17 +58,17 @@ export default function UpgradeButton({ disabled = false, isLoading = false }) {
         id="overlay-checkout-btn"
         type="button"
         disabled={locked || opening}
-        className="fb-btn disabled:cursor-not-allowed disabled:opacity-60"
+        className={className}
         onClick={handleOverlayClick}
+        data-freemius-store={FREEMIUS_CHECKOUT_CONFIG.store_id || undefined}
         data-freemius-product={FREEMIUS_CHECKOUT_CONFIG.product_id}
+        data-freemius-plan={FREEMIUS_CHECKOUT_CONFIG.plan_id}
       >
-        {opening || isLoading
-          ? 'Opening checkout…'
-          : 'Purchase Authorized User Access'}
+        {opening || isLoading ? busyLabel : label}
       </button>
 
       {overlayError ? (
-        <p className="max-w-sm text-xs text-amber-300" role="alert">
+        <p className="max-w-sm text-xs text-amber-700" role="alert">
           {overlayError}
         </p>
       ) : null}

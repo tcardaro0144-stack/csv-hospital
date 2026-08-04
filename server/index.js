@@ -9,6 +9,7 @@ import {
   getFreemiusProductId,
   getFreemiusPublicKey,
   getFreemiusSecretKey,
+  getFreemiusStoreId,
   getMakeWebhookUrl,
   getStripePriceId,
   getStripeSecretKey,
@@ -270,6 +271,7 @@ app.get('/api/freemius-sandbox', (req, res) => {
   const productId = getFreemiusProductId()
   const planId = getFreemiusPlanId()
   const publicKey = getFreemiusPublicKey()
+  const storeId = getFreemiusStoreId()
   const secretKey = getFreemiusSecretKey()
   const sandboxMode = isFreemiusSandboxEnabled()
 
@@ -282,6 +284,7 @@ app.get('/api/freemius-sandbox', (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8')
     return res.status(200).json({
       mode: 'live',
+      store_id: storeId,
       product_id: productId,
       plan_id: planId,
       public_key: publicKey,
@@ -304,6 +307,7 @@ app.get('/api/freemius-sandbox', (req, res) => {
 
   return res.json({
     mode: 'sandbox',
+    store_id: storeId,
     product_id: productId,
     plan_id: planId,
     public_key: publicKey,
@@ -758,7 +762,7 @@ app.listen(port, () => {
   console.log(`  POST http://localhost:${port}/api/manager/check-in`)
   console.log(`  GET/POST http://localhost:${port}/api/manager/verify`)
   console.log(
-    `  Freemius checkout: ${isFreemiusSandboxEnabled() ? 'SANDBOX' : 'LIVE'} · product ${getFreemiusProductId()} · plan ${getFreemiusPlanId()}`,
+    `  Freemius checkout: ${isFreemiusSandboxEnabled() ? 'SANDBOX' : 'LIVE'} · store ${getFreemiusStoreId() || 'n/a'} · product ${getFreemiusProductId()} · plan ${getFreemiusPlanId()}`,
   )
   console.log(
     `  Make.com webhook: ${getMakeWebhookUrl() ? 'configured (csvhospital.com triggers)' : 'not set'}`,

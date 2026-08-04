@@ -4,6 +4,7 @@ import {
   getFreemiusProductId,
   getFreemiusPublicKey,
   getFreemiusSecretKey,
+  getFreemiusStoreId,
   isFreemiusSandboxEnabled,
 } from './_lib/env.js'
 import { enforceRateLimit } from './_lib/rateLimit.js'
@@ -24,6 +25,7 @@ async function handler(req, res) {
   const productId = getFreemiusProductId()
   const planId = getFreemiusPlanId()
   const publicKey = getFreemiusPublicKey()
+  const storeId = getFreemiusStoreId()
   const secretKey = getFreemiusSecretKey()
   const sandboxMode = isFreemiusSandboxEnabled()
 
@@ -35,6 +37,7 @@ async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8')
     return res.status(200).json({
       mode: 'live',
+      store_id: storeId,
       product_id: productId,
       plan_id: planId,
       public_key: publicKey,
@@ -57,6 +60,7 @@ async function handler(req, res) {
 
   return res.status(200).json({
     mode: 'sandbox',
+    store_id: storeId,
     product_id: productId,
     plan_id: planId,
     public_key: publicKey,

@@ -108,6 +108,13 @@ export function getFreemiusPublicKey() {
   return trimmed
 }
 
+export function getFreemiusStoreId() {
+  const id =
+    process.env.FREEMIUS_STORE_ID || process.env.VITE_FREEMIUS_STORE_ID || ''
+  const trimmed = id != null ? stripEnvQuotes(String(id)) : ''
+  return trimmed || null
+}
+
 export function getFreemiusProductId() {
   const id =
     process.env.FREEMIUS_PRODUCT_ID ||
