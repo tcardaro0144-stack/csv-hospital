@@ -1,19 +1,21 @@
 /**
  * One-time Freemius data-healing pass packages (flat file credits).
  *
- * Each UI tier maps to a Freemius one-time (lifetime) checkout config.
- * File counts are OUR credit units — never Freemius multi-site `licenses`.
+ * Live Freemius product (csvhospital.com):
+ *   product 36475 · plan 60396 · lifetime multi-activation prices
+ *
+ * Each UI tier maps to an exact Freemius pricing_id under plan 60396.
+ * File counts are OUR credit units (and match Freemius license quantities).
  *
  * Freemius open() modes (mutually exclusive — never combine):
- *   pricing  → { plan_id, pricing_id }           // exact price row
- *   plan     → { plan_id, licenses: 1, billing_cycle: 'lifetime' }
+ *   pricing  → { plan_id, pricing_id }   // preferred — exact price row
+ *   plan     → { plan_id, licenses, billing_cycle: 'lifetime' }  // fallback
  *   mock     → local credit grant (VITE_FREEMIUS_MOCK)
  *
- * Env:
- *   VITE_FREEMIUS_PLAN_ID              — shared one-time plan (default 57500)
- *   VITE_FREEMIUS_PLAN_ID_{N}          — per-tier plan (preferred when each price is its own plan)
- *   VITE_FREEMIUS_PRICING_ID_{N}       — per-tier pricing_id under the plan
- *   VITE_FREEMIUS_MOCK                 — local mock checkout
+ * Env overrides (optional):
+ *   VITE_FREEMIUS_PLAN_ID / VITE_FREEMIUS_PLAN_ID_{N}
+ *   VITE_FREEMIUS_PRICING_ID_{N}
+ *   VITE_FREEMIUS_MOCK
  */
 
 /**
@@ -24,6 +26,7 @@
  *   label: string,
  *   planEnvKey: string,
  *   pricingEnvKey: string,
+ *   defaultPricingId: string,
  * }} HealingPassPackage
  */
 
@@ -38,20 +41,21 @@
  *   priceUsd: number,
  *   planId: string,
  *   pricingId: string|null,
+ *   licenses: number,
  *   strategy: FreemiusCheckoutStrategy,
  * }} FreemiusCheckoutIds
  */
 
-/** Known-good Freemius defaults (CSV Hospital product). */
+/** Live Freemius defaults for CSV Hospital Credit Passes. */
 export const FREEMIUS_DEFAULT_TEST_IDS = {
-  productId: '34967',
-  planId: '57500',
-  publicKey: 'pk_96bd363d5fbf016bebe4795ecda42',
+  productId: '36475',
+  planId: '60396',
+  publicKey: 'pk_1411029c3e32680a04780cd82936a',
 }
 
 /**
- * Flat non-recurring tiers — amounts are display/credit mapping truth.
- * Freemius IDs come from env (Dashboard → Plans / Pricing).
+ * Flat non-recurring tiers with exact Freemius pricing_id defaults
+ * (Dashboard → product 36475 → plan 60396 → Pricing).
  * @type {HealingPassPackage[]}
  */
 export const HEALING_PASS_PACKAGES = [
@@ -62,6 +66,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '1 file',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_1',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_1',
+    defaultPricingId: '80492',
   },
   {
     id: 'pass-5',
@@ -70,6 +75,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '5 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_5',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_5',
+    defaultPricingId: '80493',
   },
   {
     id: 'pass-15',
@@ -78,6 +84,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '15 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_15',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_15',
+    defaultPricingId: '80494',
   },
   {
     id: 'pass-25',
@@ -86,6 +93,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '25 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_25',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_25',
+    defaultPricingId: '80495',
   },
   {
     id: 'pass-50',
@@ -94,6 +102,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '50 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_50',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_50',
+    defaultPricingId: '80496',
   },
   {
     id: 'pass-75',
@@ -102,6 +111,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '75 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_75',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_75',
+    defaultPricingId: '80498',
   },
   {
     id: 'pass-100',
@@ -110,6 +120,7 @@ export const HEALING_PASS_PACKAGES = [
     label: '100 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_100',
     pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_100',
+    defaultPricingId: '80499',
   },
 ]
 
@@ -150,8 +161,8 @@ export function isFreemiusMockEnabled() {
 }
 
 /**
- * Resolve checkout identifiers for a package (always returns a valid planId).
- * Never invents fake pricing IDs. Never maps file credits → Freemius licenses.
+ * Resolve checkout identifiers for a package.
+ * Prefers per-tier pricing_id (env override → hardcoded Freemius row).
  * @param {HealingPassPackage} pkg
  * @returns {FreemiusCheckoutIds}
  */
@@ -161,7 +172,8 @@ export function resolvePackageCheckoutIds(pkg) {
     envId('VITE_FREEMIUS_PLAN_ID') ||
     DEFAULT_PLAN_ID
 
-  const pricingId = envId(pkg.pricingEnvKey)
+  const pricingId =
+    envId(pkg.pricingEnvKey) || sanitizeFreemiusId(pkg.defaultPricingId)
 
   /** @type {FreemiusCheckoutStrategy} */
   let strategy
@@ -170,6 +182,7 @@ export function resolvePackageCheckoutIds(pkg) {
   } else if (pricingId) {
     strategy = 'pricing'
   } else {
+    // Last resort: license quantity = file credits on shared lifetime plan
     strategy = 'plan'
   }
 
@@ -179,6 +192,7 @@ export function resolvePackageCheckoutIds(pkg) {
     priceUsd: pkg.priceUsd,
     planId,
     pricingId: strategy === 'pricing' ? pricingId : null,
+    licenses: pkg.files,
     strategy,
   }
 }
@@ -199,7 +213,7 @@ export function buildOneTimePurchaseParams(ids) {
   if (ids.strategy === 'pricing') {
     const pricingId = sanitizeFreemiusId(ids.pricingId)
     if (!pricingId) return null
-    // pricing_id already encodes license qty + billing — do NOT add licenses/billing_cycle
+    // pricing_id already encodes license qty + lifetime billing
     return {
       plan_id: Number(planId),
       pricing_id: Number(pricingId),
@@ -207,11 +221,11 @@ export function buildOneTimePurchaseParams(ids) {
     }
   }
 
-  // Dedicated one-time / lifetime plan: single-site only (licenses: 1).
-  // File-credit quantity lives in our app, not Freemius multi-site licenses.
+  // Fallback: map file credits → Freemius multi-activation quantity
+  const licenses = Number(ids.licenses) > 0 ? Number(ids.licenses) : 1
   return {
     plan_id: Number(planId),
-    licenses: 1,
+    licenses,
     billing_cycle: 'lifetime',
     currency: 'usd',
     disable_licenses_selector: true,
@@ -242,6 +256,7 @@ export function getPackageByPlanId(planId, pricingId = null) {
     for (const pkg of HEALING_PASS_PACKAGES) {
       const ids = resolvePackageCheckoutIds(pkg)
       if (ids.pricingId === priceNeedle) return pkg
+      if (sanitizeFreemiusId(pkg.defaultPricingId) === priceNeedle) return pkg
     }
   }
 

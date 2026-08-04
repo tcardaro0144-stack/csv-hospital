@@ -101,7 +101,7 @@ export function getFreemiusPublicKey() {
   const key =
     process.env.FREEMIUS_PUBLIC_KEY ||
     process.env.VITE_FREEMIUS_PUBLIC_KEY ||
-    'pk_96bd363d5fbf016bebe4795ecda42'
+    'pk_1411029c3e32680a04780cd82936a'
   if (!key || typeof key !== 'string') return null
   const trimmed = stripEnvQuotes(key)
   if (!trimmed.startsWith('pk_')) return null
@@ -119,14 +119,14 @@ export function getFreemiusProductId() {
   const id =
     process.env.FREEMIUS_PRODUCT_ID ||
     process.env.VITE_FREEMIUS_PRODUCT_ID ||
-    '34967'
+    '36475'
   const trimmed = id != null ? stripEnvQuotes(String(id)) : ''
   return trimmed || null
 }
 
 export function getFreemiusPlanId() {
   const id =
-    process.env.FREEMIUS_PLAN_ID || process.env.VITE_FREEMIUS_PLAN_ID || '57500'
+    process.env.FREEMIUS_PLAN_ID || process.env.VITE_FREEMIUS_PLAN_ID || '60396'
   const trimmed = id != null ? stripEnvQuotes(String(id)) : ''
   return trimmed || null
 }

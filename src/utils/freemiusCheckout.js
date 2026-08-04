@@ -402,7 +402,7 @@ export async function openFreemiusCheckout(handlers = {}) {
     const purchaseNote =
       ids.strategy === 'pricing'
         ? `pricing_id=${openOpts.pricing_id}`
-        : `licenses=1 · billing_cycle=lifetime`
+        : `licenses=${openOpts.licenses} · billing_cycle=lifetime`
 
     console.info(
       `[freemius] opening one-time checkout (${mode}) · ${pkg.id} · $${pkg.priceUsd} · ${pkg.files} file(s) · plan_id=${openOpts.plan_id} · ${purchaseNote}`,
