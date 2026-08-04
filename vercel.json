@@ -8,6 +8,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/hospital",
+      "destination": "/"
+    },
+    {
+      "source": "/hospital/(.*)",
+      "destination": "/"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
