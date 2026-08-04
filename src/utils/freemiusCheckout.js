@@ -1,14 +1,9 @@
 /**
  * Freemius Checkout JS SDK integration (@freemius/checkout).
- * Opens the overlay modal for one-time data-healing file-credit packages.
+ * Opens one-time (lifetime) overlay checkout for data-healing file credits.
  *
- * Env (Vite client):
- *   VITE_FREEMIUS_STORE_ID    — Freemius Store / developer store id
- *   VITE_FREEMIUS_PRODUCT_ID  — Product id
- *   VITE_FREEMIUS_PUBLIC_KEY  — Product public key (pk_…)
- *   VITE_FREEMIUS_PLAN_ID     — Legacy fallback plan (1-file tier)
- *   VITE_FREEMIUS_PLAN_ID_*   — Per-package one-time plan ids (see freemiusPricing.js)
- *   VITE_FREEMIUS_SANDBOX     — true only for local sandbox testing
+ * Only valid Freemius options are sent — empty/invalid IDs are omitted so the
+ * overlay does not throw Checkout Loading / validation errors.
  */
 
 import { Checkout } from '@freemius/checkout'
@@ -21,20 +16,22 @@ import {
 } from './freemiusCredits.js'
 import {
   getPackageById,
-  resolvePackagePlanId,
+  resolvePackageCheckoutIds,
+  sanitizeFreemiusId,
 } from './freemiusPricing.js'
 
 const FREEMIUS_PURCHASE_KEY = 'csv-hospital-freemius-purchase'
 
-/** Public Freemius Overlay config from environment. */
+/** Public Freemius product keys (constructor-safe). */
 export const FREEMIUS_CHECKOUT_CONFIG = {
-  store_id: String(import.meta.env.VITE_FREEMIUS_STORE_ID || '').trim(),
-  product_id: String(import.meta.env.VITE_FREEMIUS_PRODUCT_ID || '34967').trim(),
-  plan_id: String(import.meta.env.VITE_FREEMIUS_PLAN_ID || '57500').trim(),
+  product_id: sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PRODUCT_ID) || '34967',
+  plan_id: sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PLAN_ID) || '57500',
   public_key: String(
     import.meta.env.VITE_FREEMIUS_PUBLIC_KEY ||
       'pk_96bd363d5fbf016bebe4795ecda42',
   ).trim(),
+  // Store id is ops metadata only — never passed into FS.Checkout (invalid option).
+  store_id: String(import.meta.env.VITE_FREEMIUS_STORE_ID || '').trim(),
 }
 
 /**
@@ -62,7 +59,7 @@ export function isClientFreemiusLiveMode() {
 /**
  * Persist Freemius purchase + stack file credits for the package.
  * @param {object} data
- * @param {{ packageId?: string, files?: number, planId?: string }} [packageMeta]
+ * @param {{ packageId?: string, files?: number, planId?: string, pricingId?: string|null }} [packageMeta]
  */
 export function storeFreemiusPurchase(data, packageMeta = {}) {
   if (!data || typeof data !== 'object') return false
@@ -78,6 +75,11 @@ export function storeFreemiusPurchase(data, packageMeta = {}) {
     purchase?.plan_id ??
     data.plan_id ??
     packageMeta.planId ??
+    null
+  const pricingId =
+    purchase?.pricing_id ??
+    data.pricing_id ??
+    packageMeta.pricingId ??
     null
 
   const pkg =
@@ -101,10 +103,10 @@ export function storeFreemiusPurchase(data, packageMeta = {}) {
     userId: user?.id != null ? String(user.id) : null,
     licenseId: data.license?.id != null ? String(data.license.id) : null,
     planId: planId != null ? String(planId) : null,
+    pricingId: pricingId != null ? String(pricingId) : null,
     packageId: pkg?.id || packageMeta.packageId || null,
     filesGranted: pkg?.files || packageMeta.files || null,
     creditBalance: filesAdded,
-    storeId: FREEMIUS_CHECKOUT_CONFIG.store_id || null,
     productId: FREEMIUS_CHECKOUT_CONFIG.product_id,
     raw: data,
     verifiedAt: new Date().toISOString(),
@@ -144,7 +146,6 @@ export function clearFreemiusPurchase() {
   localStorage.removeItem(FREEMIUS_PURCHASE_KEY)
 }
 
-/** True when stackable healing credits remain (or legacy unlock record). */
 export function hasFreemiusUnlock() {
   if (hasHealingCredits()) return true
   return getFreemiusPurchase()?.unlocked === true
@@ -152,9 +153,6 @@ export function hasFreemiusUnlock() {
 
 export { getHealingCreditBalance, hasHealingCredits }
 
-/**
- * @returns {Promise<{ mode: 'live'|'sandbox', sandbox: { token: string, ctx: string }|null }>}
- */
 export async function fetchFreemiusCheckoutMode() {
   if (isClientFreemiusLiveMode()) {
     return { mode: 'live', sandbox: null }
@@ -206,7 +204,7 @@ export async function fetchFreemiusSandbox() {
 }
 
 function assertProductKeys() {
-  if (!FREEMIUS_CHECKOUT_CONFIG.product_id) {
+  if (!sanitizeFreemiusId(FREEMIUS_CHECKOUT_CONFIG.product_id)) {
     throw new Error('Missing VITE_FREEMIUS_PRODUCT_ID')
   }
   if (!FREEMIUS_CHECKOUT_CONFIG.public_key?.startsWith('pk_')) {
@@ -215,26 +213,20 @@ function assertProductKeys() {
 }
 
 /**
+ * Build FS.Checkout with only schema-safe constructor fields.
+ * Never passes store_id or empty plan/pricing ids (causes Checkout Loading Error).
  * @param {{ token: string, ctx: string }|null} sandbox
  * @param {string} planId
  */
 function createCheckoutHandler(sandbox, planId) {
   assertProductKeys()
-  if (!planId) {
-    throw new Error(
-      'Missing Freemius plan id for this package. Set VITE_FREEMIUS_PLAN_ID_* in .env',
-    )
-  }
+  const safePlan = sanitizeFreemiusId(planId) || FREEMIUS_CHECKOUT_CONFIG.plan_id
 
   /** @type {Record<string, unknown>} */
   const options = {
     product_id: FREEMIUS_CHECKOUT_CONFIG.product_id,
-    plan_id: planId,
     public_key: FREEMIUS_CHECKOUT_CONFIG.public_key,
-  }
-
-  if (FREEMIUS_CHECKOUT_CONFIG.store_id) {
-    options.store_id = FREEMIUS_CHECKOUT_CONFIG.store_id
+    plan_id: safePlan,
   }
 
   if (sandbox?.token && sandbox?.ctx != null) {
@@ -260,62 +252,100 @@ function createCheckoutHandler(sandbox, planId) {
 }
 
 /**
- * Open Freemius overlay for a one-time (lifetime) healing-pass package.
+ * Build open() payload with only valid Freemius fields.
+ * @param {import('./freemiusPricing.js').FreemiusCheckoutIds} ids
+ * @param {{ token: string, ctx: string }|null} sandbox
+ * @param {object} callbacks
+ */
+function buildOpenOptions(ids, sandbox, callbacks) {
+  /** @type {Record<string, unknown>} */
+  const openOpts = {
+    plan_id: ids.planId,
+    // One-time / non-recurring
+    billing_cycle: 'lifetime',
+    disable_licenses_selector: true,
+    purchaseCompleted: callbacks.purchaseCompleted,
+    success: callbacks.success,
+  }
+
+  // Prefer exact Freemius pricing_id when configured for this tier.
+  if (ids.pricingId) {
+    openOpts.pricing_id = ids.pricingId
+  } else {
+    // Fallback: map file credits → license quantity for bulk lifetime prices.
+    openOpts.licenses = ids.licenses
+  }
+
+  if (sandbox?.token && sandbox?.ctx != null) {
+    openOpts.sandbox = {
+      token: sandbox.token,
+      ctx: sandbox.ctx,
+    }
+  }
+
+  return openOpts
+}
+
+/**
+ * Open Freemius overlay for a one-time healing-pass package.
  * @param {{
  *   packageId?: string,
  *   planId?: string,
+ *   pricingId?: string,
  *   onPurchaseCompleted?: (data: object) => void,
  *   onSuccess?: (data: object) => void,
  *   onError?: (error: Error) => void,
  * }} [handlers]
  */
 export async function openFreemiusCheckout(handlers = {}) {
-  const { packageId, planId: planOverride, onPurchaseCompleted, onSuccess, onError } =
-    handlers
+  const {
+    packageId,
+    planId: planOverride,
+    pricingId: pricingOverride,
+    onPurchaseCompleted,
+    onSuccess,
+    onError,
+  } = handlers
 
   const pkg = packageId ? getPackageById(packageId) : getPackageById('pass-1')
-  const planId =
-    (planOverride && String(planOverride).trim()) ||
-    (pkg ? resolvePackagePlanId(pkg) : '') ||
-    FREEMIUS_CHECKOUT_CONFIG.plan_id
+  if (!pkg) {
+    const err = new Error(`Unknown healing package: ${packageId}`)
+    onError?.(err)
+    throw err
+  }
+
+  const resolved = resolvePackageCheckoutIds(pkg)
+  const ids = {
+    ...resolved,
+    planId: sanitizeFreemiusId(planOverride) || resolved.planId,
+    pricingId: sanitizeFreemiusId(pricingOverride) || resolved.pricingId,
+  }
 
   const packageMeta = {
-    packageId: pkg?.id || packageId || 'pass-1',
-    files: pkg?.files || 1,
-    planId,
+    packageId: pkg.id,
+    files: pkg.files,
+    planId: ids.planId,
+    pricingId: ids.pricingId,
   }
 
   try {
     const { mode, sandbox } = await fetchFreemiusCheckoutMode()
-    const handler = createCheckoutHandler(mode === 'sandbox' ? sandbox : null, planId)
+    const handler = createCheckoutHandler(mode === 'sandbox' ? sandbox : null, ids.planId)
 
-    /** @type {Record<string, unknown>} */
-    const openOpts = {
-      plan_id: planId,
-      licenses: 1,
-      // One-time / non-recurring Freemius purchase
-      billing_cycle: 'lifetime',
-      disable_licenses_selector: true,
+    const openOpts = buildOpenOptions(ids, mode === 'sandbox' ? sandbox : null, {
       purchaseCompleted: (data) => {
         storeFreemiusPurchase(data, packageMeta)
         onPurchaseCompleted?.(data)
       },
       success: (data) => {
-        // Credits already stacked in purchaseCompleted when Freemius fires both.
         storeFreemiusPurchase(data, packageMeta)
         onSuccess?.(data)
       },
-    }
-
-    if (mode === 'sandbox' && sandbox?.token && sandbox?.ctx != null) {
-      openOpts.sandbox = {
-        token: sandbox.token,
-        ctx: sandbox.ctx,
-      }
-    }
+    })
 
     console.info(
-      `[freemius] opening one-time checkout (${mode}) · ${packageMeta.packageId} · ${packageMeta.files} file credit(s) · plan ${planId}`,
+      `[freemius] opening one-time checkout (${mode}) · ${pkg.id} · $${pkg.priceUsd} · ${pkg.files} file(s) · plan ${ids.planId}` +
+        (ids.pricingId ? ` · pricing ${ids.pricingId}` : ` · licenses ${ids.licenses}`),
     )
     await handler.open(openOpts)
   } catch (error) {

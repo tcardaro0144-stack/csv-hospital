@@ -1,11 +1,15 @@
 /**
  * One-time Freemius data-healing pass packages (flat file credits).
- * Strictly non-recurring — Freemius overlay opens with billing_cycle: 'lifetime'.
- * Credits stack when users buy multiple packages.
  *
- * Plan IDs come from env (create matching one-time plans in Freemius Dashboard):
- *   VITE_FREEMIUS_PLAN_ID_1, _5, _15, _25, _50, _75, _100
- * Fallback for 1-file: VITE_FREEMIUS_PLAN_ID (legacy single plan).
+ * Each tier maps to Freemius checkout identifiers:
+ *   - plan_id (shared one-time plan by default: 57500)
+ *   - pricing_id (exact lifetime price row — preferred)
+ *   - licenses fallback (= file count) when pricing_id unset but bulk lifetime prices exist
+ *
+ * Env:
+ *   VITE_FREEMIUS_PLAN_ID              — default plan (57500)
+ *   VITE_FREEMIUS_PLAN_ID_{N}          — optional per-tier plan override
+ *   VITE_FREEMIUS_PRICING_ID_{N}       — preferred per-tier pricing_id
  */
 
 /**
@@ -15,7 +19,19 @@
  *   priceUsd: number,
  *   label: string,
  *   planEnvKey: string,
+ *   pricingEnvKey: string,
  * }} HealingPassPackage
+ */
+
+/**
+ * @typedef {{
+ *   packageId: string,
+ *   files: number,
+ *   priceUsd: number,
+ *   planId: string,
+ *   pricingId: string|null,
+ *   licenses: number,
+ * }} FreemiusCheckoutIds
  */
 
 /** @type {HealingPassPackage[]} */
@@ -26,6 +42,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 2.99,
     label: '1 file',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_1',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_1',
   },
   {
     id: 'pass-5',
@@ -33,6 +50,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 11.99,
     label: '5 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_5',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_5',
   },
   {
     id: 'pass-15',
@@ -40,6 +58,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 29.99,
     label: '15 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_15',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_15',
   },
   {
     id: 'pass-25',
@@ -47,6 +66,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 44.99,
     label: '25 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_25',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_25',
   },
   {
     id: 'pass-50',
@@ -54,6 +74,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 79.99,
     label: '50 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_50',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_50',
   },
   {
     id: 'pass-75',
@@ -61,6 +82,7 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 109.99,
     label: '75 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_75',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_75',
   },
   {
     id: 'pass-100',
@@ -68,8 +90,11 @@ export const HEALING_PASS_PACKAGES = [
     priceUsd: 139.99,
     label: '100 files',
     planEnvKey: 'VITE_FREEMIUS_PLAN_ID_100',
+    pricingEnvKey: 'VITE_FREEMIUS_PRICING_ID_100',
   },
 ]
+
+const DEFAULT_PLAN_ID = '57500'
 
 export function formatUsd(amount) {
   return new Intl.NumberFormat('en-US', {
@@ -78,21 +103,48 @@ export function formatUsd(amount) {
   }).format(amount)
 }
 
+/** Freemius IDs must be positive integer strings — never empty. */
+export function sanitizeFreemiusId(value) {
+  const raw = String(value ?? '').trim()
+  if (!raw) return null
+  if (!/^\d+$/.test(raw)) return null
+  // Reject zero / leading-junk
+  const n = Number(raw)
+  if (!Number.isFinite(n) || n < 1) return null
+  return String(n)
+}
+
+function envId(key) {
+  return sanitizeFreemiusId(import.meta.env[key])
+}
+
 /**
- * Resolve Freemius plan id for a package from Vite env.
+ * Resolve checkout identifiers for a package (always returns a valid planId).
  * @param {HealingPassPackage} pkg
- * @returns {string}
+ * @returns {FreemiusCheckoutIds}
  */
-export function resolvePackagePlanId(pkg) {
-  const specific = String(import.meta.env[pkg.planEnvKey] || '').trim()
-  if (specific) return specific
+export function resolvePackageCheckoutIds(pkg) {
+  const planId =
+    envId(pkg.planEnvKey) ||
+    envId('VITE_FREEMIUS_PLAN_ID') ||
+    DEFAULT_PLAN_ID
 
-  // Legacy single-plan fallback only for the 1-file tier.
-  if (pkg.files === 1) {
-    return String(import.meta.env.VITE_FREEMIUS_PLAN_ID || '57500').trim()
+  const pricingId = envId(pkg.pricingEnvKey)
+
+  return {
+    packageId: pkg.id,
+    files: pkg.files,
+    priceUsd: pkg.priceUsd,
+    planId,
+    pricingId,
+    // When Freemius lifetime bulk prices use license quantity = file credits
+    licenses: pkg.files,
   }
+}
 
-  return ''
+/** @deprecated Prefer resolvePackageCheckoutIds */
+export function resolvePackagePlanId(pkg) {
+  return resolvePackageCheckoutIds(pkg).planId
 }
 
 /**
@@ -104,15 +156,27 @@ export function getPackageById(packageId) {
 }
 
 /**
- * Infer package from Freemius purchase plan_id when event lacks package meta.
  * @param {string|number|null|undefined} planId
+ * @param {string|number|null|undefined} [pricingId]
  * @returns {HealingPassPackage|null}
  */
-export function getPackageByPlanId(planId) {
-  if (planId == null || planId === '') return null
-  const needle = String(planId)
-  for (const pkg of HEALING_PASS_PACKAGES) {
-    if (resolvePackagePlanId(pkg) === needle) return pkg
+export function getPackageByPlanId(planId, pricingId = null) {
+  const priceNeedle = sanitizeFreemiusId(pricingId)
+  if (priceNeedle) {
+    for (const pkg of HEALING_PASS_PACKAGES) {
+      const ids = resolvePackageCheckoutIds(pkg)
+      if (ids.pricingId === priceNeedle) return pkg
+    }
   }
+
+  const planNeedle = sanitizeFreemiusId(planId)
+  if (!planNeedle) return null
+
+  // Prefer exact per-tier plan matches over the shared default plan.
+  for (const pkg of HEALING_PASS_PACKAGES) {
+    const specific = envId(pkg.planEnvKey)
+    if (specific && specific === planNeedle) return pkg
+  }
+
   return null
 }

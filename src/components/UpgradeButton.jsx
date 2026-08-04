@@ -5,7 +5,7 @@ import {
 } from '../utils/freemiusCheckout.js'
 import {
   formatUsd,
-  resolvePackagePlanId,
+  resolvePackageCheckoutIds,
 } from '../utils/freemiusPricing.js'
 
 /**
@@ -24,7 +24,15 @@ export default function UpgradeButton({
   const [opening, setOpening] = useState(false)
   const [overlayError, setOverlayError] = useState(null)
 
-  const planId = pkg ? resolvePackagePlanId(pkg) : FREEMIUS_CHECKOUT_CONFIG.plan_id
+  const ids = pkg
+    ? resolvePackageCheckoutIds(pkg)
+    : {
+        planId: FREEMIUS_CHECKOUT_CONFIG.plan_id,
+        pricingId: null,
+        files: 1,
+        packageId: 'pass-1',
+      }
+
   const defaultLabel = pkg
     ? `Buy ${formatUsd(pkg.priceUsd)} · ${pkg.label}`
     : 'Purchase Authorized User Access'
@@ -34,10 +42,8 @@ export default function UpgradeButton({
     e.stopPropagation()
     if (locked || opening) return
 
-    if (pkg && !planId) {
-      setOverlayError(
-        `Missing Freemius plan id for ${pkg.label}. Set ${pkg.planEnvKey} in env.`,
-      )
+    if (!ids.planId) {
+      setOverlayError('Freemius plan id is not configured.')
       return
     }
 
@@ -45,8 +51,9 @@ export default function UpgradeButton({
     setOverlayError(null)
     try {
       await openFreemiusCheckout({
-        packageId: pkg?.id,
-        planId,
+        packageId: pkg?.id || 'pass-1',
+        planId: ids.planId,
+        pricingId: ids.pricingId || undefined,
         onPurchaseCompleted: (response) => {
           window.dispatchEvent(
             new CustomEvent('freemius:purchaseCompleted', {
@@ -79,10 +86,10 @@ export default function UpgradeButton({
         disabled={locked || opening}
         className={className}
         onClick={handleOverlayClick}
-        data-freemius-store={FREEMIUS_CHECKOUT_CONFIG.store_id || undefined}
         data-freemius-product={FREEMIUS_CHECKOUT_CONFIG.product_id}
-        data-freemius-plan={planId || undefined}
-        data-healing-files={pkg?.files}
+        data-freemius-plan={ids.planId || undefined}
+        data-freemius-pricing={ids.pricingId || undefined}
+        data-healing-files={pkg?.files ?? ids.files}
         data-billing="one_time"
       >
         {opening || isLoading ? busyLabel : label || defaultLabel}
