@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import cors from 'cors'
-import crypto from 'crypto'
 import express from 'express'
 import Stripe from 'stripe'
 import {
@@ -18,6 +17,7 @@ import {
   isFreemiusSandboxEnabled,
   isStripeConfigured,
 } from '../api/_lib/env.js'
+import { buildFreemiusCheckoutModeResponse } from '../api/_lib/freemiusSandbox.js'
 import { enforceRateLimit } from '../api/_lib/rateLimit.js'
 import { applySecurityHeaders } from '../api/_lib/securityHeaders.js'
 import { stripeCheckoutErrorMessage } from '../api/_lib/stripeErrors.js'
@@ -263,56 +263,21 @@ app.post('/api/manager/verify', (req, res) => {
 /**
  * Freemius checkout config — live or sandbox.
  * Live: { mode: 'live', sandbox: null } (real charges; same product keys).
- * Sandbox: { mode: 'sandbox', sandbox: { token, ctx } } when FREEMIUS_SANDBOX=true.
+ * Sandbox: { mode: 'sandbox', sandbox: { token, ctx } } when FREEMIUS_SANDBOX
+ * or VITE_FREEMIUS_SANDBOX is true.
  */
 app.get('/api/freemius-sandbox', (req, res) => {
   if (!enforceRateLimit(req, res, 'checkout')) return
 
-  const productId = getFreemiusProductId()
-  const planId = getFreemiusPlanId()
-  const publicKey = getFreemiusPublicKey()
-  const storeId = getFreemiusStoreId()
-  const secretKey = getFreemiusSecretKey()
-  const sandboxMode = isFreemiusSandboxEnabled()
+  const payload = buildFreemiusCheckoutModeResponse()
+  const status = payload.status || 200
+  const { status: _status, error, ...body } = payload
 
-  if (!productId || !planId || !publicKey) {
-    return res.status(500).json({ error: 'Freemius product config is incomplete.' })
+  res.setHeader('Content-Type', 'application/json; charset=utf-8')
+  if (error) {
+    return res.status(status).json({ ...body, error })
   }
-
-  // Live mode: same product keys, no sandbox token — real charges.
-  if (!sandboxMode) {
-    res.setHeader('Content-Type', 'application/json; charset=utf-8')
-    return res.status(200).json({
-      mode: 'live',
-      store_id: storeId,
-      product_id: productId,
-      plan_id: planId,
-      public_key: publicKey,
-      sandbox: null,
-    })
-  }
-
-  if (!secretKey) {
-    return res.status(503).json({
-      error:
-        'FREEMIUS_SECRET_KEY is not set. Copy it from Freemius Dashboard → Product → Keys, then restart the API.',
-    })
-  }
-
-  const ctx = String(Math.floor(Date.now() / 1000))
-  const token = crypto
-    .createHash('md5')
-    .update(`${ctx}${productId}${secretKey}${publicKey}checkout`)
-    .digest('hex')
-
-  return res.json({
-    mode: 'sandbox',
-    store_id: storeId,
-    product_id: productId,
-    plan_id: planId,
-    public_key: publicKey,
-    sandbox: { token, ctx },
-  })
+  return res.status(status).json(body)
 })
 
 app.post('/api/create-checkout-session', async (req, res) => {

@@ -147,23 +147,27 @@ export function getFreemiusSecretKey() {
 /**
  * Freemius sandbox overlay mode.
  * Freemius does not use separate sk_test/sk_live keys — the same product keys are live.
- * Sandbox is enabled only when FREEMIUS_SANDBOX / VITE_FREEMIUS_SANDBOX is true.
+ * Sandbox is enabled when FREEMIUS_SANDBOX or VITE_FREEMIUS_SANDBOX is true
+ * (either flag wins — do not let a stale FREEMIUS_SANDBOX=false override Vite true).
  * When false/off/live, checkout charges real payments (no sandbox token/ctx).
  */
 export function isFreemiusSandboxEnabled() {
-  const raw =
-    process.env.FREEMIUS_SANDBOX ?? process.env.VITE_FREEMIUS_SANDBOX ?? ''
-  const v = stripEnvQuotes(String(raw)).toLowerCase()
-  if (!v) {
-    // Safe default: sandbox off only when explicitly configured for live.
-    // Unset → treat as sandbox for local safety unless NODE_ENV/VERCEL is production.
-    const prod =
-      process.env.VERCEL_ENV === 'production' ||
-      process.env.NODE_ENV === 'production'
-    return !prod
-  }
-  if (/^(0|false|no|off|live|production)$/i.test(v)) return false
-  return /^(1|true|yes|on|sandbox)$/i.test(v)
+  const flags = [process.env.FREEMIUS_SANDBOX, process.env.VITE_FREEMIUS_SANDBOX]
+    .map((raw) => stripEnvQuotes(String(raw ?? '')).toLowerCase())
+    .filter(Boolean)
+
+  const isTrue = (v) => /^(1|true|yes|on|sandbox)$/i.test(v)
+  const isFalse = (v) => /^(0|false|no|off|live|production)$/i.test(v)
+
+  // Explicit true on either env var enables sandbox for local / test deploys.
+  if (flags.some(isTrue)) return true
+  if (flags.some(isFalse)) return false
+
+  // Unset → sandbox for local safety; live in production hosts.
+  const prod =
+    process.env.VERCEL_ENV === 'production' ||
+    process.env.NODE_ENV === 'production'
+  return !prod
 }
 
 

@@ -192,13 +192,15 @@ export async function fetchFreemiusCheckoutMode() {
     return { mode: 'live', sandbox: null, isSandbox: false }
   }
 
-  // Sandbox requires a server-minted { token, ctx } — works in local + preview builds
-  // when VITE_FREEMIUS_SANDBOX=true (and FREEMIUS_SANDBOX=true on the API).
-  const result = await fetchSandboxModeFromApi()
-  return { ...result, isSandbox: result.mode === 'sandbox' }
+  // Sandbox requires a server-minted { token, ctx }. Never silently fall back to live.
+  return fetchSandboxModeFromApi({ requireSandbox: true })
 }
 
-async function fetchSandboxModeFromApi() {
+/**
+ * @param {{ requireSandbox?: boolean }} [opts]
+ */
+async function fetchSandboxModeFromApi(opts = {}) {
+  const requireSandbox = opts.requireSandbox === true
   const url = apiUrl('/api/freemius-sandbox')
   try {
     const data = await fetchJson(url, {
@@ -207,23 +209,49 @@ async function fetchSandboxModeFromApi() {
       headers: { Accept: 'application/json' },
     })
 
-    if (data?.mode === 'live' || !data?.sandbox?.token || data?.sandbox?.ctx == null) {
-      return { mode: 'live', sandbox: null }
+    if (data?.error) {
+      throw new Error(String(data.error))
     }
 
-    return {
-      mode: 'sandbox',
-      sandbox: {
-        token: String(data.sandbox.token),
-        ctx: String(data.sandbox.ctx),
-      },
+    const hasToken =
+      data?.mode === 'sandbox' &&
+      data?.sandbox?.token &&
+      data?.sandbox?.ctx != null
+
+    if (hasToken) {
+      return {
+        mode: 'sandbox',
+        isSandbox: true,
+        sandbox: {
+          token: String(data.sandbox.token),
+          ctx: String(data.sandbox.ctx),
+        },
+      }
     }
+
+    if (requireSandbox) {
+      throw new Error(
+        data?.mode === 'live'
+          ? 'API returned live Freemius mode. Set FREEMIUS_SANDBOX=true (and restart npm run dev:server).'
+          : 'Freemius sandbox token missing from /api/freemius-sandbox. Confirm FREEMIUS_SECRET_KEY and restart the API.',
+      )
+    }
+
+    return { mode: 'live', sandbox: null, isSandbox: false }
   } catch (err) {
+    if (requireSandbox) {
+      const message =
+        err instanceof Error ? err.message : String(err || 'sandbox API failed')
+      console.error('[freemius] sandbox required but unavailable:', message)
+      throw new Error(
+        `Freemius sandbox unavailable: ${message}. Start the API (npm run dev:server) with FREEMIUS_SANDBOX=true.`,
+      )
+    }
     console.warn(
       '[freemius] sandbox API unavailable — using LIVE checkout',
       err?.message || err,
     )
-    return { mode: 'live', sandbox: null }
+    return { mode: 'live', sandbox: null, isSandbox: false }
   }
 }
 
