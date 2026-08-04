@@ -31,7 +31,7 @@ export default function UpgradeButton({
         pricingId: null,
         files: 1,
         packageId: 'pass-1',
-        strategy: 'plan_default',
+        strategy: 'plan',
       }
 
   const defaultLabel = pkg
@@ -86,7 +86,7 @@ export default function UpgradeButton({
         data-freemius-product={FREEMIUS_CHECKOUT_CONFIG.product_id}
         data-freemius-plan={ids.planId || undefined}
         data-freemius-pricing={ids.pricingId || undefined}
-        data-freemius-strategy={ids.strategy || 'plan_default'}
+        data-freemius-strategy={ids.strategy || 'plan'}
         data-healing-files={pkg?.files ?? ids.files}
         data-billing="one_time"
       >

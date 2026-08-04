@@ -1,23 +1,19 @@
 /**
  * One-time Freemius data-healing pass packages (flat file credits).
  *
- * Each tier maps to Freemius checkout identifiers:
- *   - plan_id (shared one-time plan by default: 57500)
- *   - pricing_id (exact lifetime price row — preferred when env is set)
+ * Each UI tier maps to a Freemius one-time (lifetime) checkout config.
+ * File counts are OUR credit units — never Freemius multi-site `licenses`.
  *
- * When VITE_FREEMIUS_PRICING_ID_{N} is unset, checkout does NOT invent fake
- * pricing IDs (those cause Freemius "Checkout Loading" validation errors).
- * Instead it uses a safe strategy:
- *   1. plan_default — open shared plan with billing_cycle lifetime only
- *   2. licenses — only if VITE_FREEMIUS_USE_LICENSES_FALLBACK=true
- *   3. mock — local credit grant when VITE_FREEMIUS_MOCK=true (dev / staging)
+ * Freemius open() modes (mutually exclusive — never combine):
+ *   pricing  → { plan_id, pricing_id }           // exact price row
+ *   plan     → { plan_id, licenses: 1, billing_cycle: 'lifetime' }
+ *   mock     → local credit grant (VITE_FREEMIUS_MOCK)
  *
  * Env:
- *   VITE_FREEMIUS_PLAN_ID              — default plan (57500)
- *   VITE_FREEMIUS_PLAN_ID_{N}          — optional per-tier plan override
- *   VITE_FREEMIUS_PRICING_ID_{N}       — preferred per-tier pricing_id
- *   VITE_FREEMIUS_USE_LICENSES_FALLBACK — map files → licenses (opt-in)
- *   VITE_FREEMIUS_MOCK                 — grant credits without Freemius overlay
+ *   VITE_FREEMIUS_PLAN_ID              — shared one-time plan (default 57500)
+ *   VITE_FREEMIUS_PLAN_ID_{N}          — per-tier plan (preferred when each price is its own plan)
+ *   VITE_FREEMIUS_PRICING_ID_{N}       — per-tier pricing_id under the plan
+ *   VITE_FREEMIUS_MOCK                 — local mock checkout
  */
 
 /**
@@ -32,7 +28,7 @@
  */
 
 /**
- * @typedef {'pricing_id'|'plan_default'|'licenses'|'mock'} FreemiusCheckoutStrategy
+ * @typedef {'pricing'|'plan'|'mock'} FreemiusCheckoutStrategy
  */
 
 /**
@@ -42,19 +38,22 @@
  *   priceUsd: number,
  *   planId: string,
  *   pricingId: string|null,
- *   licenses: number,
  *   strategy: FreemiusCheckoutStrategy,
  * }} FreemiusCheckoutIds
  */
 
-/** Known-good Freemius defaults (product CSV Hospital). */
+/** Known-good Freemius defaults (CSV Hospital product). */
 export const FREEMIUS_DEFAULT_TEST_IDS = {
   productId: '34967',
   planId: '57500',
   publicKey: 'pk_96bd363d5fbf016bebe4795ecda42',
 }
 
-/** @type {HealingPassPackage[]} */
+/**
+ * Flat non-recurring tiers — amounts are display/credit mapping truth.
+ * Freemius IDs come from env (Dashboard → Plans / Pricing).
+ * @type {HealingPassPackage[]}
+ */
 export const HEALING_PASS_PACKAGES = [
   {
     id: 'pass-1',
@@ -134,32 +133,25 @@ export function sanitizeFreemiusId(value) {
 }
 
 function envFlag(key) {
-  const v = String(import.meta.env[key] ?? '')
+  const env = typeof import.meta !== 'undefined' ? import.meta.env : undefined
+  const v = String(env?.[key] ?? '')
     .trim()
     .toLowerCase()
   return /^(1|true|yes|on)$/.test(v)
 }
 
 function envId(key) {
-  return sanitizeFreemiusId(import.meta.env[key])
+  const env = typeof import.meta !== 'undefined' ? import.meta.env : undefined
+  return sanitizeFreemiusId(env?.[key])
 }
 
-/** Explicit mock checkout (local / staging credit grant, no Freemius overlay). */
 export function isFreemiusMockEnabled() {
   return envFlag('VITE_FREEMIUS_MOCK')
 }
 
 /**
- * Opt-in: map file credits → Freemius `licenses` when pricing_id unset.
- * Off by default — wrong quantities cause Checkout Loading validation errors.
- */
-export function isLicensesFallbackEnabled() {
-  return envFlag('VITE_FREEMIUS_USE_LICENSES_FALLBACK')
-}
-
-/**
  * Resolve checkout identifiers for a package (always returns a valid planId).
- * Never returns empty/invalid pricing IDs.
+ * Never invents fake pricing IDs. Never maps file credits → Freemius licenses.
  * @param {HealingPassPackage} pkg
  * @returns {FreemiusCheckoutIds}
  */
@@ -176,12 +168,9 @@ export function resolvePackageCheckoutIds(pkg) {
   if (isFreemiusMockEnabled()) {
     strategy = 'mock'
   } else if (pricingId) {
-    strategy = 'pricing_id'
-  } else if (isLicensesFallbackEnabled()) {
-    strategy = 'licenses'
+    strategy = 'pricing'
   } else {
-    // Safe default: shared plan lifetime price only (no fake pricing_id).
-    strategy = 'plan_default'
+    strategy = 'plan'
   }
 
   return {
@@ -189,10 +178,43 @@ export function resolvePackageCheckoutIds(pkg) {
     files: pkg.files,
     priceUsd: pkg.priceUsd,
     planId,
-    // Only expose pricingId when strategy is pricing_id — never pass junk to Freemius.
-    pricingId: strategy === 'pricing_id' ? pricingId : null,
-    licenses: pkg.files,
+    pricingId: strategy === 'pricing' ? pricingId : null,
     strategy,
+  }
+}
+
+/**
+ * Build the exact Freemius JS SDK open() purchase fields for a one-time tier.
+ * Mutually exclusive modes — never mixes pricing_id with licenses/billing flags.
+ *
+ * @param {FreemiusCheckoutIds} ids
+ * @returns {Record<string, string|number|boolean>|null} null for mock
+ */
+export function buildOneTimePurchaseParams(ids) {
+  if (!ids || ids.strategy === 'mock') return null
+
+  const planId = sanitizeFreemiusId(ids.planId)
+  if (!planId) return null
+
+  if (ids.strategy === 'pricing') {
+    const pricingId = sanitizeFreemiusId(ids.pricingId)
+    if (!pricingId) return null
+    // pricing_id already encodes license qty + billing — do NOT add licenses/billing_cycle
+    return {
+      plan_id: Number(planId),
+      pricing_id: Number(pricingId),
+      currency: 'usd',
+    }
+  }
+
+  // Dedicated one-time / lifetime plan: single-site only (licenses: 1).
+  // File-credit quantity lives in our app, not Freemius multi-site licenses.
+  return {
+    plan_id: Number(planId),
+    licenses: 1,
+    billing_cycle: 'lifetime',
+    currency: 'usd',
+    disable_licenses_selector: true,
   }
 }
 
