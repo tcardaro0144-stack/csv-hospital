@@ -4,7 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig({
+  // Serve the SPA from domain root (csvhospital.com/) — no nested base path.
+  base: '/',
   plugins: [react(), tailwindcss(), basicSsl()],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
   server: {
     https: true,
     // 0.0.0.0 so Pinggy / other tunnels can reach the process (not only loopback)
