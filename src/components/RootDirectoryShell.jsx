@@ -36,11 +36,9 @@ export default function RootDirectoryShell({
             className={`fb-glass rounded-lg p-5 sm:p-6 ${isPage2 ? 'fb-dir-page2' : ''}`}
             data-page={pageNum}
           >
-            <p className="fb-body text-[#00ffc2]">
-              CSV_HOSPITAL_OS // ROOT_DIRECTORY
-            </p>
+            <p className="fb-body text-[#00ffc2]">CSV Hospital</p>
             <p className="fb-body fb-muted mt-3">
-              Select an operation:_
+              Select a product:_
               <span className="ml-0.5 inline-block animate-pulse text-[#00ffc2]">
                 ▌
               </span>
@@ -59,7 +57,7 @@ export default function RootDirectoryShell({
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#00ffc2]/20 pt-4">
               <p className="fb-body fb-muted text-sm">
-                $ ls ./ops — page {pageNum}/{total}
+                Page {pageNum} of {total}
               </p>
               <div
                 className="flex items-center gap-2"

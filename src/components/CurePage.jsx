@@ -171,7 +171,7 @@ export default function CurePage() {
               </button>
             ))}
             <Link to={ROUTES.ROOT} className="csvh-nav-link csvh-nav-quiet">
-              ← Root Directory
+              ← Home
             </Link>
           </nav>
         </div>

@@ -13,7 +13,7 @@ export default function RootDirectoryPage2() {
       pageIndex={1}
       ops={ops}
       seoKey="directoryPage2"
-      footerHint="$ scan ./ops/page_2 — [04] classified / locked"
+      footerHint="Classified slot — locked"
     />
   )
 }

@@ -99,13 +99,13 @@ export default function CyberCubeHeavenPage() {
               frequencies
             </p>
             <p className="fb-body mt-2">
-              -&gt; check back via root directory for status updates
+              -&gt; check back on the home page for status updates
             </p>
           </section>
 
           <p className="fb-body fb-muted text-sm">
             <Link to={ROUTES.ROOT} className="text-[#00ffc2] hover:underline">
-              ← cd ../ROOT_DIRECTORY
+              ← Home
             </Link>
             {' · '}
             <Link to={ROUTES.HOSPITAL} className="text-[#00ffc2]/80 hover:underline">

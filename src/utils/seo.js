@@ -15,9 +15,9 @@ export const SEO_PAGES = {
     type: 'website',
   },
   directoryPage2: {
-    title: 'CSV Hospital — Root Directory (Page 2)',
+    title: 'CSV Hospital — More Products',
     description:
-      'CSV Hospital root directory page 2 — classified operations. Slot [04] remains locked.',
+      'CSV Hospital product directory page 2 — classified operations. Slot [04] remains locked.',
     path: '/2',
     type: 'website',
   },

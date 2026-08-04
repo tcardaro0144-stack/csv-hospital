@@ -15,7 +15,7 @@ export default function LandingPage() {
       pageIndex={0}
       ops={ops}
       seoKey="home"
-      footerHint="$ ls ./ops — enter [01] CSV Hospital · [02] Cyber Cube Heaven · [03] Glitched Reality ACTIVE"
+      footerHint="CSV Hospital · Cyber Cube Heaven · Glitched Reality"
     />
   )
 }
