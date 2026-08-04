@@ -35,9 +35,7 @@ export default function CyberCubeHeavenPage() {
 
         <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
           <section className="fb-glass rounded-lg p-5 sm:p-6" aria-labelledby="cch-world">
-            <p className="fb-body text-[#00ffc2]">
-              OPS/[02]_CYBER_CUBE_HEAVEN
-            </p>
+            <p className="fb-body text-[#00ffc2]">Cyber Cube Heaven</p>
             <div className="mt-6 flex flex-col items-center text-center">
               <p className="fb-body text-2xl font-bold tracking-tight text-[#00ffc2] sm:text-3xl">
                 A T.J.C. Production
