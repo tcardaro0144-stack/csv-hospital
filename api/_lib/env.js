@@ -1,15 +1,38 @@
 /**
  * Centralized env access — secrets only from process.env, never hardcoded.
  * Error messages stay generic (no key material leaked).
+ *
+ * Stripe is optional / legacy — Freemius is the primary checkout.
+ * Test keys (sk_test_ / pk_test_) are accepted on Vercel production.
  */
 
 import { validateClientUrl } from './validate.js'
 
+/** Default test-mode Price ID (Dashboard → Products). Override with STRIPE_PRICE_ID. */
+const DEFAULT_STRIPE_PRICE_ID = 'price_1TuUafIv6QgjmVhx1EWTE8FP'
+
+function stripEnvQuotes(value) {
+  const trimmed = String(value).trim()
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1).trim()
+  }
+  return trimmed
+}
+
+/**
+ * Stripe secret key — accepts sk_test_ and sk_live_ on any host (incl. production).
+ * Strips wrapping quotes from Vercel / .env paste mistakes.
+ */
 export function getStripeSecretKey() {
   const key = process.env.STRIPE_SECRET_KEY
   if (!key || typeof key !== 'string') return null
-  const trimmed = key.trim()
-  if (!trimmed.startsWith('sk_')) return null
+  const trimmed = stripEnvQuotes(key)
+  // Explicitly allow test credentials in production (Freemius-first deployments).
+  if (!/^sk_(test|live)_[A-Za-z0-9]+/.test(trimmed)) return null
+  if (trimmed.length < 20) return null
   return trimmed
 }
 
@@ -19,28 +42,50 @@ export function getStripePublishableKey() {
     process.env.VITE_STRIPE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   if (!key || typeof key !== 'string') return null
-  const trimmed = key.trim()
-  if (!trimmed.startsWith('pk_')) return null
+  const trimmed = stripEnvQuotes(key)
+  if (!/^pk_(test|live)_[A-Za-z0-9]+/.test(trimmed)) return null
+  if (trimmed.length < 20) return null
   return trimmed
+}
+
+/** @returns {'test'|'live'|null} */
+export function getStripeMode() {
+  const secret = getStripeSecretKey()
+  if (!secret) return null
+  return secret.startsWith('sk_test_') ? 'test' : 'live'
+}
+
+export function isStripeConfigured() {
+  return Boolean(getStripeSecretKey())
+}
+
+/**
+ * One-time unlock Price ID. Prefers STRIPE_PRICE_ID; falls back to bundled test price.
+ */
+export function getStripePriceId() {
+  const raw = process.env.STRIPE_PRICE_ID
+  if (typeof raw === 'string' && raw.trim()) {
+    const trimmed = stripEnvQuotes(raw)
+    if (/^price_[A-Za-z0-9]+$/.test(trimmed)) return trimmed
+  }
+  return DEFAULT_STRIPE_PRICE_ID
 }
 
 export function getWebhookSecret() {
   const secret = process.env.STRIPE_WEBHOOK_SECRET
   if (!secret || typeof secret !== 'string') return null
-  const trimmed = secret.trim()
+  const trimmed = stripEnvQuotes(secret)
   if (!trimmed.startsWith('whsec_')) return null
   return trimmed
 }
 
 export function getUnlockSecret() {
   const secret = process.env.UNLOCK_SECRET
-  if (!secret || typeof secret !== 'string' || secret.length < 16) {
-    return null
-  }
-  if (secret === 'change-me-to-a-long-random-string') {
-    return null
-  }
-  return secret
+  if (!secret || typeof secret !== 'string') return null
+  const trimmed = stripEnvQuotes(secret)
+  if (trimmed.length < 16) return null
+  if (trimmed === 'change-me-to-a-long-random-string') return null
+  return trimmed
 }
 
 export function getConfiguredClientUrl() {
@@ -297,17 +342,6 @@ export function getDiscordFrontlineLogsChannelId() {
 
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-function stripEnvQuotes(value) {
-  const trimmed = String(value).trim()
-  if (
-    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-    (trimmed.startsWith("'") && trimmed.endsWith("'"))
-  ) {
-    return trimmed.slice(1, -1).trim()
-  }
-  return trimmed
-}
 
 /**
  * Resend API key from RESEND_API_KEY in .env / host env.

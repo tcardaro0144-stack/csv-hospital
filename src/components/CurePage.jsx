@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import CsvUpload from './CsvUpload.jsx'
 import CheckoutNotice from './CheckoutNotice.jsx'
 import ProDownloadGate from './ProDownloadGate.jsx'
@@ -8,7 +7,6 @@ import SupportChat from './SupportChat.jsx'
 import Seo from './Seo.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
-import { ROUTES } from '../routes.js'
 
 const NAV = [
   { id: 'home', label: 'HOME (TRIAL WARD)' },
@@ -57,7 +55,7 @@ const FAQS = [
 
 /**
  * CSV Hospital — medical-sitcom landing + in-browser triage tool.
- * Routed at /hospital
+ * Default site view at /
  */
 export default function CurePage() {
   const [readyData, setReadyData] = useState(null)
@@ -170,9 +168,6 @@ export default function CurePage() {
                 {item.label}
               </button>
             ))}
-            <Link to={ROUTES.ROOT} className="csvh-nav-link csvh-nav-quiet">
-              ← Home
-            </Link>
           </nav>
         </div>
       </header>

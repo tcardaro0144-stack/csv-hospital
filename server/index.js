@@ -10,10 +10,12 @@ import {
   getFreemiusPublicKey,
   getFreemiusSecretKey,
   getMakeWebhookUrl,
+  getStripePriceId,
   getStripeSecretKey,
   getUnlockSecret,
   getWebhookSecret,
   isFreemiusSandboxEnabled,
+  isStripeConfigured,
 } from '../api/_lib/env.js'
 import { enforceRateLimit } from '../api/_lib/rateLimit.js'
 import { applySecurityHeaders } from '../api/_lib/securityHeaders.js'
@@ -37,19 +39,26 @@ import {
   isSecureRequest,
 } from '../lib/unlockToken.js'
 
-/** One-time unlock price (Stripe Dashboard → Products → Price ID). */
-const STRIPE_PRICE_ID = 'price_1TuUafIv6QgjmVhx1EWTE8FP'
+const STRIPE_INACTIVE = {
+  error:
+    'Stripe is inactive. Freemius is the primary checkout — set STRIPE_SECRET_KEY (sk_test_ or sk_live_) only if using Stripe.',
+  code: 'stripe_inactive',
+  checkout: 'freemius',
+}
 
 const app = express()
 const port = process.env.PORT || 4242
 
 const secretKey = getStripeSecretKey()
+const stripePriceId = getStripePriceId()
 const clientUrlResult = getConfiguredClientUrl()
 const webhookSecret = getWebhookSecret()
 const unlockSecret = getUnlockSecret()
 
 if (!secretKey) {
-  console.warn('Warning: STRIPE_SECRET_KEY is missing or invalid.')
+  console.warn(
+    'Warning: STRIPE_SECRET_KEY missing — Stripe legacy checkout inactive (Freemius primary). Test keys (sk_test_) are allowed when set.',
+  )
 }
 if (!clientUrlResult.ok) {
   console.warn('Warning: CLIENT_URL is missing or invalid.')
@@ -306,7 +315,7 @@ app.post('/api/create-checkout-session', async (req, res) => {
   if (!enforceRateLimit(req, res, 'checkout')) return
 
   if (!stripe) {
-    return res.status(500).json({ error: 'Payment service is not configured.' })
+    return res.status(503).json(STRIPE_INACTIVE)
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {}
@@ -325,8 +334,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
           enabled: false,
         },
       },
-      line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
-      success_url: `${clientOrigin}/hospital?session_id={CHECKOUT_SESSION_ID}`,
+      line_items: [{ price: stripePriceId, quantity: 1 }],
+      success_url: `${clientOrigin}/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientOrigin}/?checkout=cancelled`,
       metadata: { product: 'csv-hospital-pro' },
     })
@@ -354,13 +363,13 @@ app.post('/api/create-payment-intent', async (req, res) => {
   if (!enforceRateLimit(req, res, 'checkout')) return
 
   if (!stripe) {
-    return res.status(500).json({ error: 'Payment service is not configured.' })
+    return res.status(503).json(STRIPE_INACTIVE)
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {}
   const fromClient = validateClientUrl(body.origin || body.returnOrigin)
   const origin = fromClient.ok ? fromClient.value : clientUrl
-  const returnUrl = `${origin}/hospital?session_id={CHECKOUT_SESSION_ID}`
+  const returnUrl = `${origin}/?session_id={CHECKOUT_SESSION_ID}`
 
   // Prefer API version that supports ui_mode: 'elements'
   const elementsStripe = new Stripe(secretKey, {
@@ -371,7 +380,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
     const session = await elementsStripe.checkout.sessions.create({
       ui_mode: 'elements',
       mode: 'payment',
-      line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
+      line_items: [{ price: stripePriceId, quantity: 1 }],
       return_url: returnUrl,
       metadata: { product: 'csv-hospital-pro' },
     })
@@ -437,9 +446,9 @@ app.get('/api/confirm-payment', async (req, res) => {
   }
 
   if (!stripe) {
-    return res.status(500).json({
+    return res.status(503).json({
       paid: false,
-      error: 'Payment service is not configured.',
+      ...STRIPE_INACTIVE,
     })
   }
 
@@ -529,9 +538,9 @@ app.get('/api/check-payment-status', async (req, res) => {
   }
 
   if (!stripe) {
-    return res.status(500).json({
+    return res.status(200).json({
       status: 'unpaid',
-      error: 'Payment service is not configured.',
+      ...STRIPE_INACTIVE,
     })
   }
 
@@ -620,11 +629,7 @@ app.get('/api/verify-session', async (req, res) => {
   }
 
   if (!stripe) {
-    return res.status(500).json({ error: 'Payment service is not configured.' })
-  }
-
-  if (!unlockSecret) {
-    return res.status(500).json({ error: 'Unlock service is not configured.' })
+    return res.status(503).json(STRIPE_INACTIVE)
   }
 
   try {
@@ -643,16 +648,17 @@ app.get('/api/verify-session', async (req, res) => {
     })
 
     const customerEmail = session.customer_details?.email ?? null
-    const token = createUnlockToken({
-      sessionId: session.id,
-      customerEmail,
-      secret: unlockSecret,
-    })
-
-    res.setHeader(
-      'Set-Cookie',
-      buildUnlockCookie(token, { secure: isSecureRequest(req) }),
-    )
+    if (unlockSecret) {
+      const token = createUnlockToken({
+        sessionId: session.id,
+        customerEmail,
+        secret: unlockSecret,
+      })
+      res.setHeader(
+        'Set-Cookie',
+        buildUnlockCookie(token, { secure: isSecureRequest(req) }),
+      )
+    }
 
     res.json({
       pro: true,
@@ -661,6 +667,7 @@ app.get('/api/verify-session', async (req, res) => {
       status: 'paid',
       downloadUrl: order?.downloadUrl ?? null,
       downloadToken: order?.downloadToken ?? null,
+      unlockCookie: Boolean(unlockSecret),
     })
   } catch (error) {
     console.error('Verify session error:', error.message)
@@ -671,10 +678,22 @@ app.get('/api/verify-session', async (req, res) => {
 app.get('/api/unlock-status', async (req, res) => {
   if (!enforceRateLimit(req, res, 'unlockStatus')) return
 
+  if (!isStripeConfigured()) {
+    return res.json({
+      unlocked: false,
+      reason: 'stripe_inactive',
+      checkout: 'freemius',
+    })
+  }
+
   const result = await assertPaidUnlock(req)
 
   if (!result.allowed) {
-    return res.json({ unlocked: false, reason: result.reason })
+    return res.json({
+      unlocked: false,
+      reason: result.reason,
+      checkout: result.checkout || 'freemius',
+    })
   }
 
   return res.json({
@@ -698,10 +717,14 @@ app.post('/api/assert-download', async (req, res) => {
     : await assertPaidUnlock(req)
 
   if (!result.allowed) {
-    return res.status(402).json({
+    const inactive = result.reason === 'stripe_inactive'
+    return res.status(inactive ? 200 : 402).json({
       allowed: false,
-      error: 'Payment required before download.',
+      error: inactive
+        ? 'Stripe unlock inactive — Freemius purchase unlocks download on-device.'
+        : 'Payment required before download.',
       reason: result.reason,
+      checkout: result.checkout || 'freemius',
     })
   }
 

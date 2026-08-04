@@ -103,11 +103,7 @@ export default function CyberCubeHeavenPage() {
 
           <p className="fb-body fb-muted text-sm">
             <Link to={ROUTES.ROOT} className="text-[#00ffc2] hover:underline">
-              ← Home
-            </Link>
-            {' · '}
-            <Link to={ROUTES.HOSPITAL} className="text-[#00ffc2]/80 hover:underline">
-              [01] CSV Hospital
+              ← CSV Hospital
             </Link>
           </p>
         </main>

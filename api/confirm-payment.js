@@ -21,9 +21,12 @@ async function handler(req, res) {
 
   const secretKey = getStripeSecretKey()
   if (!secretKey) {
-    return res.status(500).json({
+    return res.status(503).json({
       paid: false,
-      error: 'Payment service is not configured.',
+      error:
+        'Stripe is inactive. Freemius is the primary checkout — set STRIPE_SECRET_KEY only if using Stripe.',
+      code: 'stripe_inactive',
+      checkout: 'freemius',
     })
   }
 

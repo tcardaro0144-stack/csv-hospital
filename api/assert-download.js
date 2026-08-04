@@ -28,10 +28,14 @@ async function handler(req, res) {
   }
 
   if (!result.allowed) {
-    return res.status(402).json({
+    const inactive = result.reason === 'stripe_inactive'
+    return res.status(inactive ? 200 : 402).json({
       allowed: false,
-      error: 'Payment required before download.',
+      error: inactive
+        ? 'Stripe unlock inactive — Freemius purchase unlocks download on-device.'
+        : 'Payment required before download.',
       reason: result.reason,
+      checkout: result.checkout || 'freemius',
     })
   }
 

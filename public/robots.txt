@@ -1,9 +1,7 @@
 # CSV Hospital - https://csvhospital.com
 User-agent: *
 Allow: /
-Allow: /hospital
 
 Disallow: /api/
-Disallow: /cure
 
 Sitemap: https://csvhospital.com/sitemap.xml

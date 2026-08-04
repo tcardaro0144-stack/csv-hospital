@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import {
   getConfiguredClientUrl,
+  getStripePriceId,
   getStripeSecretKey,
 } from './_lib/env.js'
 import { enforceRateLimit } from './_lib/rateLimit.js'
@@ -9,8 +10,6 @@ import { stripeCheckoutErrorMessage } from './_lib/stripeErrors.js'
 import { requireMethod, validateClientUrl } from './_lib/validate.js'
 import { createPendingOrder } from '../lib/ordersDb.js'
 
-/** One-time unlock price (Stripe Dashboard → Products → Price ID). */
-const STRIPE_PRICE_ID = 'price_1TuUafIv6QgjmVhx1EWTE8FP'
 const PAYMENT_METHOD_CONFIGURATION = 'pmc_1TuVcLIv6QgjmVhx8D81tVjU'
 
 async function handler(req, res) {
@@ -19,10 +18,15 @@ async function handler(req, res) {
 
   const secretKey = getStripeSecretKey()
   if (!secretKey) {
-    return res.status(500).json({
-      error: 'Payment service is not configured.',
+    return res.status(503).json({
+      error:
+        'Stripe checkout is inactive. Use Freemius overlay checkout, or set STRIPE_SECRET_KEY (sk_test_ or sk_live_).',
+      code: 'stripe_inactive',
+      checkout: 'freemius',
     })
   }
+
+  const stripePriceId = getStripePriceId()
 
   // Prefer origin from the browser (window.location.origin) so the port matches.
   const body = req.body && typeof req.body === 'object' ? req.body : {}
@@ -53,8 +57,8 @@ async function handler(req, res) {
           enabled: false,
         },
       },
-      line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
-      success_url: `${clientOrigin}/hospital?session_id={CHECKOUT_SESSION_ID}`,
+      line_items: [{ price: stripePriceId, quantity: 1 }],
+      success_url: `${clientOrigin}/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientOrigin}/?checkout=cancelled`,
       metadata: { product: 'csv-hospital-pro' },
     })

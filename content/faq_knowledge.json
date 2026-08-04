@@ -2,7 +2,7 @@
   "schema_version": "frontline.faq.v1",
   "source": "Faceless Blur / CSV Hospital",
   "site": "https://csvhospital.com",
-  "utility_path": "/hospital",
+  "utility_path": "/",
   "audience": "Frontline AI public support knowledge base",
   "tone_notes": [
     "Sharp, technically precise, and genuinely welcoming.",

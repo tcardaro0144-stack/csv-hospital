@@ -8,24 +8,17 @@ export const SITE_NAME = 'CSV Hospital'
 
 export const SEO_PAGES = {
   home: {
-    title: 'CSV Hospital — Digital ER for Messy Spreadsheets',
+    title: 'CSV Hospital — Is Your Data Terminally Messy?',
     description:
-      'CSV Hospital cleans broken CSV files in your browser: remove empty rows, trim whitespace, standardize headers, then download a repaired file. Privacy-first — your data stays on your device.',
+      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device. An A T.J.C. Production.',
     path: '/',
-    type: 'website',
-  },
-  directoryPage2: {
-    title: 'CSV Hospital — More Products',
-    description:
-      'CSV Hospital product directory page 2 — classified operations. Slot [04] remains locked.',
-    path: '/2',
     type: 'website',
   },
   hospital: {
     title: 'CSV Hospital — Is Your Data Terminally Messy?',
     description:
       'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device. An A T.J.C. Production.',
-    path: '/hospital',
+    path: '/',
     type: 'website',
   },
   cyberCubeHeaven: {
@@ -155,7 +148,7 @@ export function hospitalSoftwareJsonLd() {
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Any',
     browserRequirements: 'Requires JavaScript. Runs entirely in the browser.',
-    url: `${SITE_URL}/hospital`,
+    url: `${SITE_URL}/`,
     description: SEO_PAGES.hospital.description,
     offers: {
       '@type': 'Offer',

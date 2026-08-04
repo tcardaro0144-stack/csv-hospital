@@ -1,14 +1,13 @@
 /**
- * Faceless Blur site routes (must match live + local).
- *   /                   → Root Directory hub page 1
- *   /2                  → Root Directory hub page 2 ([04] redacted)
- *   /hospital           → CSV Hospital tool
+ * CSV Hospital site routes (must match live + local).
+ *   /                   → CSV Hospital (default)
  *   /cyber-cube-heaven  → Cyber Cube Heaven teaser / early access
+ *   /hospital, /cure, /2 → legacy redirects to /
  */
 export const ROUTES = {
   ROOT: '/',
-  ROOT_PAGE_2: '/2',
-  HOSPITAL: '/hospital',
+  /** @deprecated Hub removed — same as ROOT */
+  HOSPITAL: '/',
   CYBER_CUBE_HEAVEN: '/cyber-cube-heaven',
 }
 

@@ -6,15 +6,29 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/hospital",
-      "destination": "/"
+      "destination": "/",
+      "permanent": true
     },
     {
-      "source": "/hospital/(.*)",
-      "destination": "/"
+      "source": "/hospital/:path*",
+      "destination": "/",
+      "permanent": true
     },
+    {
+      "source": "/cure",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
       "source": "/((?!api/).*)",
       "destination": "/index.html"

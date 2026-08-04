@@ -28,11 +28,13 @@ async function handler(req, res) {
   const unlockSecret = getUnlockSecret()
 
   if (!secretKey) {
-    return res.status(500).json({ error: 'Payment service is not configured.' })
-  }
-
-  if (!unlockSecret) {
-    return res.status(500).json({ error: 'Unlock service is not configured.' })
+    return res.status(503).json({
+      pro: false,
+      error:
+        'Stripe is inactive. Use Freemius overlay checkout, or set STRIPE_SECRET_KEY (sk_test_ or sk_live_).',
+      code: 'stripe_inactive',
+      checkout: 'freemius',
+    })
   }
 
   const stripe = new Stripe(secretKey)
@@ -53,16 +55,19 @@ async function handler(req, res) {
     })
 
     const customerEmail = session.customer_details?.email ?? null
-    const token = createUnlockToken({
-      sessionId: session.id,
-      customerEmail,
-      secret: unlockSecret,
-    })
 
-    res.setHeader(
-      'Set-Cookie',
-      buildUnlockCookie(token, { secure: isSecureRequest(req) }),
-    )
+    // Cookie unlock is optional — missing UNLOCK_SECRET must not hard-fail paid verify.
+    if (unlockSecret) {
+      const token = createUnlockToken({
+        sessionId: session.id,
+        customerEmail,
+        secret: unlockSecret,
+      })
+      res.setHeader(
+        'Set-Cookie',
+        buildUnlockCookie(token, { secure: isSecureRequest(req) }),
+      )
+    }
 
     return res.status(200).json({
       pro: true,
@@ -71,6 +76,7 @@ async function handler(req, res) {
       downloadUrl: order?.downloadUrl ?? null,
       downloadToken: order?.downloadToken ?? null,
       status: 'paid',
+      unlockCookie: Boolean(unlockSecret),
     })
   } catch (error) {
     console.error('Verify session error:', error.message)

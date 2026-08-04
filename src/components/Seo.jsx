@@ -8,13 +8,13 @@ import {
 
 /**
  * Route-level SEO for the SPA. Renders nothing — updates document head.
- * @param {'home' | 'directoryPage2' | 'hospital' | 'cyberCubeHeaven'} pageKey
+ * @param {'home' | 'hospital' | 'cyberCubeHeaven'} pageKey
  */
 export default function Seo({ pageKey = 'home' }) {
   useEffect(() => {
     const page = SEO_PAGES[pageKey] || SEO_PAGES.home
     const jsonLd =
-      pageKey === 'hospital'
+      pageKey === 'hospital' || pageKey === 'home'
         ? hospitalSoftwareJsonLd()
         : organizationWebsiteJsonLd()
     applySeo(page, jsonLd)

@@ -1,15 +1,14 @@
 import Stripe from 'stripe'
 import {
   getConfiguredClientUrl,
+  getStripeMode,
+  getStripePriceId,
   getStripePublishableKey,
   getStripeSecretKey,
 } from './_lib/env.js'
 import { enforceRateLimit } from './_lib/rateLimit.js'
 import { withPerimeter } from './_lib/securityHeaders.js'
 import { requireMethod, validateClientUrl } from './_lib/validate.js'
-
-/** One-time unlock price (Stripe Dashboard → Products → Price ID). */
-const STRIPE_PRICE_ID = 'price_1TuUafIv6QgjmVhx1EWTE8FP'
 
 /** API version that supports ui_mode: 'elements' (replaces 'custom'). */
 const STRIPE_API_VERSION = '2026-06-24.dahlia'
@@ -18,6 +17,7 @@ const STRIPE_API_VERSION = '2026-06-24.dahlia'
  * POST /api/create-payment-intent
  * Creates a Checkout Session with ui_mode: 'elements' and returns client_secret.
  * (Endpoint name kept for frontend compatibility.)
+ * Legacy Stripe path — Freemius overlay is primary checkout.
  */
 async function handler(req, res) {
   if (!requireMethod(req, res, 'POST')) return
@@ -25,10 +25,15 @@ async function handler(req, res) {
 
   const secretKey = getStripeSecretKey()
   if (!secretKey) {
-    return res.status(500).json({
-      error: 'Payment service is not configured.',
+    return res.status(503).json({
+      error:
+        'Stripe checkout is inactive. Use Freemius overlay checkout, or set STRIPE_SECRET_KEY (sk_test_ or sk_live_).',
+      code: 'stripe_inactive',
+      checkout: 'freemius',
     })
   }
+
+  const stripePriceId = getStripePriceId()
 
   const body = req.body && typeof req.body === 'object' ? req.body : {}
   const fromClient = validateClientUrl(body.origin || body.returnOrigin)
@@ -45,7 +50,7 @@ async function handler(req, res) {
     })
   }
 
-  const returnUrl = `${origin}/hospital?session_id={CHECKOUT_SESSION_ID}`
+  const returnUrl = `${origin}/?session_id={CHECKOUT_SESSION_ID}`
   const stripe = new Stripe(secretKey, { apiVersion: STRIPE_API_VERSION })
   const publishableKey = getStripePublishableKey()
 
@@ -53,7 +58,7 @@ async function handler(req, res) {
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'elements',
       mode: 'payment',
-      line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
+      line_items: [{ price: stripePriceId, quantity: 1 }],
       return_url: returnUrl,
       metadata: { product: 'csv-hospital-pro' },
     })
@@ -75,6 +80,7 @@ async function handler(req, res) {
       client_secret: session.client_secret,
       sessionId: session.id,
       publishableKey: publishableKey || undefined,
+      stripeMode: getStripeMode(),
     })
   } catch (error) {
     // Log the full Stripe error object for invalid_request_error diagnosis.
