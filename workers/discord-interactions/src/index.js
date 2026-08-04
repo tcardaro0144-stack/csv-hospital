@@ -1,5 +1,5 @@
 /**
- * Faceless Discord Interactions Worker
+ * CSV Hospital Discord Interactions Worker
  *
  * HTTP webhook endpoint — Discord POSTs signed interactions here.
  * No persistent Gateway → no local 24/7 process / timeout issues for slash commands.
@@ -39,7 +39,7 @@ export default {
 
     if (request.method === 'GET') {
       return json({
-        service: 'faceless-discord',
+        service: 'csv-hospital-discord',
         ok: true,
         hint: 'POST Discord interactions here. Set this URL as Interactions Endpoint URL.',
         path: url.pathname,
@@ -75,7 +75,7 @@ export default {
     return json({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        content: 'Unhandled interaction type on Faceless Bridge Worker.',
+        content: 'Unhandled interaction type on CSV Hospital Bridge Worker.',
         flags: 64, // ephemeral
       },
     })
@@ -91,7 +91,7 @@ async function handleApplicationCommand(interaction, env, ctx) {
   const name = String(interaction?.data?.name || '').toLowerCase()
 
   if (name === 'ping' || name === 'bridge') {
-    const app = env.DISCORD_APP_NAME || 'Faceless Bridge'
+    const app = env.DISCORD_APP_NAME || 'CSV Hospital Bridge'
     return json({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {

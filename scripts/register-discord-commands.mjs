@@ -1,5 +1,5 @@
 /**
- * Register global slash commands for the Faceless Discord Worker.
+ * Register global slash commands for the CSV Hospital Discord Worker.
  *
  * Usage: npm run discord:commands
  *

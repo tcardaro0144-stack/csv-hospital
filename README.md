@@ -1,25 +1,19 @@
 # CSV Hospital
 
-Browser-native CSV diagnosis and repair by **Faceless Blur** — *where broken data goes to heal.* Optional **Pro** discharge downloads via Stripe Checkout.
+Browser-native CSV diagnosis and repair — *where broken data goes to heal.* Optional **Pro** discharge downloads via Freemius overlay checkout (Stripe legacy paths may still exist).
 
-**Local path:** `C:\Users\tomca\facelessblur` (site repo; split from `table-fixer`).  
-**Ops / Video-Pipeline:** still at `C:\Users\tomca\table-fixer`.
+**Production:** [https://csvhospital.com/](https://csvhospital.com/)  
+**GitHub:** `tcardaro0144-stack/csv-hospital`
 
-## Local git status (already done)
-
-This folder is already a git repo on branch `main`:
+## Local git
 
 | Check | Expected |
 |-------|----------|
-| Path | `C:\Users\tomca\facelessblur` |
 | Branch | `main` |
 | Secrets | `.env` is gitignored — never commit it |
-| Remote | `origin` → `https://github.com/tcardaro0144-stack/facelessblur.git` |
-
-Verify anytime:
+| Remote | `origin` → `https://github.com/tcardaro0144-stack/csv-hospital.git` |
 
 ```powershell
-cd C:\Users\tomca\facelessblur
 git status
 git log --oneline -5
 git remote -v
@@ -27,79 +21,11 @@ git remote -v
 
 ---
 
-## Step-by-step: Push to GitHub + link Cloudflare Pages
+## Deploy overview
 
-Follow these in order. Do **not** delete `C:\Users\tomca\table-fixer` until step 6 succeeds.
+### Cloudflare Pages (static site)
 
-### 1) Confirm the local commit is ready
-
-```powershell
-cd C:\Users\tomca\facelessblur
-git status
-# Expect: "On branch main" / "nothing to commit, working tree clean"
-# If you changed files: git add -A && git status  (confirm .env is NOT listed)
-# Then commit:
-#   git -c user.name="Tom" -c user.email="tom@csvhospital.com" commit -m "Your message"
-```
-
-Set your real git identity once (optional, global):
-
-```powershell
-git config --global user.name "Tom"
-git config --global user.email "your-email@example.com"
-```
-
-### 2) Create the GitHub repository and push
-
-**Option A — GitHub CLI (recommended)**
-
-1. Install [GitHub CLI](https://cli.github.com/) if missing, then open a **new** PowerShell.
-2. Run:
-
-```powershell
-cd C:\Users\tomca\facelessblur
-gh auth login
-# Follow prompts: GitHub.com → HTTPS → login via browser
-
-gh repo create facelessblur --private --source=. --remote=origin --push
-# Creates github.com/<you>/facelessblur, sets origin, pushes main
-```
-
-**Option B — GitHub website (no `gh`)**
-
-1. Go to [https://github.com/new](https://github.com/new).
-2. Repository name: `facelessblur` · **Private** · **do not** add README / .gitignore / license (repo already has files).
-3. Create repository, then:
-
-```powershell
-cd C:\Users\tomca\facelessblur
-git remote add origin https://github.com/YOUR_USER/facelessblur.git
-git push -u origin main
-```
-
-Replace `YOUR_USER` with your GitHub username or org.
-
-### 3) Confirm the push
-
-```powershell
-git remote -v
-git status
-# Expect: "Your branch is up to date with 'origin/main'"
-```
-
-Open the repo on GitHub and confirm `README.md`, `src/`, `wrangler.toml` are present and `.env` is **absent**.
-
-### 4) Link the repo to Cloudflare Pages (`facelessblur` / csvhospital.com)
-
-Production should use Cloudflare Pages project **`facelessblur`** (see `wrangler.toml`: `name = "facelessblur"`, output `dist`).
-
-> **Legacy note:** The site was first shipped as Pages project `csv-hospital`. If that project still owns `csvhospital.com`, rename it to `facelessblur` in the dashboard (Settings → rename), **or** create a new Pages project named `facelessblur`, attach the custom domain, deploy from this repo, then remove the domain from `csv-hospital`.
-
-1. Open [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Pages**.
-2. Open / create the project **`facelessblur`** (custom domain `csvhospital.com`).
-3. Go to **Settings** → **Builds & deployments** (wording may be “Build configuration” / “Source”).
-4. **Connect / change Git repository** to the GitHub repo `facelessblur` (authorize Cloudflare’s GitHub app if prompted).
-5. Set build settings:
+Dashboard project slug may still be the historical Cloudflare id `facelessblur` (see `wrangler.toml` / `npm run deploy:pages`). That is a **deploy target name only**, not a product brand. Custom domain: `csvhospital.com`.
 
 | Setting | Value |
 |---------|--------|
@@ -108,60 +34,40 @@ Production should use Cloudflare Pages project **`facelessblur`** (see `wrangler
 | Build output directory | `dist` |
 | Root directory | `/` (repo root) |
 
-6. **Settings → Environment variables** (Production): keep / set live values, including at least:
-   - `CLIENT_URL` = `https://csvhospital.com`
-   - Live Freemius / Stripe / unlock / AI / Discord secrets as you use today  
-   Never paste these into git.
-
-7. Save, then **Deployments → Retry deployment** (or trigger a new deploy from `main`).
-
-CLI deploy target (after the dashboard project exists as `facelessblur` and your API token has **Pages → Edit**):
+Production env map: [`.env.pages.example`](.env.pages.example).
 
 ```powershell
-cd C:\Users\tomca\facelessblur
-# Put Production secrets in the Pages dashboard first — see .env.pages.example
 npm run deploy:pages
 ```
 
-Env map for the new project: [`.env.pages.example`](.env.pages.example) (build-time `VITE_*` + encrypted runtime secrets).
-
-### 5) Discord Interactions Worker (if used)
-
-Separate from Pages. From this repo:
+### Discord Interactions Worker
 
 ```powershell
-cd C:\Users\tomca\facelessblur
 npm run discord:deploy
 ```
 
-Only after Pages is healthy, if the Worker should stay on the same Cloudflare account.
+### Verify production
 
-### 6) Verify production
-
-1. Open `https://csvhospital.com/` — hub / landing loads.
-2. Open `https://csvhospital.com/hospital` — CSV Hospital tool loads.
-3. Hard-refresh or purge cache if you still see an old shell (**Caching → Configuration → Purge Everything**).
-4. Spot-check Freemius overlay / support chat if you rely on them.
-
-Only after this passes may you treat `table-fixer` as ops-only (Video-Pipeline) and optionally rename it later.
+1. Open `https://csvhospital.com/` — CSV Hospital admit / triage UI.
+2. Hard-refresh or purge cache if you still see an old shell.
+3. Spot-check Freemius overlay / support chat if you rely on them.
 
 ### Quick reference
 
 | Item | Value |
 |------|--------|
-| Local repo | `C:\Users\tomca\facelessblur` |
-| GitHub | `tcardaro0144-stack/facelessblur` |
-| Cloudflare Pages project | `facelessblur` (legacy name was `csv-hospital`) |
+| GitHub | `tcardaro0144-stack/csv-hospital` |
+| Cloudflare Pages project slug | `facelessblur` (historical CF id; rename in dashboard when ready) |
+| Discord Worker | `csv-hospital-discord` |
 | Domain | `csvhospital.com` |
 | Build | `npm run build` → `dist` |
-| Ops / YouTube pipeline | `C:\Users\tomca\table-fixer` |
 
 ## Setup
 
 ```bash
 npm install
 cp .env.example .env
-# Add Stripe live keys for production (or Stripe test keys for local only)
+# Add Freemius / Stripe keys as needed
 npm run dev
 ```
 
@@ -180,7 +86,7 @@ This starts:
 7. (Optional local webhooks) Run `stripe listen --forward-to localhost:4242/api/webhook` and put the printed `whsec_...` in `STRIPE_WEBHOOK_SECRET`.
 8. Restart `npm run dev` (or redeploy).
 
-There is **no in-app test-mode / payment bypass**. Download unlock always requires a paid Stripe Checkout Session.
+There is **no in-app test-mode / payment bypass**. Download unlock always requires a paid checkout session when Stripe is active.
 
 ### Local Stripe sandbox (development only)
 
@@ -200,18 +106,15 @@ On **csvhospital.com**, configure live Stripe keys only. There is no UI toggle o
 
 | URL | Page |
 |-----|------|
-| `/` | Root Directory hub (primary landing) |
-| `/hospital` | CSV Hospital tool |
-| `/cure` | Redirects to `/hospital` |
+| `/` | CSV Hospital (default — admit / triage / discharge) |
+| `/hospital`, `/cure`, `/2`, and other legacy paths | Redirect to `/` |
 
 ### Cloudflare Pages
 
 - Build command: `npm run build`
 - Output directory: `dist`
 - SPA fallback: `public/_redirects` (copied into `dist/`)
-- HTML shell is **not cached** (`public/_headers`) so deploys aren't stuck on an old hospital-only bundle
-
-If production still opens the hospital tool on `/`, check Cloudflare **Redirect Rules / Bulk Redirects / Page Rules** for a rule sending `/` → `/hospital`, then purge cache (**Caching → Configuration → Purge Everything**) and redeploy.
+- HTML shell is **not cached** (`public/_headers`) so deploys aren't stuck on an old bundle
 
 ## Production deployment (Vercel)
 
@@ -304,9 +207,5 @@ curl -X POST http://localhost:5200/api/support-triage \
 ## Stack
 
 - React + Vite + Tailwind CSS
-- Stripe Checkout Elements / Express Checkout
+- Freemius overlay checkout (primary); Stripe Checkout / Express for legacy paths
 - Vercel serverless (`api/`) + Express for local dev
-
-
-
-

@@ -1,7 +1,10 @@
-# Cloudflare Pages — facelessblur (static site)
+# Cloudflare Pages — csv-hospital / csvhospital.com (static site)
 # Build: npm run build → dist/
 # Deploy: npm run deploy:pages
 # Discord Worker config lives in workers/discord-interactions/wrangler.toml
+#
+# Cloudflare Pages project slug (historical deploy id — not a product brand).
+# Rename in the dashboard when convenient. Output is always ./dist.
 
 name = "facelessblur"
 compatibility_date = "2025-07-01"

@@ -6,7 +6,7 @@
 export const SLASH_COMMANDS = [
   {
     name: 'ask',
-    description: 'Ask Frontline AI about Faceless Blur / CSV Hospital',
+    description: 'Ask Frontline AI about CSV Hospital',
     options: [
       {
         name: 'question',
@@ -30,7 +30,7 @@ export const SLASH_COMMANDS = [
   },
   {
     name: 'bridge',
-    description: 'Faceless Bridge status (Cloudflare Worker interactions)',
+    description: 'CSV Hospital Bridge status (Cloudflare Worker interactions)',
   },
   {
     name: 'ping',

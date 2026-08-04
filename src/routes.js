@@ -1,14 +1,11 @@
 /**
  * CSV Hospital site routes (must match live + local).
- *   /                   → CSV Hospital (default)
- *   /cyber-cube-heaven  → Cyber Cube Heaven teaser / early access
- *   /hospital, /cure, /2 → legacy redirects to /
+ *   /  → CSV Hospital (only product surface)
  */
 export const ROUTES = {
   ROOT: '/',
-  /** @deprecated Hub removed — same as ROOT */
+  /** Alias kept for older imports — same as ROOT */
   HOSPITAL: '/',
-  CYBER_CUBE_HEAVEN: '/cyber-cube-heaven',
 }
 
 export default ROUTES

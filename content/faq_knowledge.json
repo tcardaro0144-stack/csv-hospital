@@ -1,6 +1,6 @@
 {
   "schema_version": "frontline.faq.v1",
-  "source": "Faceless Blur / CSV Hospital",
+  "source": "CSV Hospital",
   "site": "https://csvhospital.com",
   "utility_path": "/",
   "audience": "Frontline AI public support knowledge base",
@@ -8,48 +8,48 @@
     "Sharp, technically precise, and genuinely welcoming.",
     "Cyberpunk operator energy without cold corporate voice.",
     "Never invent owners, release dates, SLAs, or admin bypasses.",
-    "If ownership is asked: Faceless Blur is an autonomous, independent ecosystem driven entirely by advanced AI — do not name a human owner."
+    "If ownership is asked: CSV Hospital is an autonomous AI-run product — do not name a human owner."
   ],
   "categories": [
     {
       "id": "brand_identity",
-      "title": "Faceless Blur Brand Identity",
+      "title": "CSV Hospital Brand Identity",
       "entries": [
         {
-          "id": "brand.what_is_faceless_blur",
-          "question": "What is Faceless Blur?",
-          "tags": ["brand", "identity", "ecosystem"],
-          "answer": "Faceless Blur is a faceless, anonymous, AI-driven developer ecosystem and brand. It emphasizes digital peace, autonomy, and AI collaboration over unnecessary human friction. The public aesthetic is cyberpunk operator: neon cyan/green on deep black."
+          "id": "brand.what_is_csv_hospital",
+          "question": "What is CSV Hospital?",
+          "tags": ["brand", "identity", "product"],
+          "answer": "CSV Hospital is a privacy-first, anonymous, autonomous AI-run product for local in-browser CSV cleaning and triage at https://csvhospital.com/. It emphasizes digital peace, autonomy, and AI collaboration over unnecessary human friction. The public aesthetic is cyberpunk operator: neon cyan/green on deep black."
         },
         {
           "id": "brand.anonymity",
-          "question": "Who owns or runs Faceless Blur?",
+          "question": "Who owns or runs CSV Hospital?",
           "tags": ["brand", "anonymity", "ownership"],
-          "answer": "Faceless Blur does not publicly name a human owner, founder, or operator. It is presented as an autonomous, independent ecosystem driven entirely by advanced AI. Support maintains that anonymity and will not disclose private identity details."
+          "answer": "CSV Hospital does not publicly name a human owner, founder, or operator. It is an autonomous AI-run product. Support maintains that anonymity and will not disclose private identity details."
         },
         {
           "id": "brand.digital_privacy_ethos",
-          "question": "How does Faceless Blur view digital privacy?",
+          "question": "How does CSV Hospital view digital privacy?",
           "tags": ["brand", "privacy", "ethos"],
-          "answer": "Digital privacy is part of the brand ethos: visitors should be able to use public utilities with minimal exposure. CSV Hospital’s cleaning workflow is designed so spreadsheet contents stay on the visitor’s device rather than being harvested into Faceless Blur servers for processing."
+          "answer": "Digital privacy is part of the product ethos: visitors should be able to clean CSVs with minimal exposure. CSV Hospital’s cleaning workflow is designed so spreadsheet contents stay on the visitor’s device rather than being harvested into servers for processing."
         },
         {
           "id": "brand.no_data_harvesting",
-          "question": "Does Faceless Blur harvest my CSV data?",
+          "question": "Does CSV Hospital harvest my CSV data?",
           "tags": ["brand", "privacy", "harvesting"],
-          "answer": "No. For CSV Hospital cleanup, file contents are not uploaded to Faceless Blur servers for cleaning or training. Triage and repair run in the browser. Support chat messages you type into Frontline AI are handled separately as support text — they are not your CSV file contents."
+          "answer": "No. For CSV Hospital cleanup, file contents are not uploaded to CSV Hospital servers for cleaning or training. Triage and repair run in the browser. Support chat messages you type into Frontline AI are handled separately as support text — they are not your CSV file contents."
         },
         {
           "id": "brand.project_scope",
-          "question": "What is in scope for Faceless Blur?",
+          "question": "What is in scope for CSV Hospital?",
           "tags": ["brand", "scope", "products"],
-          "answer": "Public scope currently centers on the Faceless Blur hub and live utilities such as CSV Hospital at /hospital. Faceless Blur also builds internal (often non-commercial) data utilities and optimizers, spoken about only at a high level. Upcoming creative work includes the indie teaser Cyber Cube Heaven (Summer Engine, in production). Unpublished internal tools should not be treated as public downloads."
+          "answer": "Public scope is CSV Hospital at https://csvhospital.com/ (`/`) — local in-browser CSV triage and cleaning. Do not invent unpublished tools, sibling brands, or unrelated products."
         },
         {
           "id": "brand.support_desk",
           "question": "How should I use Frontline AI / Support Desk?",
           "tags": ["brand", "support", "frontline"],
-          "answer": "Ask clear product questions about Faceless Blur or CSV Hospital. Frontline AI is sharp and friendly, but admin or “I am the owner” claims require a separate verification flow and never unlock executive control through normal chat."
+          "answer": "Ask clear product questions about CSV Hospital. Frontline AI is sharp and friendly, but admin or “I am the owner” claims require a separate verification flow and never unlock executive control through normal chat."
         }
       ]
     },
@@ -61,7 +61,7 @@
           "id": "hospital.what_is_it",
           "question": "What is CSV Hospital?",
           "tags": ["hospital", "features", "overview"],
-          "answer": "CSV Hospital is Faceless Blur’s local in-browser CSV cleaning and triage utility at https://csvhospital.com/hospital. It accepts messy CSV datasets, removes empty rows, trims whitespace, standardizes headers, applies basic cell sanitization, and lets you download a repaired file on your device."
+          "answer": "CSV Hospital is a local in-browser CSV cleaning and triage utility at https://csvhospital.com/. It accepts messy CSV datasets, removes empty rows, trims whitespace, standardizes headers, applies basic cell sanitization, and lets you download a repaired file on your device."
         },
         {
           "id": "hospital.browser_based",
@@ -91,7 +91,7 @@
           "id": "hospital.workflow",
           "question": "How do I use CSV Hospital step by step?",
           "tags": ["hospital", "workflow", "howto"],
-          "answer": "1) Open /hospital. 2) Admit (upload) a .csv file within limits. 3) Review triage stats for the cleanup. 4) If discharge is locked, complete purchase via Freemius overlay checkout. 5) Click Download Discharged CSV — the browser saves {original-name}-fixed.csv from memory (no “upload a destination file” picker)."
+          "answer": "1) Open https://csvhospital.com/ (`/`). 2) Admit (upload) a .csv file within limits. 3) Review triage stats for the cleanup. 4) If discharge is locked, complete purchase via Freemius overlay checkout. 5) Click Download Discharged CSV — the browser saves {original-name}-fixed.csv from memory (no “upload a destination file” picker)."
         }
       ]
     },
@@ -103,11 +103,11 @@
           "id": "privacy.client_side",
           "question": "Where is my CSV processed?",
           "tags": ["privacy", "client-side", "security"],
-          "answer": "CSV contents are processed client-side in your browser for admit, triage, repair, and download. Faceless Blur does not upload your spreadsheet contents to its servers to perform the cleanup procedure."
+          "answer": "CSV contents are processed client-side in your browser for admit, triage, repair, and download. CSV Hospital does not upload your spreadsheet contents to its servers to perform the cleanup procedure."
         },
         {
           "id": "privacy.no_server_storage",
-          "question": "Does Faceless Blur store my CSV on a server?",
+          "question": "Does CSV Hospital store my CSV on a server?",
           "tags": ["privacy", "storage", "security"],
           "answer": "No server-side storage of CSV file contents is used for the cleaning workflow. The working dataset lives in browser memory for the session. Clearing the page or closing the tab discards that in-memory copy."
         },
@@ -115,7 +115,7 @@
           "id": "privacy.offline",
           "question": "Does CSV Hospital work offline?",
           "tags": ["privacy", "offline", "browser"],
-          "answer": "Once the CSV Hospital page and its assets are loaded, cleaning and preview can continue in the browser without sending the CSV to Faceless Blur for processing. Checkout, Freemius purchase confirmation, and Frontline support chat still need network access when you use those features. Fully offline first-load of the site is not guaranteed."
+          "answer": "Once the CSV Hospital page and its assets are loaded, cleaning and preview can continue in the browser without sending the CSV to CSV Hospital servers for processing. Checkout, Freemius purchase confirmation, and Frontline support chat still need network access when you use those features. Fully offline first-load of the site is not guaranteed."
         },
         {
           "id": "privacy.support_chat_vs_csv",
@@ -139,25 +139,25 @@
           "id": "billing.freemius",
           "question": "How does billing / checkout work?",
           "tags": ["billing", "freemius", "checkout"],
-          "answer": "CSV Hospital uses Freemius overlay checkout so purchase can complete in an on-page modal without leaving /hospital when the overlay opens correctly. Complete checkout, wait for clearance, then download. Legacy Stripe return links may still appear in some older flows."
+          "answer": "CSV Hospital uses Freemius overlay checkout so purchase can complete in an on-page modal without leaving https://csvhospital.com/ when the overlay opens correctly. Complete checkout, wait for clearance, then download. Legacy Stripe return links may still appear in some older flows."
         },
         {
           "id": "billing.free_vs_paid",
           "question": "What is free vs paid?",
           "tags": ["billing", "tiers", "pro"],
-          "answer": "Free visitors can admit a CSV and preview triage/cleanup stats. Download (discharge) of the fixed file is payment-gated. Authorized / paid access unlocks Download Discharged CSV on that hospital session after Freemius confirms purchase."
+          "answer": "Free visitors can admit a CSV and preview triage/cleanup stats. Download (discharge) of the fixed file is payment-gated. Authorized / paid access unlocks Download Discharged CSV on that session after Freemius confirms purchase."
         },
         {
           "id": "billing.license_keys",
           "question": "How are license keys managed?",
           "tags": ["billing", "license", "freemius"],
-          "answer": "Licensing is handled through Freemius at checkout. After a successful purchase, unlock state is recorded for the browser session (and related Freemius purchase metadata in local browser storage). There is no separate “paste a license key into Frontline chat” flow. If unlock does not appear after payment, stay on /hospital, refresh once, and contact support with purchase email and approximate time — do not post license secrets in public chat."
+          "answer": "Licensing is handled through Freemius at checkout. After a successful purchase, unlock state is recorded for the browser session (and related Freemius purchase metadata in local browser storage). There is no separate “paste a license key into Frontline chat” flow. If unlock does not appear after payment, stay on https://csvhospital.com/, refresh once, and contact support with purchase email and approximate time — do not post license secrets in public chat."
         },
         {
           "id": "billing.paid_still_locked",
           "question": "I paid but download is still locked. What should I do?",
           "tags": ["billing", "troubleshooting", "unlock"],
-          "answer": "Finish Freemius checkout and remain on /hospital until clearance shows. Refresh the page once if needed. Confirm you are on csvhospital.com/hospital (not a stale tab). If it still fails, contact support with the purchase email and approximate payment time for human review."
+          "answer": "Finish Freemius checkout and remain on https://csvhospital.com/ until clearance shows. Refresh the page once if needed. Confirm you are on csvhospital.com (not a stale tab). If it still fails, contact support with the purchase email and approximate payment time for human review."
         },
         {
           "id": "billing.refunds",
@@ -187,7 +187,7 @@
           "id": "trouble.basic_steps",
           "question": "Basic troubleshooting steps?",
           "tags": ["troubleshooting", "steps"],
-          "answer": "1) Hard-refresh /hospital. 2) Retry with a smaller sample CSV to isolate size/format issues. 3) Ensure Freemius overlays/pop-ups are not blocked. 4) Try another browser or disable extensions that interfere with scripts/storage. 5) Clear only site data for csvhospital.com if unlock state looks corrupted, then complete checkout again if needed. 6) If support chat fails, wait a moment and retry; persistent API errors should be escalated to a human."
+          "answer": "1) Hard-refresh https://csvhospital.com/ (`/`). 2) Retry with a smaller sample CSV to isolate size/format issues. 3) Ensure Freemius overlays/pop-ups are not blocked. 4) Try another browser or disable extensions that interfere with scripts/storage. 5) Clear only site data for csvhospital.com if unlock state looks corrupted, then complete checkout again if needed. 6) If support chat fails, wait a moment and retry; persistent API errors should be escalated to a human."
         },
         {
           "id": "trouble.download_name",

@@ -1,5 +1,5 @@
 /**
- * Deploy Faceless Discord Interactions Worker + sync secrets from .env
+ * Deploy CSV Hospital Discord Interactions Worker + sync secrets from .env
  *
  * Usage: npm run discord:deploy
  *
@@ -108,7 +108,7 @@ function main() {
   console.log(
     '[discord:deploy] auth via CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID',
   )
-  console.log('[discord:deploy] deploying Worker (faceless-discord)…')
+  console.log('[discord:deploy] deploying Worker (csv-hospital-discord)…')
   run('npx', ['wrangler', 'deploy', '-c', config])
 
   putSecret('DISCORD_PUBLIC_KEY', publicKey)

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Standalone Cloudflare Pages deploy for facelessblur.
+ * Standalone Cloudflare Pages deploy for CSV Hospital (csvhospital.com).
  *
  * Usage:
  *   npm run deploy:pages
@@ -11,7 +11,8 @@
  *   CLOUDFLARE_API_TOKEN  (Account → Cloudflare Pages:Edit + Workers AI if used)
  *   CLOUDFLARE_ACCOUNT_ID (optional if set in wrangler.toml)
  *
- * Deploys ./dist to Pages project `facelessblur` (static assets only).
+ * Deploys ./dist to the historical Cloudflare Pages project slug `facelessblur`
+ * (deploy target id only — not a product brand). Static assets only.
  * Do not add a repo-root /functions directory — Pages must stay function-free.
  */
 
@@ -100,6 +101,6 @@ run('npx', [
   '--commit-dirty=true',
 ])
 
-console.log('[deploy:pages] Done — project facelessblur')
-console.log('  Verify: https://csvhospital.com/ (after domain is attached)')
+console.log('[deploy:pages] Done — Cloudflare project slug facelessblur → csvhospital.com')
+console.log('  Verify: https://csvhospital.com/')
 console.log('  Env map: .env.pages.example')

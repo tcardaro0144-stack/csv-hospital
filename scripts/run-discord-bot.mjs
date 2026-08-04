@@ -1,5 +1,5 @@
 /**
- * Standalone 24/7 Faceless Discord bot (Bridge + Manager / Guardian / Frontline).
+ * Standalone 24/7 CSV Hospital Discord bot (Bridge + Manager / Guardian / Frontline).
  *
  * Local Gateway mode — channel chat, presence, Manager/Guardian. For production
  * slash commands without persistent Gateway timeouts, deploy the Cloudflare
@@ -47,9 +47,9 @@ if (process.argv.includes('--deploy')) {
   process.exit(result.status ?? 1)
 }
 
-installDiscordProcessGuards({ label: 'faceless-bridge-24-7' })
+installDiscordProcessGuards({ label: 'csv-hospital-bridge-24-7' })
 
-console.log('[discord:bot] starting Faceless Bridge always-on process…')
+console.log('[discord:bot] starting CSV Hospital Bridge always-on process…')
 console.log('[discord:bot] Workers AI configured:', isWorkersAiConfigured())
 console.log(
   '[discord:bot] tip: production slash commands → npm run discord:deploy (no Gateway)',

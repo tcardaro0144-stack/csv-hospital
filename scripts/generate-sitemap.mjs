@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generate public/sitemap.xml for Faceless Blur / CSV Hospital.
+ * Generate public/sitemap.xml for CSV Hospital.
  *
  * Usage:
  *   node scripts/generate-sitemap.mjs
@@ -23,7 +23,6 @@ const SITE_URL = (process.env.SITE_URL || 'https://csvhospital.com').replace(
 /** @type {{ path: string, changefreq: string, priority: string }[]} */
 const PAGES = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/cyber-cube-heaven', changefreq: 'weekly', priority: '0.8' },
 ]
 
 function isoDate(d = new Date()) {

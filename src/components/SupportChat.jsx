@@ -15,7 +15,7 @@ export default function SupportChat() {
   const [thread, setThread] = useState([
     {
       role: 'assistant',
-      text: "Welcome to CSV Hospital's support desk. I'm the Frontline AI — sharp on the tools, warm on the welcome. Ask about admit/triage, checkout/discharge, or what's brewing next (like Cyber Cube Heaven). You're valued here.",
+      text: "Welcome to CSV Hospital's support desk. I'm the Frontline AI — sharp on admit/triage, checkout/discharge, and privacy. You're valued here.",
     },
   ])
 

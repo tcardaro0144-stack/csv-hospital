@@ -21,13 +21,6 @@ export const SEO_PAGES = {
     path: '/',
     type: 'website',
   },
-  cyberCubeHeaven: {
-    title: 'Cyber Cube Heaven — Coming Soon | CSV Hospital',
-    description:
-      'Cyber Cube Heaven: neon-grid arcade survival — A T.J.C. Production. Atmospheric mainframe world, custom-tuned mobile controls — final build shipping soon.',
-    path: '/cyber-cube-heaven',
-    type: 'website',
-  },
 }
 
 function ensureMeta(selector, attrs) {

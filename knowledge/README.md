@@ -3,7 +3,7 @@
 Drop `.md` or `.txt` files here. Frontline loads them dynamically into its system prompt on each message — no manual FAQ JSON edits required.
 
 Seeded starter docs:
-- `faceless-blur-brand.md`
+- `csv-hospital-brand.md`
 - `csv-hospital-product.md`
 - `csv-hospital-faq.md`
 

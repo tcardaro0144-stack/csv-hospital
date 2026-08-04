@@ -26,6 +26,16 @@
       "source": "/2",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/cyber-cube-heaven",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cyber-cube-heaven/:path*",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [
