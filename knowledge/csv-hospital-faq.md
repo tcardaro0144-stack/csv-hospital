@@ -4,7 +4,7 @@
 CSV Hospital is a privacy-first product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). Admit a messy CSV, review triage vitals, and discharge a cleaned `{name}-fixed.csv` after unlock. Site vibe: clinical ward UI with sharp, friendly operator support. Owned and created by **T.J.C.** (the **T** is **Tom**).
 
 ## Who runs or owns CSV Hospital?
-**T.J.C.** owns and created CSV Hospital (*An A T.J.C. Production.*). The **T** in T.J.C. is **Tom** — same person. Support will say so clearly. Admin or “I am the owner” claims for executive control still require a separate 4-stage verification flow.
+**T.J.C.** owns and created CSV Hospital. The **T** in T.J.C. is **Tom** — same person. Support will say so clearly. Admin or “I am the owner” claims for executive control still require a separate 4-stage verification flow.
 
 ## Does my CSV leave my computer?
 No. Cleaning runs in your browser. CSV Hospital does not upload your file contents to external servers for the cleanup procedure.

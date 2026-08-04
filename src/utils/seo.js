@@ -10,14 +10,14 @@ export const SEO_PAGES = {
   home: {
     title: 'CSV Hospital — Is Your Data Terminally Messy?',
     description:
-      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device. An A T.J.C. Production.',
+      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device.',
     path: '/',
     type: 'website',
   },
   hospital: {
     title: 'CSV Hospital — Is Your Data Terminally Messy?',
     description:
-      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device. An A T.J.C. Production.',
+      'CSV Hospital is the digital ER for messy spreadsheets. Admit a CSV in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file. Privacy-first — your data stays on your device.',
     path: '/',
     type: 'website',
   },

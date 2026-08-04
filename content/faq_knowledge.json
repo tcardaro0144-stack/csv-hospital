@@ -8,7 +8,7 @@
     "Sharp, technically precise, and genuinely welcoming.",
     "Cyberpunk operator energy without cold corporate voice.",
     "Never invent release dates, SLAs, or admin bypasses.",
-    "If ownership is asked: T.J.C. owns and created CSV Hospital (the T is Tom — same owner). An A T.J.C. Production. Admin claims still need the 4-stage gauntlet."
+    "If ownership is asked: T.J.C. owns and created CSV Hospital (the T is Tom — same owner). Admin claims still need the 4-stage gauntlet."
   ],
   "categories": [
     {
@@ -25,7 +25,7 @@
           "id": "brand.ownership",
           "question": "Who owns or runs CSV Hospital?",
           "tags": ["brand", "ownership", "creator"],
-          "answer": "T.J.C. owns and created CSV Hospital (An A T.J.C. Production). The T in T.J.C. is Tom — same owner. Support states this clearly. Claiming to be Tom for executive access still requires the 4-stage Zero-Trust verification gauntlet."
+          "answer": "T.J.C. owns and created CSV Hospital. The T in T.J.C. is Tom — same owner. Support states this clearly. Claiming to be Tom for executive access still requires the 4-stage Zero-Trust verification gauntlet."
         },
         {
           "id": "brand.digital_privacy_ethos",

@@ -384,8 +384,7 @@ export default function CurePage() {
       <footer className="csvh-footer">
         <div className="csvh-wrap">
           <p>
-            CSV Hospital is not a real hospital, but we are serious about clean data. An
-            A T.J.C. Production.
+            CSV Hospital is not a real hospital, but we are serious about clean data.
           </p>
         </div>
       </footer>
