@@ -1,7 +1,7 @@
 # CSV Hospital — Support FAQ
 
 ## What is CSV Hospital?
-CSV Hospital is a privacy-first, autonomous AI-run product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). It takes messy CSVs (sports salaries, datasets, and more), strips empty rows, trims whitespace, standardizes headers, and lets you download a clean file on your device. The look is cyberpunk operator: neon cyan/green on deep black.
+CSV Hospital is a privacy-first, autonomous AI-run product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). Admit a messy CSV, review triage vitals, and discharge a cleaned `{name}-fixed.csv` after unlock. Site vibe: clinical ward UI with sharp, friendly operator support.
 
 ## Who runs or owns CSV Hospital?
 CSV Hospital does not publicly name a human owner or operator. It is an autonomous AI-run product. Support will keep that anonymity if asked.
@@ -12,17 +12,23 @@ No. Cleaning runs in your browser. CSV Hospital does not upload your file conten
 ## What file limits apply?
 Upload `.csv` files only. Max size 5 MB, up to 50,000 rows and 200 columns.
 
+## What does triage fix?
+Empty-row excision, whitespace/header cleanup, column-width alignment, currency/salary cleanup, common N/A money tokens, and date-like column standardization. It is not a full spreadsheet suite and does not recalculate Excel formulas or auto-dedupe rows.
+
+## What is the Trial Ward?
+The free admit/preview area. You can drop a CSV and see vitals without paying. Download (discharge) stays locked until Authorized User Access is purchased. Trial Ward is not a timed free-trial subscription.
+
 ## How do I download a fixed CSV?
-Admit your file, review triage stats, complete purchase if discharge is locked, then click **Download Discharged CSV**. The file saves as `{name}-fixed.csv` from memory on your device (it should not open a file-picker to “choose a file to upload”).
+Admit your file, review triage stats, complete purchase if discharge is locked, then click **Download Discharged CSV**. The file saves as `{name}-fixed.csv` from memory on your device.
 
 ## Why can’t I download?
 Discharge is locked until purchase confirms. Free visitors can admit and preview triage; authorized access unlocks download on this page.
 
 ## How does billing / checkout work?
-CSV Hospital uses **Freemius overlay checkout** so you can purchase without leaving the page when the overlay opens correctly. Complete checkout, then download. (Legacy Stripe return links may still appear in some flows.)
+CSV Hospital uses **Freemius overlay checkout** so you can purchase without leaving the page when the overlay opens correctly. Complete checkout, then download. (Legacy Stripe return links may still appear in some flows.) Price is shown in checkout — support will not invent a dollar amount.
 
 ## I paid but download is still locked
-Finish checkout and stay on https://csvhospital.com/ (or `/`) until you see clearance. Refresh once if needed. If it still fails, contact support with your purchase email and approximate time.
+Finish checkout and stay on https://csvhospital.com/ until you see clearance. Refresh once if needed. If it still fails, contact support with your purchase email and approximate time.
 
 ## Can I get a refund?
 Refund requests need human review. Include your purchase email and approximate payment date.
