@@ -8,16 +8,18 @@ import {
   storePaidSessionId,
 } from '../utils/proAccess.js'
 import {
+  getHealingCreditBalance,
   hasFreemiusUnlock,
   openFreemiusCheckout,
-  storeFreemiusPurchase,
 } from '../utils/freemiusCheckout.js'
+import { consumeHealingCredit } from '../utils/freemiusCredits.js'
 
 /**
- * Payment-gated unlock via Freemius overlay (primary) or Stripe session (legacy).
+ * Payment-gated unlock via Freemius one-time credits (primary) or Stripe (legacy).
  */
 export default function useProStatus() {
   const [isPaid, setIsPaid] = useState(false)
+  const [creditBalance, setCreditBalance] = useState(0)
   const [paidSessionId, setPaidSessionId] = useState(null)
   const [paymentProvider, setPaymentProvider] = useState(null) // 'freemius' | 'stripe'
   const [isVerifying, setIsVerifying] = useState(false)
@@ -31,6 +33,25 @@ export default function useProStatus() {
   const [checkoutError, setCheckoutError] = useState(null)
   const [checkoutNotice, setCheckoutNotice] = useState(null)
 
+  function syncFreemiusCredits(extraMessage) {
+    const balance = getHealingCreditBalance()
+    setCreditBalance(balance)
+    if (balance > 0) {
+      setPaymentProvider('freemius')
+      setIsPaid(true)
+      setCheckoutError(null)
+      setCheckoutNotice({
+        type: 'success',
+        message:
+          extraMessage ||
+          `One-time credits ready — ${balance} file${balance === 1 ? '' : 's'} remaining.`,
+      })
+      return true
+    }
+    setIsPaid(false)
+    return false
+  }
+
   useEffect(() => {
     try {
       localStorage.removeItem('csv-hospital-test-mode')
@@ -41,10 +62,19 @@ export default function useProStatus() {
 
     function onFreemiusPurchase(event) {
       const data = event?.detail
-      if (data) {
-        storeFreemiusPurchase(data)
-      }
-      applyFreemiusUnlock(data)
+      const balance = getHealingCreditBalance()
+      setCreditBalance(balance)
+      setPaymentProvider('freemius')
+      setIsPaid(balance > 0 || hasFreemiusUnlock())
+      setShowPaymentForm(false)
+      setClientSecret(null)
+      setCheckoutError(null)
+      setCheckoutNotice({
+        type: 'success',
+        message: data?.user?.email
+          ? `Freemius one-time purchase confirmed for ${data.user.email} — ${balance} file credit${balance === 1 ? '' : 's'} on hand.`
+          : `Freemius one-time purchase confirmed — ${balance} file credit${balance === 1 ? '' : 's'} on hand.`,
+      })
     }
 
     window.addEventListener('freemius:purchaseCompleted', onFreemiusPurchase)
@@ -53,10 +83,8 @@ export default function useProStatus() {
     const sessionIdFromReturn = params.get('session_id')
 
     async function boot() {
-      // Fresh hospital load: start locked (no stale "Cleared" from prior local unlocks).
-      // Stripe return_url with session_id still verifies below.
+      // Clear Stripe/session leftovers; keep stackable Freemius file credits.
       clearProStatus()
-      setIsPaid(false)
       setPaidSessionId(null)
       setPaymentProvider(null)
 
@@ -95,7 +123,16 @@ export default function useProStatus() {
         return
       }
 
-      setIsPaid(false)
+      // Restore one-time Freemius credits across reloads.
+      syncFreemiusCredits(
+        getHealingCreditBalance() > 0
+          ? `Welcome back — ${getHealingCreditBalance()} file credit${getHealingCreditBalance() === 1 ? '' : 's'} remaining.`
+          : undefined,
+      )
+      if (getHealingCreditBalance() < 1) {
+        setCheckoutNotice(null)
+        setIsPaid(false)
+      }
     }
 
     boot()
@@ -103,39 +140,24 @@ export default function useProStatus() {
     return () => {
       window.removeEventListener('freemius:purchaseCompleted', onFreemiusPurchase)
     }
-    // applyFreemiusUnlock is stable enough for this mount-only effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function applyFreemiusUnlock(data) {
-    setPaymentProvider('freemius')
-    setIsPaid(true)
-    setShowPaymentForm(false)
-    setClientSecret(null)
-    setCheckoutError(null)
-    setCheckoutNotice({
-      type: 'success',
-      message: data?.user?.email
-        ? `Freemius purchase confirmed for ${data.user.email} — download unlocked.`
-        : 'Freemius purchase confirmed — download unlocked.',
-    })
-  }
-
   /**
-   * Primary upgrade path — Freemius modal dialog checkout.
+   * Primary upgrade path — Freemius one-time package (defaults to 1-file pass).
    */
-  async function startCheckout() {
+  async function startCheckout(packageId = 'pass-1') {
     setIsCheckingOut(true)
     setCheckoutError(null)
     setCheckoutNotice(null)
 
     try {
       await openFreemiusCheckout({
-        onPurchaseCompleted: (data) => {
-          applyFreemiusUnlock(data)
+        packageId: typeof packageId === 'string' ? packageId : 'pass-1',
+        onPurchaseCompleted: () => {
+          syncFreemiusCredits()
         },
-        onSuccess: (data) => {
-          applyFreemiusUnlock(data)
+        onSuccess: () => {
+          syncFreemiusCredits()
         },
         onError: (error) => {
           setCheckoutError(error.message || 'Unable to open Freemius checkout.')
@@ -227,7 +249,7 @@ export default function useProStatus() {
   }
 
   /**
-   * Gate before CSV export — Freemius local purchase or Stripe server assert.
+   * Gate before CSV export — consume one Freemius file credit, or Stripe assert.
    */
   async function confirmUnlock() {
     if (!isPaid) {
@@ -241,9 +263,36 @@ export default function useProStatus() {
     if (paymentProvider === 'freemius' || hasFreemiusUnlock()) {
       if (!hasFreemiusUnlock()) {
         setIsPaid(false)
-        setCheckoutError('Freemius purchase not found. Please complete checkout again.')
+        setCreditBalance(0)
+        setCheckoutError('No file credits left. Purchase another one-time pass.')
         return false
       }
+
+      if (getHealingCreditBalance() > 0) {
+        const ok = consumeHealingCredit()
+        if (!ok) {
+          setIsPaid(false)
+          setCreditBalance(0)
+          setCheckoutError('No file credits left. Purchase another one-time pass.')
+          return false
+        }
+        const remaining = getHealingCreditBalance()
+        setCreditBalance(remaining)
+        if (remaining < 1) {
+          setIsPaid(false)
+        }
+        setCheckoutNotice({
+          type: 'success',
+          message:
+            remaining > 0
+              ? `Discharged — ${remaining} file credit${remaining === 1 ? '' : 's'} left.`
+              : 'Discharged — that was your last file credit.',
+        })
+        setCheckoutError(null)
+        return true
+      }
+
+      // Legacy freemius unlock without credit ledger
       setCheckoutError(null)
       return true
     }
@@ -279,6 +328,7 @@ export default function useProStatus() {
   return {
     isPaid,
     isPro: isPaid,
+    creditBalance,
     paymentProvider,
     isVerifying,
     isCheckingOut,

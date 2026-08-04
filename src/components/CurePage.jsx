@@ -5,7 +5,7 @@ import ProDownloadGate from './ProDownloadGate.jsx'
 import StripePaymentPanel from './StripePaymentPanel.jsx'
 import SupportChat from './SupportChat.jsx'
 import Seo from './Seo.jsx'
-import UpgradeButton from './UpgradeButton.jsx'
+import PricingTiers from './PricingTiers.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
 
@@ -67,6 +67,7 @@ export default function CurePage() {
 
   const {
     isPaid,
+    creditBalance,
     isVerifying,
     isCheckingOut,
     showPaymentForm,
@@ -299,10 +300,10 @@ export default function CurePage() {
                         ) : (
                           <ProDownloadGate
                             isPaid={paid}
+                            creditBalance={creditBalance}
                             isVerifying={isVerifying}
                             isCheckingOut={isCheckingOut || isLoading}
                             disabled={isLoading}
-                            onUpgrade={startCheckout}
                             onConfirmUnlock={confirmUnlock}
                             onRequirePayment={requirePayment}
                             headers={readyData.headers}
@@ -361,31 +362,18 @@ export default function CurePage() {
 
         {/* Pricing */}
         <section id="pricing" className="csvh-section csvh-band" aria-labelledby="pricing-heading">
-          <div className="csvh-wrap csvh-narrow">
+          <div className="csvh-wrap">
             <div className="csvh-section-head">
               <h2 id="pricing-heading">Pricing</h2>
-              <p>Admit free. Discharge when you&apos;re ready to take the patient home.</p>
-            </div>
-            <div className="csvh-price-card">
-              <p className="csvh-price-kicker">Outpatient package</p>
-              <h3>Triage preview is free</h3>
               <p>
-                Drop a CSV, see the vitals (rows in / rows out / columns / empty rows
-                excised). Download unlocks after Freemius checkout on this page — no
-                file leaves your browser for cleaning.
+                Flat one-time file credits — combine packs anytime. Never a subscription.
               </p>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <UpgradeButton
-                  className="csvh-cta"
-                  label="[ PURCHASE DATA-HEALING PASS ]"
-                  busyLabel="[ OPENING FREEMIUS… ]"
-                  isLoading={isCheckingOut}
-                />
-                <button type="button" className="csvh-cta csvh-cta-secondary" onClick={openAdmitWard}>
-                  [ ADMIT &amp; HEAL YOUR CSV ]
-                </button>
-              </div>
             </div>
+            <PricingTiers
+              isCheckingOut={isCheckingOut}
+              creditBalance={creditBalance}
+              onAdmit={openAdmitWard}
+            />
           </div>
         </section>
       </main>

@@ -579,6 +579,84 @@ body {
   box-shadow: var(--csvh-shadow);
 }
 
+.csvh-price-block {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.csvh-price-intro h3 {
+  margin: 0.4rem 0 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.6rem;
+}
+
+.csvh-price-intro > p {
+  margin: 0.75rem 0 0;
+  color: var(--csvh-muted);
+  line-height: 1.55;
+}
+
+.csvh-credit-balance {
+  margin: 1rem 0 0;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  background: var(--csvh-blue-soft);
+  color: var(--csvh-blue-deep);
+  font-size: 0.95rem;
+}
+
+.csvh-price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+  gap: 0.85rem;
+}
+
+.csvh-price-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--csvh-paper);
+  border: 1px solid color-mix(in srgb, var(--csvh-silver) 65%, white);
+  border-radius: 1rem;
+  padding: 1.1rem 1rem 1.15rem;
+  box-shadow: var(--csvh-shadow);
+}
+
+.csvh-price-tier-files {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--csvh-cross);
+}
+
+.csvh-price-tier-amount {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--csvh-ink);
+}
+
+.csvh-price-tier-note {
+  margin: 0 0 0.55rem;
+  font-size: 0.8rem;
+  color: var(--csvh-muted);
+}
+
+.csvh-price-tier-cta {
+  width: 100%;
+  margin-top: auto;
+  font-size: 0.82rem;
+  padding: 0.7rem 0.75rem;
+}
+
+.csvh-price-admit {
+  display: flex;
+  justify-content: center;
+}
+
 .csvh-price-kicker {
   margin: 0;
   font-size: 0.75rem;

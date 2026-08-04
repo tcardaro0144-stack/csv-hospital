@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import UpgradeButton from './UpgradeButton.jsx'
 import DownloadButton from './DownloadButton.jsx'
+import { HEALING_PASS_PACKAGES } from '../utils/freemiusPricing.js'
 
 /**
- * Download is hidden until isPaid === true.
- * Even then, DownloadButton re-asserts payment on the server before export.
+ * Download is hidden until isPaid === true (credits or legacy unlock).
+ * Even then, DownloadButton re-asserts payment before export.
  */
 export default function ProDownloadGate({
   isPaid = false,
   isPro, // legacy alias
+  creditBalance = 0,
   isVerifying,
   isCheckingOut,
   disabled = false,
-  onUpgrade,
   onConfirmUnlock,
   onRequirePayment,
   headers,
@@ -22,6 +23,7 @@ export default function ProDownloadGate({
   const paid = isPaid === true || isPro === true
   const [isConfirming, setIsConfirming] = useState(false)
   const uiLocked = disabled === true || isCheckingOut === true
+  const starterPack = HEALING_PASS_PACKAGES[0]
 
   async function handleDownloadAttempt() {
     if (paid !== true) {
@@ -52,6 +54,11 @@ export default function ProDownloadGate({
   if (paid === true) {
     return (
       <div className="space-y-2">
+        {creditBalance > 0 ? (
+          <p className="text-xs text-[#00ffc2]">
+            File credits remaining: {creditBalance}
+          </p>
+        ) : null}
         <DownloadButton
           headers={headers}
           rows={rows}
@@ -74,11 +81,15 @@ export default function ProDownloadGate({
     <div className="rounded-lg border border-[#00ffc2] bg-black px-4 py-4">
       <h3 className="text-sm font-semibold text-[#00ffc2]">Discharge locked</h3>
       <p className="mt-1 text-sm text-gray-400">
-        Download stays sealed until Freemius confirms purchase. Clearance stays on
-        this page — your file never leaves the ward.
+        Buy a one-time Freemius file-credit pack to unlock download. Credits stack —
+        combine packs for higher volume. See Pricing for all flat tiers.
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <UpgradeButton disabled={uiLocked} isLoading={isCheckingOut} />
+        <UpgradeButton
+          package={starterPack}
+          disabled={uiLocked}
+          isLoading={isCheckingOut}
+        />
         <button
           type="button"
           disabled
