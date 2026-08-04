@@ -31,6 +31,7 @@ export default function UpgradeButton({
         pricingId: null,
         files: 1,
         packageId: 'pass-1',
+        strategy: 'plan_default',
       }
 
   const defaultLabel = pkg
@@ -42,11 +43,7 @@ export default function UpgradeButton({
     e.stopPropagation()
     if (locked || opening) return
 
-    if (!ids.planId) {
-      setOverlayError('Freemius plan id is not configured.')
-      return
-    }
-
+    // planId always resolves to Freemius defaults — never block on missing pricing IDs.
     setOpening(true)
     setOverlayError(null)
     try {
@@ -89,6 +86,7 @@ export default function UpgradeButton({
         data-freemius-product={FREEMIUS_CHECKOUT_CONFIG.product_id}
         data-freemius-plan={ids.planId || undefined}
         data-freemius-pricing={ids.pricingId || undefined}
+        data-freemius-strategy={ids.strategy || 'plan_default'}
         data-healing-files={pkg?.files ?? ids.files}
         data-billing="one_time"
       >

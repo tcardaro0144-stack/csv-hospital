@@ -3,13 +3,21 @@
  *
  * Each tier maps to Freemius checkout identifiers:
  *   - plan_id (shared one-time plan by default: 57500)
- *   - pricing_id (exact lifetime price row — preferred)
- *   - licenses fallback (= file count) when pricing_id unset but bulk lifetime prices exist
+ *   - pricing_id (exact lifetime price row — preferred when env is set)
+ *
+ * When VITE_FREEMIUS_PRICING_ID_{N} is unset, checkout does NOT invent fake
+ * pricing IDs (those cause Freemius "Checkout Loading" validation errors).
+ * Instead it uses a safe strategy:
+ *   1. plan_default — open shared plan with billing_cycle lifetime only
+ *   2. licenses — only if VITE_FREEMIUS_USE_LICENSES_FALLBACK=true
+ *   3. mock — local credit grant when VITE_FREEMIUS_MOCK=true (dev / staging)
  *
  * Env:
  *   VITE_FREEMIUS_PLAN_ID              — default plan (57500)
  *   VITE_FREEMIUS_PLAN_ID_{N}          — optional per-tier plan override
  *   VITE_FREEMIUS_PRICING_ID_{N}       — preferred per-tier pricing_id
+ *   VITE_FREEMIUS_USE_LICENSES_FALLBACK — map files → licenses (opt-in)
+ *   VITE_FREEMIUS_MOCK                 — grant credits without Freemius overlay
  */
 
 /**
@@ -24,6 +32,10 @@
  */
 
 /**
+ * @typedef {'pricing_id'|'plan_default'|'licenses'|'mock'} FreemiusCheckoutStrategy
+ */
+
+/**
  * @typedef {{
  *   packageId: string,
  *   files: number,
@@ -31,8 +43,16 @@
  *   planId: string,
  *   pricingId: string|null,
  *   licenses: number,
+ *   strategy: FreemiusCheckoutStrategy,
  * }} FreemiusCheckoutIds
  */
+
+/** Known-good Freemius defaults (product CSV Hospital). */
+export const FREEMIUS_DEFAULT_TEST_IDS = {
+  productId: '34967',
+  planId: '57500',
+  publicKey: 'pk_96bd363d5fbf016bebe4795ecda42',
+}
 
 /** @type {HealingPassPackage[]} */
 export const HEALING_PASS_PACKAGES = [
@@ -94,7 +114,7 @@ export const HEALING_PASS_PACKAGES = [
   },
 ]
 
-const DEFAULT_PLAN_ID = '57500'
+const DEFAULT_PLAN_ID = FREEMIUS_DEFAULT_TEST_IDS.planId
 
 export function formatUsd(amount) {
   return new Intl.NumberFormat('en-US', {
@@ -108,18 +128,38 @@ export function sanitizeFreemiusId(value) {
   const raw = String(value ?? '').trim()
   if (!raw) return null
   if (!/^\d+$/.test(raw)) return null
-  // Reject zero / leading-junk
   const n = Number(raw)
   if (!Number.isFinite(n) || n < 1) return null
   return String(n)
+}
+
+function envFlag(key) {
+  const v = String(import.meta.env[key] ?? '')
+    .trim()
+    .toLowerCase()
+  return /^(1|true|yes|on)$/.test(v)
 }
 
 function envId(key) {
   return sanitizeFreemiusId(import.meta.env[key])
 }
 
+/** Explicit mock checkout (local / staging credit grant, no Freemius overlay). */
+export function isFreemiusMockEnabled() {
+  return envFlag('VITE_FREEMIUS_MOCK')
+}
+
+/**
+ * Opt-in: map file credits → Freemius `licenses` when pricing_id unset.
+ * Off by default — wrong quantities cause Checkout Loading validation errors.
+ */
+export function isLicensesFallbackEnabled() {
+  return envFlag('VITE_FREEMIUS_USE_LICENSES_FALLBACK')
+}
+
 /**
  * Resolve checkout identifiers for a package (always returns a valid planId).
+ * Never returns empty/invalid pricing IDs.
  * @param {HealingPassPackage} pkg
  * @returns {FreemiusCheckoutIds}
  */
@@ -131,14 +171,28 @@ export function resolvePackageCheckoutIds(pkg) {
 
   const pricingId = envId(pkg.pricingEnvKey)
 
+  /** @type {FreemiusCheckoutStrategy} */
+  let strategy
+  if (isFreemiusMockEnabled()) {
+    strategy = 'mock'
+  } else if (pricingId) {
+    strategy = 'pricing_id'
+  } else if (isLicensesFallbackEnabled()) {
+    strategy = 'licenses'
+  } else {
+    // Safe default: shared plan lifetime price only (no fake pricing_id).
+    strategy = 'plan_default'
+  }
+
   return {
     packageId: pkg.id,
     files: pkg.files,
     priceUsd: pkg.priceUsd,
     planId,
-    pricingId,
-    // When Freemius lifetime bulk prices use license quantity = file credits
+    // Only expose pricingId when strategy is pricing_id — never pass junk to Freemius.
+    pricingId: strategy === 'pricing_id' ? pricingId : null,
     licenses: pkg.files,
+    strategy,
   }
 }
 
@@ -172,7 +226,6 @@ export function getPackageByPlanId(planId, pricingId = null) {
   const planNeedle = sanitizeFreemiusId(planId)
   if (!planNeedle) return null
 
-  // Prefer exact per-tier plan matches over the shared default plan.
   for (const pkg of HEALING_PASS_PACKAGES) {
     const specific = envId(pkg.planEnvKey)
     if (specific && specific === planNeedle) return pkg

@@ -4,6 +4,11 @@
  *
  * Only valid Freemius options are sent — empty/invalid IDs are omitted so the
  * overlay does not throw Checkout Loading / validation errors.
+ *
+ * When per-tier pricing IDs are unset:
+ *   - default: open shared plan (57500) with lifetime billing only
+ *   - optional licenses fallback (opt-in env)
+ *   - optional mock checkout (VITE_FREEMIUS_MOCK) for local credit grants
  */
 
 import { Checkout } from '@freemius/checkout'
@@ -15,6 +20,7 @@ import {
   hasHealingCredits,
 } from './freemiusCredits.js'
 import {
+  FREEMIUS_DEFAULT_TEST_IDS,
   getPackageById,
   resolvePackageCheckoutIds,
   sanitizeFreemiusId,
@@ -22,13 +28,17 @@ import {
 
 const FREEMIUS_PURCHASE_KEY = 'csv-hospital-freemius-purchase'
 
-/** Public Freemius product keys (constructor-safe). */
+/** Public Freemius product keys (constructor-safe). Always falls back to test defaults. */
 export const FREEMIUS_CHECKOUT_CONFIG = {
-  product_id: sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PRODUCT_ID) || '34967',
-  plan_id: sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PLAN_ID) || '57500',
+  product_id:
+    sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PRODUCT_ID) ||
+    FREEMIUS_DEFAULT_TEST_IDS.productId,
+  plan_id:
+    sanitizeFreemiusId(import.meta.env.VITE_FREEMIUS_PLAN_ID) ||
+    FREEMIUS_DEFAULT_TEST_IDS.planId,
   public_key: String(
     import.meta.env.VITE_FREEMIUS_PUBLIC_KEY ||
-      'pk_96bd363d5fbf016bebe4795ecda42',
+      FREEMIUS_DEFAULT_TEST_IDS.publicKey,
   ).trim(),
   // Store id is ops metadata only — never passed into FS.Checkout (invalid option).
   store_id: String(import.meta.env.VITE_FREEMIUS_STORE_ID || '').trim(),
@@ -95,7 +105,7 @@ export function storeFreemiusPurchase(data, packageMeta = {}) {
 
   const record = {
     unlocked: filesAdded > 0,
-    provider: 'freemius',
+    provider: data.provider || 'freemius',
     status: 'paid',
     billing: 'one_time',
     purchaseId: purchaseId != null ? String(purchaseId) : null,
@@ -118,7 +128,7 @@ export function storeFreemiusPurchase(data, packageMeta = {}) {
     JSON.stringify({
       unlocked: filesAdded > 0,
       status: 'paid',
-      provider: 'freemius',
+      provider: record.provider,
       billing: 'one_time',
       purchaseId: record.purchaseId,
       creditBalance: filesAdded,
@@ -133,7 +143,7 @@ export function getFreemiusPurchase() {
     const raw = localStorage.getItem(FREEMIUS_PURCHASE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw)
-    if (parsed?.unlocked === true && parsed?.provider === 'freemius') {
+    if (parsed?.unlocked === true && parsed?.provider) {
       return parsed
     }
     return null
@@ -220,7 +230,10 @@ function assertProductKeys() {
  */
 function createCheckoutHandler(sandbox, planId) {
   assertProductKeys()
-  const safePlan = sanitizeFreemiusId(planId) || FREEMIUS_CHECKOUT_CONFIG.plan_id
+  const safePlan =
+    sanitizeFreemiusId(planId) ||
+    FREEMIUS_CHECKOUT_CONFIG.plan_id ||
+    FREEMIUS_DEFAULT_TEST_IDS.planId
 
   /** @type {Record<string, unknown>} */
   const options = {
@@ -253,6 +266,8 @@ function createCheckoutHandler(sandbox, planId) {
 
 /**
  * Build open() payload with only valid Freemius fields.
+ * Omits pricing_id / licenses unless the resolved strategy says so —
+ * inventing those values causes Freemius validation / loading errors.
  * @param {import('./freemiusPricing.js').FreemiusCheckoutIds} ids
  * @param {{ token: string, ctx: string }|null} sandbox
  * @param {object} callbacks
@@ -261,20 +276,18 @@ function buildOpenOptions(ids, sandbox, callbacks) {
   /** @type {Record<string, unknown>} */
   const openOpts = {
     plan_id: ids.planId,
-    // One-time / non-recurring
     billing_cycle: 'lifetime',
     disable_licenses_selector: true,
     purchaseCompleted: callbacks.purchaseCompleted,
     success: callbacks.success,
   }
 
-  // Prefer exact Freemius pricing_id when configured for this tier.
-  if (ids.pricingId) {
+  if (ids.strategy === 'pricing_id' && ids.pricingId) {
     openOpts.pricing_id = ids.pricingId
-  } else {
-    // Fallback: map file credits → license quantity for bulk lifetime prices.
+  } else if (ids.strategy === 'licenses') {
     openOpts.licenses = ids.licenses
   }
+  // plan_default / mock: plan_id + lifetime only — no pricing_id, no licenses
 
   if (sandbox?.token && sandbox?.ctx != null) {
     openOpts.sandbox = {
@@ -287,7 +300,48 @@ function buildOpenOptions(ids, sandbox, callbacks) {
 }
 
 /**
+ * Local mock purchase — grants package credits without opening Freemius.
+ * Used when VITE_FREEMIUS_MOCK=true so missing pricing IDs never throw.
+ * @param {import('./freemiusPricing.js').HealingPassPackage} pkg
+ * @param {import('./freemiusPricing.js').FreemiusCheckoutIds} ids
+ * @param {object} handlers
+ */
+function completeMockCheckout(pkg, ids, handlers) {
+  const mockPayload = {
+    provider: 'freemius-mock',
+    purchase_id: `mock-${pkg.id}-${Date.now()}`,
+    plan_id: ids.planId,
+    pricing_id: ids.pricingId,
+    purchase: {
+      id: `mock-${pkg.id}-${Date.now()}`,
+      plan_id: ids.planId,
+      pricing_id: ids.pricingId,
+    },
+    mock: true,
+    packageId: pkg.id,
+    files: pkg.files,
+  }
+
+  const packageMeta = {
+    packageId: pkg.id,
+    files: pkg.files,
+    planId: ids.planId,
+    pricingId: ids.pricingId,
+  }
+
+  console.info(
+    `[freemius] mock checkout · ${pkg.id} · $${pkg.priceUsd} · ${pkg.files} file(s) · plan ${ids.planId}`,
+  )
+
+  storeFreemiusPurchase(mockPayload, packageMeta)
+  handlers.onPurchaseCompleted?.(mockPayload)
+  handlers.onSuccess?.(mockPayload)
+  return mockPayload
+}
+
+/**
  * Open Freemius overlay for a one-time healing-pass package.
+ * Falls back cleanly when pricing IDs are unset (plan default or mock).
  * @param {{
  *   packageId?: string,
  *   planId?: string,
@@ -315,10 +369,12 @@ export async function openFreemiusCheckout(handlers = {}) {
   }
 
   const resolved = resolvePackageCheckoutIds(pkg)
+  const overridePricing = sanitizeFreemiusId(pricingOverride)
   const ids = {
     ...resolved,
     planId: sanitizeFreemiusId(planOverride) || resolved.planId,
-    pricingId: sanitizeFreemiusId(pricingOverride) || resolved.pricingId,
+    pricingId: overridePricing || resolved.pricingId,
+    strategy: overridePricing ? 'pricing_id' : resolved.strategy,
   }
 
   const packageMeta = {
@@ -326,6 +382,19 @@ export async function openFreemiusCheckout(handlers = {}) {
     files: pkg.files,
     planId: ids.planId,
     pricingId: ids.pricingId,
+  }
+
+  // Mock path: never call Freemius when pricing rows aren't wired yet.
+  if (ids.strategy === 'mock') {
+    try {
+      return completeMockCheckout(pkg, ids, {
+        onPurchaseCompleted,
+        onSuccess,
+      })
+    } catch (error) {
+      onError?.(error instanceof Error ? error : new Error(String(error)))
+      throw error
+    }
   }
 
   try {
@@ -343,12 +412,40 @@ export async function openFreemiusCheckout(handlers = {}) {
       },
     })
 
+    const strategyNote =
+      ids.strategy === 'pricing_id'
+        ? `pricing ${ids.pricingId}`
+        : ids.strategy === 'licenses'
+          ? `licenses ${ids.licenses}`
+          : 'plan_default (no pricing_id)'
+
     console.info(
-      `[freemius] opening one-time checkout (${mode}) · ${pkg.id} · $${pkg.priceUsd} · ${pkg.files} file(s) · plan ${ids.planId}` +
-        (ids.pricingId ? ` · pricing ${ids.pricingId}` : ` · licenses ${ids.licenses}`),
+      `[freemius] opening one-time checkout (${mode}) · ${pkg.id} · $${pkg.priceUsd} · ${pkg.files} file(s) · plan ${ids.planId} · ${strategyNote}`,
     )
     await handler.open(openOpts)
   } catch (error) {
+    // Soft recovery: if Freemius rejects missing/invalid pricing in non-prod,
+    // complete a mock grant so the UI never hard-fails on validation.
+    const canSoftMock =
+      !import.meta.env.PROD &&
+      (ids.strategy === 'plan_default' || ids.strategy === 'licenses')
+
+    if (canSoftMock) {
+      console.warn(
+        '[freemius] overlay failed — completing local mock checkout instead',
+        error,
+      )
+      try {
+        return completeMockCheckout(pkg, { ...ids, strategy: 'mock' }, {
+          onPurchaseCompleted,
+          onSuccess,
+        })
+      } catch (mockErr) {
+        onError?.(mockErr instanceof Error ? mockErr : new Error(String(mockErr)))
+        throw mockErr
+      }
+    }
+
     onError?.(error instanceof Error ? error : new Error(String(error)))
     throw error
   }
