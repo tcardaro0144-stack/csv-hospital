@@ -23,6 +23,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://csvhospital.com').replace(
 /** @type {{ path: string, changefreq: string, priority: string }[]} */
 const PAGES = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/terms', changefreq: 'yearly', priority: '0.3' },
 ]
 
 function isoDate(d = new Date()) {

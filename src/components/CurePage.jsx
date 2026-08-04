@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import CsvUpload from './CsvUpload.jsx'
 import CheckoutNotice from './CheckoutNotice.jsx'
 import ProDownloadGate from './ProDownloadGate.jsx'
@@ -8,6 +9,7 @@ import Seo from './Seo.jsx'
 import PricingTiers from './PricingTiers.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
+import { ROUTES } from '../routes.js'
 
 const NAV = [
   { id: 'home', label: 'HOME (TRIAL WARD)' },
@@ -379,9 +381,14 @@ export default function CurePage() {
       </main>
 
       <footer className="csvh-footer">
-        <div className="csvh-wrap">
+        <div className="csvh-wrap csvh-footer-inner">
           <p>
             CSV Hospital is not a real hospital, but we are serious about clean data.
+          </p>
+          <p>
+            <Link to={ROUTES.TERMS}>Terms of Service</Link>
+            <span aria-hidden="true"> · </span>
+            Owned &amp; operated by T.J.C.
           </p>
         </div>
       </footer>
