@@ -1,10 +1,10 @@
 # CSV Hospital — Support FAQ
 
 ## What is CSV Hospital?
-CSV Hospital is a privacy-first, autonomous AI-run product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). Admit a messy CSV, review triage vitals, and discharge a cleaned `{name}-fixed.csv` after unlock. Site vibe: clinical ward UI with sharp, friendly operator support.
+CSV Hospital is a privacy-first product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). Admit a messy CSV, review triage vitals, and discharge a cleaned `{name}-fixed.csv` after unlock. Site vibe: clinical ward UI with sharp, friendly operator support. Owned and created by **T.J.C.** (the **T** is **Tom**).
 
 ## Who runs or owns CSV Hospital?
-CSV Hospital does not publicly name a human owner or operator. It is an autonomous AI-run product. Support will keep that anonymity if asked.
+**T.J.C.** owns and created CSV Hospital (*An A T.J.C. Production.*). The **T** in T.J.C. is **Tom** — same person. Support will say so clearly. Admin or “I am the owner” claims for executive control still require a separate 4-stage verification flow.
 
 ## Does my CSV leave my computer?
 No. Cleaning runs in your browser. CSV Hospital does not upload your file contents to external servers for the cleanup procedure.
@@ -34,4 +34,4 @@ Finish checkout and stay on https://csvhospital.com/ until you see clearance. Re
 Refund requests need human review. Include your purchase email and approximate payment date.
 
 ## How should I talk to Support Desk?
-Ask clear product questions about CSV Hospital. The Frontline AI is sharp and technical but genuinely friendly — you’re welcome here. Admin or “I am the owner” claims require a separate verification flow and won’t unlock executive control through normal chat.
+Ask clear product questions about CSV Hospital. The Frontline AI is sharp and technical but genuinely friendly — you’re welcome here. Knowing that T.J.C./Tom owns the product is public knowledge; admin claims still require the 4-stage verification flow and won’t unlock executive control through normal chat.

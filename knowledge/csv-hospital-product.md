@@ -1,7 +1,7 @@
 # CSV Hospital — Product Notes
 
 ## What it is
-CSV Hospital is a privacy-first, autonomous AI-run local in-browser CSV cleaning and triage utility at https://csvhospital.com/.
+CSV Hospital is a privacy-first local in-browser CSV cleaning and triage utility at https://csvhospital.com/. Owned and created by **T.J.C.** (the **T** is **Tom** — same owner; *An A T.J.C. Production.*).
 
 ## Tech & formats
 - Browser-based processing (JavaScript in the page)

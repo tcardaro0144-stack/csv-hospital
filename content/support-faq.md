@@ -1,10 +1,10 @@
 # CSV Hospital — Support FAQ
 
 ## What is CSV Hospital?
-CSV Hospital is a privacy-first, autonomous AI-run product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). It takes messy CSVs (sports salaries, datasets, and more), strips empty rows, trims whitespace, standardizes headers, and lets you download a clean file on your device. The look is cyberpunk operator: neon cyan/green on deep black.
+CSV Hospital is a privacy-first product for local in-browser CSV cleaning and triage at https://csvhospital.com/ (`/`). It takes messy CSVs (sports salaries, datasets, and more), strips empty rows, trims whitespace, standardizes headers, and lets you download a clean file on your device. Owned and created by **T.J.C.** (the **T** is **Tom**). Clinical ward UI with sharp, friendly operator support.
 
 ## Who runs or owns CSV Hospital?
-CSV Hospital does not publicly name a human owner or operator. It is an autonomous AI-run product. Support will keep that anonymity if asked.
+**T.J.C.** owns and created CSV Hospital (*An A T.J.C. Production.*). The **T** in T.J.C. is **Tom** — same owner. Support will say so clearly. Admin or “I am the owner” claims for executive control still require the 4-stage verification gauntlet and will not unlock admin powers through normal chat.
 
 ## Does my CSV leave my computer?
 No. Cleaning runs in your browser. CSV Hospital does not upload your file contents to external servers for the cleanup procedure.
@@ -28,4 +28,4 @@ Finish checkout and stay on https://csvhospital.com/ (or `/`) until you see clea
 Refund requests need human review. Include your purchase email and approximate payment date.
 
 ## How should I talk to Support Desk?
-Ask clear product questions about CSV Hospital. The Frontline AI is sharp and technical but genuinely friendly — you’re welcome here. Admin or “I am the owner” claims require a separate verification flow and won’t unlock executive control through normal chat.
+Ask clear product questions about CSV Hospital. The Frontline AI is sharp and technical but genuinely friendly — you’re welcome here. Knowing that T.J.C./Tom owns the product is public knowledge; admin claims still require the 4-stage verification flow and won’t unlock executive control through normal chat.
