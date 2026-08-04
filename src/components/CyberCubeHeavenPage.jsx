@@ -18,7 +18,7 @@ export default function CyberCubeHeavenPage() {
           <div className="mx-auto flex max-w-3xl items-start justify-between gap-4 px-6 py-8">
             <div>
               <Link to={ROUTES.ROOT} className="fb-brand mb-2 inline-block">
-                Faceless Blur
+                CSV Hospital
               </Link>
               <h1 className="mt-2 text-2xl font-bold tracking-tight text-white">
                 Cyber Cube Heaven

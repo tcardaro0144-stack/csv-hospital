@@ -26,8 +26,8 @@ export default function RootDirectoryShell({
       <div className="relative z-10">
         <header className="border-b border-[#00ffc2]/40 bg-black">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-8">
-            <p className="fb-brand">Faceless Blur</p>
-            <span className="fb-brand-meta">Portfolio Hub</span>
+            <p className="fb-brand">CSV Hospital</p>
+            <span className="fb-brand-meta">Digital ER</span>
           </div>
         </header>
 
@@ -37,7 +37,7 @@ export default function RootDirectoryShell({
             data-page={pageNum}
           >
             <p className="fb-body text-[#00ffc2]">
-              FACELESS_BLUR_OS // ROOT_DIRECTORY
+              CSV_HOSPITAL_OS // ROOT_DIRECTORY
             </p>
             <p className="fb-body fb-muted mt-3">
               Select an operation:_

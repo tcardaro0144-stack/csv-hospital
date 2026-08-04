@@ -1,4 +1,4 @@
-# Faceless Blur - https://csvhospital.com
+# CSV Hospital - https://csvhospital.com
 User-agent: *
 Allow: /
 Allow: /hospital

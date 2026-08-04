@@ -1,23 +1,23 @@
 /**
- * Client-side SEO helpers for the Faceless Blur SPA.
+ * Client-side SEO helpers for the CSV Hospital SPA.
  * Updates document head on route changes (no react-helmet dependency).
  */
 
 export const SITE_URL = 'https://csvhospital.com'
-export const SITE_NAME = 'Faceless Blur'
+export const SITE_NAME = 'CSV Hospital'
 
 export const SEO_PAGES = {
   home: {
-    title: 'Faceless Blur — AI Developer Ecosystem & Browser Tools',
+    title: 'CSV Hospital — Digital ER for Messy Spreadsheets',
     description:
-      'Faceless Blur builds anonymous, AI-run utilities. Launch CSV Hospital to clean messy CSV files entirely in your browser — no upload required.',
+      'CSV Hospital cleans broken CSV files in your browser: remove empty rows, trim whitespace, standardize headers, then download a repaired file. Privacy-first — your data stays on your device.',
     path: '/',
     type: 'website',
   },
   directoryPage2: {
-    title: 'Faceless Blur — Root Directory (Page 2)',
+    title: 'CSV Hospital — Root Directory (Page 2)',
     description:
-      'Faceless Blur Root Directory page 2 — classified operations. Slot [04] remains locked.',
+      'CSV Hospital root directory page 2 — classified operations. Slot [04] remains locked.',
     path: '/2',
     type: 'website',
   },
@@ -29,7 +29,7 @@ export const SEO_PAGES = {
     type: 'website',
   },
   cyberCubeHeaven: {
-    title: 'Cyber Cube Heaven — Coming Soon | Faceless Blur',
+    title: 'Cyber Cube Heaven — Coming Soon | CSV Hospital',
     description:
       'Cyber Cube Heaven: neon-grid arcade survival — A T.J.C. Production. Atmospheric mainframe world, custom-tuned mobile controls — final build shipping soon.',
     path: '/cyber-cube-heaven',
@@ -189,7 +189,7 @@ export function organizationWebsiteJsonLd() {
         name: SITE_NAME,
         url: SITE_URL,
         description:
-          'Anonymous, AI-run developer ecosystem building browser-local utilities and indie games.',
+          'CSV Hospital — the digital ER for messy spreadsheets. Browser-local CSV triage and repair.',
         logo: `${SITE_URL}/favicon.svg`,
       },
       {
