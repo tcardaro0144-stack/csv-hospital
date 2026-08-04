@@ -139,7 +139,7 @@ app.post(
 
 app.use(express.json({ limit: '32kb' }))
 
-// Faceless Guardian — inspect incoming utility requests (velocity + AVS shield).
+// CSV Hospital Guardian — inspect incoming API/utility requests (velocity + AVS shield).
 // Runs after JSON parsing so it can read billingCountry, and after the raw
 // webhook route above so Stripe signature verification stays intact.
 const guardian = new SecurityGuardian()
@@ -771,12 +771,12 @@ app.listen(port, () => {
     : Promise.resolve()
 
   afterDiscord.then(() => {
-    // Friendly startup check-in from the Faceless Guardian
+    // Friendly startup check-in from CSV Hospital Guardian
     guardian.sendStartupGreeting().catch((err) => {
       console.error('[guardian] startup greeting failed:', err)
     })
 
-    // Faceless Manager — admin channel greeting + first synthesized briefing
+    // CSV Hospital Manager — admin channel greeting + first synthesized briefing
     manager
       .sendStartupCheckIn()
       .then(() => manager.startRoutineCheckIns())
