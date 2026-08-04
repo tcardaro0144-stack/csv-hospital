@@ -44,28 +44,50 @@ export const FREEMIUS_CHECKOUT_CONFIG = {
   ).trim(),
   // Store id is ops metadata only — never passed into FS.Checkout.
   store_id: String(import.meta.env.VITE_FREEMIUS_STORE_ID || '').trim(),
+  /** True when VITE_FREEMIUS_SANDBOX enables Freemius test overlay. */
+  isSandbox: isViteFreemiusSandboxFlag(),
 }
 
 /**
- * Live checkout = no sandbox token, no config API call.
- * Forced on csvhospital.com and all production builds.
+ * Parse VITE_FREEMIUS_SANDBOX. Explicit true/false wins over host/build defaults.
+ * @returns {boolean|null} null when unset / unrecognized
  */
-export function isClientFreemiusLiveMode() {
-  if (import.meta.env.PROD) return true
-
-  if (typeof window !== 'undefined') {
-    const host = String(window.location.hostname || '').toLowerCase()
-    if (host === 'csvhospital.com' || host.endsWith('.csvhospital.com')) {
-      return true
-    }
-  }
-
+function isViteFreemiusSandboxFlag() {
   const v = String(import.meta.env.VITE_FREEMIUS_SANDBOX ?? '')
     .trim()
     .toLowerCase()
-  if (/^(0|false|no|off|live|production)$/.test(v)) return true
-  if (/^(1|true|yes|on|sandbox)$/.test(v)) return false
-  return true
+  if (/^(1|true|yes|on|sandbox)$/.test(v)) return true
+  if (/^(0|false|no|off|live|production)$/.test(v)) return false
+  return null
+}
+
+/**
+ * Whether the client should open Freemius in sandbox (test) mode.
+ * Honors VITE_FREEMIUS_SANDBOX=true even in production builds so test deploys work.
+ * Default: live on prod / csvhospital.com; sandbox only when explicitly enabled.
+ */
+export function isClientFreemiusSandboxEnabled() {
+  const flag = isViteFreemiusSandboxFlag()
+  if (flag === true) return true
+  if (flag === false) return false
+
+  // Unset: never sandbox on production hosts / production builds.
+  if (import.meta.env.PROD) return false
+  if (typeof window !== 'undefined') {
+    const host = String(window.location.hostname || '').toLowerCase()
+    if (host === 'csvhospital.com' || host.endsWith('.csvhospital.com')) {
+      return false
+    }
+  }
+  return false
+}
+
+/**
+ * Live checkout = no sandbox token.
+ * Inverse of isClientFreemiusSandboxEnabled().
+ */
+export function isClientFreemiusLiveMode() {
+  return !isClientFreemiusSandboxEnabled()
 }
 
 /**
@@ -167,14 +189,13 @@ export { getHealingCreditBalance, hasHealingCredits }
 
 export async function fetchFreemiusCheckoutMode() {
   if (isClientFreemiusLiveMode()) {
-    return { mode: 'live', sandbox: null }
+    return { mode: 'live', sandbox: null, isSandbox: false }
   }
 
-  if (import.meta.env.DEV) {
-    return fetchSandboxModeFromApi()
-  }
-
-  return { mode: 'live', sandbox: null }
+  // Sandbox requires a server-minted { token, ctx } — works in local + preview builds
+  // when VITE_FREEMIUS_SANDBOX=true (and FREEMIUS_SANDBOX=true on the API).
+  const result = await fetchSandboxModeFromApi()
+  return { ...result, isSandbox: result.mode === 'sandbox' }
 }
 
 async function fetchSandboxModeFromApi() {

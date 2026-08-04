@@ -87,6 +87,7 @@ export default function UpgradeButton({
         data-freemius-plan={ids.planId || undefined}
         data-freemius-pricing={ids.pricingId || undefined}
         data-freemius-strategy={ids.strategy || 'plan'}
+        data-freemius-sandbox={FREEMIUS_CHECKOUT_CONFIG.isSandbox ? 'true' : 'false'}
         data-healing-files={pkg?.files ?? ids.files}
         data-billing="one_time"
       >
