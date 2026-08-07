@@ -45,6 +45,16 @@ export const GUIDES = [
     readingMinutes: 7,
     tags: ['csv', 'utf-8', 'latin-1', 'encoding', 'mojibake'],
   },
+  {
+    slug: 'how-to-handle-invisible-trailing-spaces-in-csv-cells',
+    title: 'How to Handle Invisible Trailing Spaces in CSV Cells',
+    description:
+      'Why leading and trailing spaces break CSV joins and filters — and how CSV Hospital trims invisible padding from every cell in your browser.',
+    publishedAt: '2026-08-07',
+    updatedAt: '2026-08-07',
+    readingMinutes: 6,
+    tags: ['csv', 'whitespace', 'trim', 'data-cleaning'],
+  },
 ]
 
 /**

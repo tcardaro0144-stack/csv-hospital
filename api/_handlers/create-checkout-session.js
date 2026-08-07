@@ -3,12 +3,12 @@ import {
   getConfiguredClientUrl,
   getStripePriceId,
   getStripeSecretKey,
-} from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { stripeCheckoutErrorMessage } from './_lib/stripeErrors.js'
-import { requireMethod, validateClientUrl } from './_lib/validate.js'
-import { createPendingOrder } from '../lib/ordersDb.js'
+} from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { stripeCheckoutErrorMessage } from '../_lib/stripeErrors.js'
+import { requireMethod, validateClientUrl } from '../_lib/validate.js'
+import { createPendingOrder } from '../../lib/ordersDb.js'
 
 const PAYMENT_METHOD_CONFIGURATION = 'pmc_1TuVcLIv6QgjmVhx8D81tVjU'
 

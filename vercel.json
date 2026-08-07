@@ -6,6 +6,12 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/[...path].js": {
+      "maxDuration": 60,
+      "includeFiles": "{api/_handlers/**,api/_lib/**,lib/**,content/**}"
+    }
+  },
   "redirects": [
     {
       "source": "/hospital",
@@ -40,7 +46,7 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/"
     }
   ]
