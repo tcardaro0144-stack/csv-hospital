@@ -9,6 +9,8 @@
     "dev:server": "node server/index.js",
     "build": "npm run sitemap && vite build && node scripts/spa-fallback.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
+    "guides:next": "python scripts/content_flywheel.py",
+    "guides:list": "python scripts/content_flywheel.py --list",
     "preview": "vite preview",
     "start:server": "node server/index.js",
     "deploy": "npm run deploy:pages",

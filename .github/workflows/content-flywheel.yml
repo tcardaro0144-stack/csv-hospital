@@ -1,0 +1,83 @@
+# Drop the next evergreen /guides article from the TOPIC_QUEUE.
+# Trigger manually whenever you want a new optimized piece in the ecosystem.
+#
+# Local equivalent:
+#   npm run guides:next
+#   python scripts/content_flywheel.py --list
+
+name: Content flywheel
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Optional topic slug (leave empty to publish the next queued topic)
+        required: false
+        type: string
+      dry_run:
+        description: Preview only (no files written, no PR)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish-guide:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: List topic queue
+        run: python scripts/content_flywheel.py --list
+
+      - name: Run content flywheel
+        id: flywheel
+        run: |
+          set -euo pipefail
+          ARGS=()
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          if [ -n "${{ inputs.slug }}" ]; then
+            ARGS+=(--slug "${{ inputs.slug }}")
+          fi
+          python scripts/content_flywheel.py "${ARGS[@]}"
+
+      - name: Open pull request
+        if: ${{ inputs.dry_run != true }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "content: drop next evergreen CSV Hospital guide"
+          branch: content/flywheel-guide
+          title: "content: next evergreen CSV Hospital guide"
+          body: |
+            Automated drop from `scripts/content_flywheel.py` (TOPIC_QUEUE).
+
+            - New guide under `src/content/guides/`
+            - Catalog entry in `shared/guidesCatalog.js`
+            - Body registry update in `src/content/guides/index.js`
+            - Regenerated `public/sitemap.xml`
+
+            Review the article, merge when ready, deploy as usual.
+          add-paths: |
+            shared/guidesCatalog.js
+            src/content/guides/
+            public/sitemap.xml
