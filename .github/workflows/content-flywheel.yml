@@ -1,14 +1,15 @@
-# Drop the next evergreen /guides article from the TOPIC_QUEUE.
-# Trigger manually whenever you want a new optimized piece in the ecosystem.
+# Drop the next high-intent long-tail /guides article from TOPIC_QUEUE.
+# Weekly cron + manual dispatch. Output is PR-ready (catalog, body, sitemap).
 #
-# Local equivalent:
+# Local:
+#   npm run guides:list
 #   npm run guides:next
-#   python scripts/content_flywheel.py --list
 
 name: Content flywheel
 
 on:
   schedule:
+    # Mondays 09:00 UTC — next unpublished long-tail wrangling guide
     - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
@@ -52,33 +53,39 @@ jobs:
 
       - name: Run content flywheel
         id: flywheel
+        env:
+          # workflow_dispatch inputs are empty on schedule — treat as unset
+          FLYWHEEL_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.slug || '' }}
+          FLYWHEEL_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
         run: |
           set -euo pipefail
           ARGS=()
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
+          if [ "${FLYWHEEL_DRY_RUN}" = "true" ]; then
             ARGS+=(--dry-run)
           fi
-          if [ -n "${{ inputs.slug }}" ]; then
-            ARGS+=(--slug "${{ inputs.slug }}")
+          if [ -n "${FLYWHEEL_SLUG}" ]; then
+            ARGS+=(--slug "${FLYWHEEL_SLUG}")
           fi
           python scripts/content_flywheel.py "${ARGS[@]}"
 
       - name: Open pull request
-        if: ${{ inputs.dry_run != true }}
+        if: ${{ steps.flywheel.outputs.skipped != 'true' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run == true) }}
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "content: drop next evergreen CSV Hospital guide"
+          commit-message: "content: drop ${{ steps.flywheel.outputs.slug || 'next evergreen guide' }}"
           branch: content/flywheel-guide
-          title: "content: next evergreen CSV Hospital guide"
+          delete-branch: true
+          title: "content: ${{ steps.flywheel.outputs.slug || 'next CSV Hospital guide' }}"
           body: |
-            Automated drop from `scripts/content_flywheel.py` (TOPIC_QUEUE).
+            Automated high-intent long-tail guide from `scripts/content_flywheel.py`.
 
-            - New guide under `src/content/guides/`
+            - Slug: `${{ steps.flywheel.outputs.slug }}`
+            - Guide body under `src/content/guides/` (hand-guide JS formatting)
             - Catalog entry in `shared/guidesCatalog.js`
             - Body registry update in `src/content/guides/index.js`
             - Regenerated `public/sitemap.xml`
 
-            Review the article, merge when ready, deploy as usual.
+            No manual formatting required — merge when ready and deploy as usual.
           add-paths: |
             shared/guidesCatalog.js
             src/content/guides/
