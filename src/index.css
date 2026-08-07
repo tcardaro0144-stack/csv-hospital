@@ -775,6 +775,100 @@ body {
   line-height: 1.55;
 }
 
+/* Privacy-focused email capture */
+.csvh-email-capture {
+  margin-top: 0.25rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--csvh-silver) 70%, white);
+  background: var(--csvh-paper);
+  box-shadow: var(--csvh-shadow);
+}
+
+.csvh-email-capture-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 560px) {
+  .csvh-email-capture-row {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .csvh-email-capture-row .csvh-cta {
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+}
+
+.csvh-email-capture-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--csvh-silver) 75%, white);
+  background: #fff;
+  color: var(--csvh-ink);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.csvh-email-capture-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--csvh-blue) 55%, transparent);
+  outline-offset: 1px;
+  border-color: var(--csvh-blue);
+}
+
+.csvh-email-capture-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.csvh-email-capture-consent {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin-top: 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--csvh-muted);
+  cursor: pointer;
+}
+
+.csvh-email-capture-consent input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  accent-color: var(--csvh-blue);
+}
+
+.csvh-email-capture-privacy,
+.csvh-email-capture-msg {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--csvh-muted);
+}
+
+.csvh-email-capture-msg {
+  color: var(--csvh-blue-deep);
+  font-weight: 600;
+}
+
+.csvh-email-capture-msg.is-error {
+  color: #8f1020;
+}
+
+.csvh-hp {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .csvh-price-card {
   background: var(--csvh-paper);
   border: 1px solid color-mix(in srgb, var(--csvh-silver) 65%, white);

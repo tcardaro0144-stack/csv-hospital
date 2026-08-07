@@ -31,6 +31,7 @@ import { SecurityGuardian } from '../lib/securityGuardian.js'
 import { ManagerAi } from '../lib/managerAi.js'
 import { startDiscordBot } from '../lib/discordBot.js'
 import { processSupportTriage } from '../lib/supportTriageHandler.js'
+import { processEmailCapture } from '../lib/emailCapture.js'
 import {
   createPendingOrder,
   getOrderByDownloadToken,
@@ -778,6 +779,21 @@ app.post('/api/support-triage', async (req, res) => {
   } catch (error) {
     console.error('Support triage error:', error?.message || error)
     return res.status(500).json({ error: 'Unable to triage message.' })
+  }
+})
+
+app.post('/api/email-capture', async (req, res) => {
+  if (!enforceRateLimit(req, res, 'emailCapture')) return
+
+  try {
+    const { status, payload } = await processEmailCapture(req.body || {})
+    return res.status(status).json(payload)
+  } catch (error) {
+    console.error('Email capture error:', error?.message || error)
+    return res.status(500).json({
+      ok: false,
+      error: 'Unable to save your email right now. Please try again shortly.',
+    })
   }
 })
 

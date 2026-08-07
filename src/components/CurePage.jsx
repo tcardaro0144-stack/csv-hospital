@@ -7,6 +7,7 @@ import StripePaymentPanel from './StripePaymentPanel.jsx'
 import SupportChat from './SupportChat.jsx'
 import Seo from './Seo.jsx'
 import PricingTiers from './PricingTiers.jsx'
+import EmailCapture from './EmailCapture.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
 import { ROUTES } from '../routes.js'
@@ -18,6 +19,7 @@ const NAV = [
   { id: 'compare', label: 'COMPARE' },
   { id: 'faqs', label: 'PATIENT FAQS' },
   { id: 'pricing', label: 'PRICING' },
+  { id: 'updates', label: 'UPDATES' },
 ]
 
 /** ~50-word direct answer for AEO / citation blocks (keep 40–60 words). */
@@ -457,6 +459,8 @@ export default function CurePage() {
             />
           </div>
         </section>
+
+        <EmailCapture source="homepage" />
       </main>
 
       <footer className="csvh-footer">

@@ -11,6 +11,7 @@ const DEFAULTS = {
   verify: { limit: 30, windowMs: 60_000 },
   unlockStatus: { limit: 60, windowMs: 60_000 },
   triage: { limit: 20, windowMs: 60_000 },
+  emailCapture: { limit: 8, windowMs: 60_000 },
 }
 
 function prune(key, now, windowMs) {
@@ -78,6 +79,14 @@ export function rateLimitConfig(name) {
     triage: {
       limit: Number(process.env.RATE_LIMIT_TRIAGE || DEFAULTS.triage.limit),
       windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || DEFAULTS.triage.windowMs),
+    },
+    emailCapture: {
+      limit: Number(
+        process.env.RATE_LIMIT_EMAIL_CAPTURE || DEFAULTS.emailCapture.limit,
+      ),
+      windowMs: Number(
+        process.env.RATE_LIMIT_WINDOW_MS || DEFAULTS.emailCapture.windowMs,
+      ),
     },
   }
   return presets[name] || DEFAULTS.checkout
