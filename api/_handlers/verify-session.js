@@ -1,14 +1,14 @@
 import Stripe from 'stripe'
-import { markOrderPaid } from '../lib/ordersDb.js'
+import { markOrderPaid } from '../../lib/ordersDb.js'
 import {
   buildUnlockCookie,
   createUnlockToken,
   isSecureRequest,
-} from '../lib/unlockToken.js'
-import { getStripeSecretKey, getUnlockSecret } from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod, validateSessionId } from './_lib/validate.js'
+} from '../../lib/unlockToken.js'
+import { getStripeSecretKey, getUnlockSecret } from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod, validateSessionId } from '../_lib/validate.js'
 
 /**
  * GET /api/verify-session?session_id=cs_...

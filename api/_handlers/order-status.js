@@ -1,9 +1,9 @@
 import Stripe from 'stripe'
-import { getOrderBySessionId, markOrderPaid } from '../lib/ordersDb.js'
-import { getStripeSecretKey } from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod, validateSessionId } from './_lib/validate.js'
+import { getOrderBySessionId, markOrderPaid } from '../../lib/ordersDb.js'
+import { getStripeSecretKey } from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod, validateSessionId } from '../_lib/validate.js'
 
 /**
  * GET /api/order-status?session_id=cs_...

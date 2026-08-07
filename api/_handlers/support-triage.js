@@ -1,8 +1,8 @@
-import { processSupportTriage } from '../lib/supportTriageHandler.js'
-import { detectObfuscatedPayload } from '../lib/identityVerification.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod } from './_lib/validate.js'
+import { processSupportTriage } from '../../lib/supportTriageHandler.js'
+import { detectObfuscatedPayload } from '../../lib/identityVerification.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod } from '../_lib/validate.js'
 
 /**
  * POST /api/support-triage

@@ -1,14 +1,8 @@
 import Stripe from 'stripe'
-import { markOrderPaid } from '../lib/ordersDb.js'
-import { getStripeSecretKey, getWebhookSecret } from './_lib/env.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod } from './_lib/validate.js'
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+import { markOrderPaid } from '../../lib/ordersDb.js'
+import { getStripeSecretKey, getWebhookSecret } from '../_lib/env.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod } from '../_lib/validate.js'
 
 async function readRawBody(req) {
   const chunks = []

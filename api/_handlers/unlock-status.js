@@ -1,8 +1,8 @@
-import { assertPaidUnlock } from '../lib/assertPaidUnlock.js'
-import { getStripeMode, isStripeConfigured } from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod } from './_lib/validate.js'
+import { assertPaidUnlock } from '../../lib/assertPaidUnlock.js'
+import { getStripeMode, isStripeConfigured } from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod } from '../_lib/validate.js'
 
 /**
  * GET /api/unlock-status

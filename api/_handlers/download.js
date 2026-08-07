@@ -1,7 +1,7 @@
-import { getOrderByDownloadToken, isValidDownloadToken } from '../lib/ordersDb.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod } from './_lib/validate.js'
+import { getOrderByDownloadToken, isValidDownloadToken } from '../../lib/ordersDb.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod } from '../_lib/validate.js'
 
 const TOKEN_PATTERN = /^[a-f0-9]{32,64}$/i
 

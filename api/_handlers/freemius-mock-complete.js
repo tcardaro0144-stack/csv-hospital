@@ -1,13 +1,13 @@
 import {
   buildLocalFreemiusMockSuccessPayload,
   isLocalFreemiusMockRequest,
-} from './_lib/freemiusLocalMock.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
+} from '../_lib/freemiusLocalMock.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
 import {
   getFreemiusPlanId,
   getFreemiusProductId,
-} from './_lib/env.js'
+} from '../_lib/env.js'
 
 /**
  * POST /api/freemius-mock-complete

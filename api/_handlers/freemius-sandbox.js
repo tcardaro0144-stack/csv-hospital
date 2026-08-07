@@ -1,8 +1,8 @@
 import {
   buildFreemiusCheckoutModeResponse,
-} from './_lib/freemiusSandbox.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
+} from '../_lib/freemiusSandbox.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
 
 /**
  * GET /api/freemius-sandbox

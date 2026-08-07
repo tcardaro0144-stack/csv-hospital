@@ -3,11 +3,11 @@ import {
   buildUnlockCookie,
   createUnlockToken,
   isSecureRequest,
-} from '../lib/unlockToken.js'
-import { getStripeSecretKey, getUnlockSecret } from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod, validateSessionId } from './_lib/validate.js'
+} from '../../lib/unlockToken.js'
+import { getStripeSecretKey, getUnlockSecret } from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod, validateSessionId } from '../_lib/validate.js'
 
 /**
  * GET /api/check-payment-status?session_id=cs_xxx

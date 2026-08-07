@@ -5,10 +5,10 @@ import {
   getStripePriceId,
   getStripePublishableKey,
   getStripeSecretKey,
-} from './_lib/env.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod, validateClientUrl } from './_lib/validate.js'
+} from '../_lib/env.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod, validateClientUrl } from '../_lib/validate.js'
 
 /** API version that supports ui_mode: 'elements' (replaces 'custom'). */
 const STRIPE_API_VERSION = '2026-06-24.dahlia'

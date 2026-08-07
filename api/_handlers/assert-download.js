@@ -1,7 +1,7 @@
-import { assertPaidSession, assertPaidUnlock } from '../lib/assertPaidUnlock.js'
-import { enforceRateLimit } from './_lib/rateLimit.js'
-import { withPerimeter } from './_lib/securityHeaders.js'
-import { requireMethod } from './_lib/validate.js'
+import { assertPaidSession, assertPaidUnlock } from '../../lib/assertPaidUnlock.js'
+import { enforceRateLimit } from '../_lib/rateLimit.js'
+import { withPerimeter } from '../_lib/securityHeaders.js'
+import { requireMethod } from '../_lib/validate.js'
 
 /**
  * POST /api/assert-download
