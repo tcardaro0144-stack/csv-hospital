@@ -10,13 +10,17 @@
  * Freemius open() modes (mutually exclusive — never combine):
  *   pricing  → { plan_id, pricing_id }   // preferred — exact price row
  *   plan     → { plan_id, licenses, billing_cycle: 'lifetime' }  // fallback
- *   mock     → local credit grant (VITE_FREEMIUS_MOCK)
  *
  * Env overrides (optional):
  *   VITE_FREEMIUS_PLAN_ID / VITE_FREEMIUS_PLAN_ID_{N}
  *   VITE_FREEMIUS_PRICING_ID_{N}
- *   VITE_FREEMIUS_MOCK
  */
+
+import {
+  FREEMIUS_PLAN_ID,
+  FREEMIUS_PRODUCT_ID,
+  FREEMIUS_PUBLIC_KEY,
+} from '../../shared/freemiusCatalog.js'
 
 /**
  * @typedef {{
@@ -31,7 +35,7 @@
  */
 
 /**
- * @typedef {'pricing'|'plan'|'mock'} FreemiusCheckoutStrategy
+ * @typedef {'pricing'|'plan'} FreemiusCheckoutStrategy
  */
 
 /**
@@ -48,9 +52,9 @@
 
 /** Live Freemius defaults for CSV Hospital Credit Passes. */
 export const FREEMIUS_DEFAULT_TEST_IDS = {
-  productId: '36475',
-  planId: '60396',
-  publicKey: 'pk_1411029c3e32680a04780cd82936a',
+  productId: FREEMIUS_PRODUCT_ID,
+  planId: FREEMIUS_PLAN_ID,
+  publicKey: FREEMIUS_PUBLIC_KEY,
 }
 
 /**
@@ -143,29 +147,11 @@ export function sanitizeFreemiusId(value) {
   return String(n)
 }
 
-function envFlag(key) {
-  const env = typeof import.meta !== 'undefined' ? import.meta.env : undefined
-  const v = String(env?.[key] ?? '')
-    .trim()
-    .toLowerCase()
-  return /^(1|true|yes|on)$/.test(v)
-}
-
 function envId(key) {
   const env = typeof import.meta !== 'undefined' ? import.meta.env : undefined
   return sanitizeFreemiusId(env?.[key])
 }
 
-export function isFreemiusMockEnabled() {
-  return envFlag('VITE_FREEMIUS_MOCK')
-}
-
-/**
- * Resolve checkout identifiers for a package.
- * Prefers per-tier pricing_id (env override → hardcoded Freemius row).
- * @param {HealingPassPackage} pkg
- * @returns {FreemiusCheckoutIds}
- */
 export function resolvePackageCheckoutIds(pkg) {
   const planId =
     envId(pkg.planEnvKey) ||
@@ -176,15 +162,7 @@ export function resolvePackageCheckoutIds(pkg) {
     envId(pkg.pricingEnvKey) || sanitizeFreemiusId(pkg.defaultPricingId)
 
   /** @type {FreemiusCheckoutStrategy} */
-  let strategy
-  if (isFreemiusMockEnabled()) {
-    strategy = 'mock'
-  } else if (pricingId) {
-    strategy = 'pricing'
-  } else {
-    // Last resort: license quantity = file credits on shared lifetime plan
-    strategy = 'plan'
-  }
+  const strategy = pricingId ? 'pricing' : 'plan'
 
   return {
     packageId: pkg.id,
@@ -202,10 +180,10 @@ export function resolvePackageCheckoutIds(pkg) {
  * Mutually exclusive modes — never mixes pricing_id with licenses/billing flags.
  *
  * @param {FreemiusCheckoutIds} ids
- * @returns {Record<string, string|number|boolean>|null} null for mock
+ * @returns {Record<string, string|number|boolean>|null}
  */
 export function buildOneTimePurchaseParams(ids) {
-  if (!ids || ids.strategy === 'mock') return null
+  if (!ids) return null
 
   const planId = sanitizeFreemiusId(ids.planId)
   if (!planId) return null

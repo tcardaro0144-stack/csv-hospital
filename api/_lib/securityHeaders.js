@@ -76,7 +76,16 @@ export function applySecurityHeaders(res, { includeCsp = false, isApi = false } 
 export function withPerimeter(handler, { isApi = true } = {}) {
   return async function perimeterHandler(req, res) {
     applySecurityHeaders(res, { isApi, includeCsp: false })
-    return handler(req, res)
+    try {
+      return await handler(req, res)
+    } catch (err) {
+      console.error('[perimeter]', err?.message || err)
+      if (res.headersSent) return undefined
+      res.setHeader('Content-Type', 'application/json; charset=utf-8')
+      return res.status(500).json({
+        error: 'Internal server error.',
+      })
+    }
   }
 }
 

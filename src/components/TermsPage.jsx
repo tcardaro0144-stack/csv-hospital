@@ -30,6 +30,9 @@ export default function TermsPage() {
             <Link to={ROUTES.ROOT} className="csvh-nav-link">
               HOME
             </Link>
+            <Link to={ROUTES.GUIDES} className="csvh-nav-link">
+              GUIDES
+            </Link>
             <Link to={ROUTES.TERMS} className="csvh-nav-link" aria-current="page">
               TERMS OF SERVICE
             </Link>
@@ -166,6 +169,8 @@ export default function TermsPage() {
             CSV Hospital is not a real hospital, but we are serious about clean data.
           </p>
           <p>
+            <Link to={ROUTES.GUIDES}>Guides</Link>
+            <span aria-hidden="true"> · </span>
             <Link to={ROUTES.TERMS}>Terms of Service</Link>
             <span aria-hidden="true"> · </span>
             Owned &amp; operated by T.J.C.

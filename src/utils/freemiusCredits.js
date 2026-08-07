@@ -49,13 +49,13 @@ function persist(state) {
 
 /**
  * Add credits from a one-time Freemius package purchase (stackable).
- * @param {{ packageId?: string, files?: number, planId?: string|number, purchaseId?: string|null, raw?: object }} meta
+ * @param {{ packageId?: string, files?: number, planId?: string|number, pricingId?: string|number|null, purchaseId?: string|null, raw?: object }} meta
  * @returns {number} new balance
  */
 export function addHealingCredits(meta = {}) {
   const pkg =
     (meta.packageId && getPackageById(meta.packageId)) ||
-    getPackageByPlanId(meta.planId)
+    getPackageByPlanId(meta.planId, meta.pricingId)
 
   const files =
     Number(meta.files) > 0
@@ -94,6 +94,7 @@ export function addHealingCredits(meta = {}) {
     files,
     packageId: pkg?.id || meta.packageId || null,
     planId: meta.planId != null ? String(meta.planId) : null,
+    pricingId: meta.pricingId != null ? String(meta.pricingId) : null,
     purchaseId,
   })
   persist(state)

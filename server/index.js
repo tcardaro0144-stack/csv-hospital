@@ -18,6 +18,10 @@ import {
   isStripeConfigured,
 } from '../api/_lib/env.js'
 import { buildFreemiusCheckoutModeResponse } from '../api/_lib/freemiusSandbox.js'
+import {
+  buildLocalFreemiusMockSuccessPayload,
+  isLocalFreemiusMockRequest,
+} from '../api/_lib/freemiusLocalMock.js'
 import { enforceRateLimit } from '../api/_lib/rateLimit.js'
 import { applySecurityHeaders } from '../api/_lib/securityHeaders.js'
 import { stripeCheckoutErrorMessage } from '../api/_lib/stripeErrors.js'
@@ -267,17 +271,75 @@ app.post('/api/manager/verify', (req, res) => {
  * or VITE_FREEMIUS_SANDBOX is true.
  */
 app.get('/api/freemius-sandbox', (req, res) => {
-  if (!enforceRateLimit(req, res, 'checkout')) return
+  try {
+    if (!enforceRateLimit(req, res, 'checkout')) return
 
-  const payload = buildFreemiusCheckoutModeResponse()
-  const status = payload.status || 200
-  const { status: _status, error, ...body } = payload
+    const payload = buildFreemiusCheckoutModeResponse()
+    const status = payload.status || 200
+    const { status: _status, error, ...body } = payload
 
-  res.setHeader('Content-Type', 'application/json; charset=utf-8')
-  if (error) {
-    return res.status(status).json({ ...body, error })
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+    if (error) {
+      return res.status(status).json({ ...body, error })
+    }
+    return res.status(status).json(body)
+  } catch (err) {
+    console.error('[freemius-sandbox]', err?.message || err)
+    if (res.headersSent) return undefined
+    return res.status(500).json({
+      mode: 'live',
+      isSandbox: false,
+      is_sandbox: false,
+      sandbox: null,
+      error: 'Unable to build Freemius checkout mode.',
+    })
   }
-  return res.status(status).json(body)
+})
+
+/**
+ * Localhost-only Freemius mock completion (test card 4242).
+ * Returns a Freemius-shaped success payload for client credit grant.
+ * POST /api/freemius-mock-complete
+ */
+app.post('/api/freemius-mock-complete', (req, res) => {
+  try {
+    if (!enforceRateLimit(req, res, 'checkout')) return
+
+    if (!isLocalFreemiusMockRequest(req)) {
+      return res.status(403).json({
+        error: 'Freemius local mock is only available on localhost.',
+        code: 'local_mock_forbidden',
+      })
+    }
+
+    const body = req.body && typeof req.body === 'object' ? req.body : {}
+    const testCard = String(body.testCard || body.test_card || '4242')
+    if (!testCard.replace(/\s+/g, '').startsWith('4242')) {
+      return res.status(400).json({
+        error: 'Local mock only accepts test card 4242.',
+        code: 'invalid_test_card',
+      })
+    }
+
+    const freemius = buildLocalFreemiusMockSuccessPayload({
+      packageId: typeof body.packageId === 'string' ? body.packageId : 'pass-1',
+      files: body.files,
+      planId: body.planId || getFreemiusPlanId(),
+      pricingId: body.pricingId ?? null,
+      productId: body.productId || getFreemiusProductId(),
+      testCard: '4242',
+    })
+
+    return res.status(200).json({
+      ok: true,
+      mode: 'local_mock',
+      is_sandbox: true,
+      freemius,
+    })
+  } catch (err) {
+    console.error('[freemius-mock-complete]', err?.message || err)
+    return res.status(500).json({ error: 'Unable to build local Freemius mock.' })
+  }
 })
 
 app.post('/api/create-checkout-session', async (req, res) => {
@@ -717,6 +779,16 @@ app.post('/api/support-triage', async (req, res) => {
     console.error('Support triage error:', error?.message || error)
     return res.status(500).json({ error: 'Unable to triage message.' })
   }
+})
+
+// Always JSON for unhandled /api errors (never Express HTML / plain text).
+app.use((err, _req, res, next) => {
+  console.error('[api]', err?.message || err)
+  if (res.headersSent) return next(err)
+  res.setHeader('Content-Type', 'application/json; charset=utf-8')
+  return res.status(500).json({
+    error: 'Internal server error.',
+  })
 })
 
 app.listen(port, () => {

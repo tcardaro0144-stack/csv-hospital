@@ -172,6 +172,9 @@ export default function CurePage() {
                 {item.label}
               </button>
             ))}
+            <Link to={ROUTES.GUIDES} className="csvh-nav-link">
+              GUIDES
+            </Link>
           </nav>
         </div>
       </header>
@@ -386,6 +389,8 @@ export default function CurePage() {
             CSV Hospital is not a real hospital, but we are serious about clean data.
           </p>
           <p>
+            <Link to={ROUTES.GUIDES}>Guides</Link>
+            <span aria-hidden="true"> · </span>
             <Link to={ROUTES.TERMS}>Terms of Service</Link>
             <span aria-hidden="true"> · </span>
             Owned &amp; operated by T.J.C.

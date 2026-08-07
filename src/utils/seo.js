@@ -28,7 +28,15 @@ export const SEO_PAGES = {
     path: '/terms',
     type: 'website',
   },
+  guides: {
+    title: 'Guides — CSV Hospital',
+    description:
+      'Technical guides from CSV Hospital: how to clean and fix broken CSV files, repair delimiters, fix encoding issues, and stabilize messy spreadsheets in the browser.',
+    path: '/guides',
+    type: 'website',
+  },
 }
+
 
 function ensureMeta(selector, attrs) {
   let el = document.head.querySelector(selector)
@@ -194,5 +202,45 @@ export function organizationWebsiteJsonLd() {
         inLanguage: 'en',
       },
     ],
+  }
+}
+
+/**
+ * Article schema for a guide page.
+ * @param {{ title: string, description: string, path: string, publishedAt: string, updatedAt?: string }} guide
+ */
+export function guideArticleJsonLd(guide) {
+  if (!guide) return null
+  const url = `${SITE_URL}${guide.path}`
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: guide.title,
+    description: guide.description,
+    datePublished: guide.publishedAt,
+    dateModified: guide.updatedAt || guide.publishedAt,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+    author: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/favicon.svg`,
+      },
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
   }
 }

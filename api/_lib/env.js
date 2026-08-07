@@ -7,6 +7,11 @@
  */
 
 import { validateClientUrl } from './validate.js'
+import {
+  FREEMIUS_PLAN_ID,
+  FREEMIUS_PRODUCT_ID,
+  FREEMIUS_PUBLIC_KEY,
+} from '../../shared/freemiusCatalog.js'
 
 /** Default test-mode Price ID (Dashboard → Products). Override with STRIPE_PRICE_ID. */
 const DEFAULT_STRIPE_PRICE_ID = 'price_1TuUafIv6QgjmVhx1EWTE8FP'
@@ -101,7 +106,7 @@ export function getFreemiusPublicKey() {
   const key =
     process.env.FREEMIUS_PUBLIC_KEY ||
     process.env.VITE_FREEMIUS_PUBLIC_KEY ||
-    'pk_1411029c3e32680a04780cd82936a'
+    FREEMIUS_PUBLIC_KEY
   if (!key || typeof key !== 'string') return null
   const trimmed = stripEnvQuotes(key)
   if (!trimmed.startsWith('pk_')) return null
@@ -119,14 +124,16 @@ export function getFreemiusProductId() {
   const id =
     process.env.FREEMIUS_PRODUCT_ID ||
     process.env.VITE_FREEMIUS_PRODUCT_ID ||
-    '36475'
+    FREEMIUS_PRODUCT_ID
   const trimmed = id != null ? stripEnvQuotes(String(id)) : ''
   return trimmed || null
 }
 
 export function getFreemiusPlanId() {
   const id =
-    process.env.FREEMIUS_PLAN_ID || process.env.VITE_FREEMIUS_PLAN_ID || '60396'
+    process.env.FREEMIUS_PLAN_ID ||
+    process.env.VITE_FREEMIUS_PLAN_ID ||
+    FREEMIUS_PLAN_ID
   const trimmed = id != null ? stripEnvQuotes(String(id)) : ''
   return trimmed || null
 }
@@ -145,11 +152,24 @@ export function getFreemiusSecretKey() {
 }
 
 /**
+ * Freemius Developer Dashboard → Settings → API & Keys → Bearer / API key.
+ * Required by `@freemius/sdk` constructor. Sandbox token minting uses secret+public;
+ * other SDK API calls need a real bearer token.
+ */
+export function getFreemiusApiKey() {
+  const key = process.env.FREEMIUS_API_KEY
+  if (!key || typeof key !== 'string') return null
+  const trimmed = stripEnvQuotes(key)
+  if (!trimmed || /^(your_|xxx|placeholder)/i.test(trimmed)) return null
+  if (trimmed.length < 16) return null
+  return trimmed
+}
+
+/**
  * Freemius sandbox overlay mode.
  * Freemius does not use separate sk_test/sk_live keys — the same product keys are live.
- * Sandbox is enabled when FREEMIUS_SANDBOX or VITE_FREEMIUS_SANDBOX is true
- * (either flag wins — do not let a stale FREEMIUS_SANDBOX=false override Vite true).
- * When false/off/live, checkout charges real payments (no sandbox token/ctx).
+ * Sandbox is enabled ONLY when FREEMIUS_SANDBOX or VITE_FREEMIUS_SANDBOX is explicitly true.
+ * When false/off/live/unset, checkout charges real payments (no sandbox token/ctx).
  */
 export function isFreemiusSandboxEnabled() {
   const flags = [process.env.FREEMIUS_SANDBOX, process.env.VITE_FREEMIUS_SANDBOX]
@@ -163,11 +183,8 @@ export function isFreemiusSandboxEnabled() {
   if (flags.some(isTrue)) return true
   if (flags.some(isFalse)) return false
 
-  // Unset → sandbox for local safety; live in production hosts.
-  const prod =
-    process.env.VERCEL_ENV === 'production' ||
-    process.env.NODE_ENV === 'production'
-  return !prod
+  // Unset → LIVE (production-safe default). Opt into sandbox with =true.
+  return false
 }
 
 

@@ -11,6 +11,8 @@ import {
   getHealingCreditBalance,
   hasFreemiusUnlock,
   openFreemiusCheckout,
+  storeFreemiusPurchase,
+  getFreemiusPurchase,
 } from '../utils/freemiusCheckout.js'
 import { consumeHealingCredit } from '../utils/freemiusCredits.js'
 
@@ -62,7 +64,19 @@ export default function useProStatus() {
 
     function onFreemiusPurchase(event) {
       const data = event?.detail
-      const balance = getHealingCreditBalance()
+      let balance = getHealingCreditBalance()
+
+      // Safety net: Freemius may send null; UpgradeButton still attaches packageId/files.
+      if (balance < 1 && (data?.packageId || Number(data?.files) > 0)) {
+        storeFreemiusPurchase(data && typeof data === 'object' ? data : {}, {
+          packageId: data.packageId,
+          files: data.files,
+          planId: data.plan_id ?? data.planId,
+          pricingId: data.pricing_id ?? data.pricingId,
+        })
+        balance = getHealingCreditBalance()
+      }
+
       setCreditBalance(balance)
       setPaymentProvider('freemius')
       setIsPaid(balance > 0 || hasFreemiusUnlock())
@@ -105,10 +119,13 @@ export default function useProStatus() {
             clearProStatus()
             setIsPaid(false)
             setCheckoutError('Payment was not completed. Download stays locked.')
+            // Still restore Freemius credits if present.
+            syncFreemiusCredits()
           }
         } catch {
           clearProStatus()
           setIsPaid(false)
+          syncFreemiusCredits()
         } finally {
           setIsVerifying(false)
         }
@@ -124,6 +141,23 @@ export default function useProStatus() {
       }
 
       // Restore one-time Freemius credits across reloads.
+      // If a prior purchase record exists but the ledger was never written
+      // (null Freemius callback), recover credits from that record once.
+      if (getHealingCreditBalance() < 1) {
+        const prior = getFreemiusPurchase()
+        if (
+          prior?.unlocked &&
+          (prior.packageId || Number(prior.filesGranted) > 0)
+        ) {
+          storeFreemiusPurchase(prior.raw || prior, {
+            packageId: prior.packageId,
+            files: prior.filesGranted,
+            planId: prior.planId,
+            pricingId: prior.pricingId,
+          })
+        }
+      }
+
       syncFreemiusCredits(
         getHealingCreditBalance() > 0
           ? `Welcome back — ${getHealingCreditBalance()} file credit${getHealingCreditBalance() === 1 ? '' : 's'} remaining.`

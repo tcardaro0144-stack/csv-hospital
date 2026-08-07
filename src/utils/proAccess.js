@@ -31,9 +31,9 @@ export function getPaidSessionId() {
 }
 
 export function clearProStatus() {
+  // Stripe / legacy session only — never wipe Freemius purchase or healing credits.
   localStorage.removeItem('csv-hospital-pro')
   localStorage.removeItem('csv-hospital-session-id')
-  localStorage.removeItem('csv-hospital-freemius-purchase')
   sessionStorage.removeItem(PAID_SESSION_KEY)
 }
 
