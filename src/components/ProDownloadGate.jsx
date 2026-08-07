@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import UpgradeButton from './UpgradeButton.jsx'
 import DownloadButton from './DownloadButton.jsx'
+import ExportAttribution from './ExportAttribution.jsx'
 import { HEALING_PASS_PACKAGES } from '../utils/freemiusPricing.js'
 
 /**
@@ -53,7 +54,7 @@ export default function ProDownloadGate({
 
   if (paid === true) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-3">
         {creditBalance > 0 ? (
           <p className="text-xs text-[#00ffc2]">
             File credits remaining: {creditBalance}
@@ -73,33 +74,37 @@ export default function ProDownloadGate({
             Verifying payment before discharge…
           </p>
         ) : null}
+        <ExportAttribution />
       </div>
     )
   }
 
   return (
-    <div className="rounded-lg border border-[#00ffc2] bg-black px-4 py-4">
-      <h3 className="text-sm font-semibold text-[#00ffc2]">Discharge locked</h3>
-      <p className="mt-1 text-sm text-gray-400">
-        Buy a one-time Freemius file-credit pack to unlock download. Credits stack —
-        combine packs for higher volume. See Pricing for all flat tiers.
-      </p>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <UpgradeButton
-          package={starterPack}
-          disabled={uiLocked}
-          isLoading={isCheckingOut}
-        />
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-gray-700 bg-black px-4 py-2.5 text-sm font-medium text-gray-500 opacity-70"
-          title="Complete payment to enable download"
-        >
-          Discharge CSV (locked)
-        </button>
+    <div className="space-y-3">
+      <div className="rounded-lg border border-[#00ffc2] bg-black px-4 py-4">
+        <h3 className="text-sm font-semibold text-[#00ffc2]">Discharge locked</h3>
+        <p className="mt-1 text-sm text-gray-400">
+          Buy a one-time Freemius file-credit pack to unlock download. Credits stack —
+          combine packs for higher volume. See Pricing for all flat tiers.
+        </p>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <UpgradeButton
+            package={starterPack}
+            disabled={uiLocked}
+            isLoading={isCheckingOut}
+          />
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-gray-700 bg-black px-4 py-2.5 text-sm font-medium text-gray-500 opacity-70"
+            title="Complete payment to enable download"
+          >
+            Discharge CSV (locked)
+          </button>
+        </div>
       </div>
+      <ExportAttribution compact />
     </div>
   )
 }

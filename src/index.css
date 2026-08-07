@@ -520,6 +520,122 @@ body {
   color: var(--csvh-muted);
 }
 
+/* Neon export attribution — survives .csvh-page signal remaps */
+.csvh-export-mark {
+  margin-top: 0.15rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid color-mix(in srgb, #00ffc2 42%, #111);
+  background:
+    linear-gradient(135deg, rgba(0, 255, 194, 0.06), transparent 55%),
+    #050805;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 255, 194, 0.06),
+    0 0 18px rgba(0, 255, 194, 0.06);
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.csvh-export-mark-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.csvh-export-mark-sig {
+  color: #00ffc2;
+  font-size: 0.85rem;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(0, 255, 194, 0.55);
+  flex-shrink: 0;
+}
+
+.csvh-export-mark-text {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, #00ffc2 78%, #9ca3af);
+}
+
+.csvh-export-mark-brand {
+  color: #00ffc2;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(0, 255, 194, 0.35);
+}
+
+.csvh-export-mark a {
+  color: #00ffc2;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, #00ffc2 35%, transparent);
+}
+
+.csvh-export-mark a:hover,
+.csvh-export-mark a:focus-visible {
+  border-bottom-color: #00ffc2;
+  outline: none;
+}
+
+.csvh-export-mark-share {
+  flex-shrink: 0;
+  margin-left: auto;
+  border: 1px solid color-mix(in srgb, #00ffc2 45%, #222);
+  background: #000;
+  color: #00ffc2;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.55rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+.csvh-export-mark-share:hover,
+.csvh-export-mark-share:focus-visible {
+  border-color: #00ffc2;
+  box-shadow: 0 0 10px rgba(0, 255, 194, 0.25);
+  outline: none;
+}
+
+.csvh-export-mark-meta {
+  margin: 0.45rem 0 0;
+  font-size: 0.65rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, #00ffc2 45%, #6b7280);
+}
+
+.csvh-export-mark-meta code {
+  display: inline;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, #00ffc2 22%, #222);
+  background: #000;
+  color: #00ffc2;
+  font-size: 0.62rem;
+  word-break: break-all;
+}
+
+.csvh-page .csvh-export-mark,
+.csvh-page .csvh-export-mark-sig,
+.csvh-page .csvh-export-mark-brand,
+.csvh-page .csvh-export-mark a,
+.csvh-page .csvh-export-mark-share,
+.csvh-page .csvh-export-mark-meta code {
+  color: #00ffc2 !important;
+}
+
+.csvh-page .csvh-export-mark-text {
+  color: color-mix(in srgb, #00ffc2 78%, #9ca3af) !important;
+}
+
+.csvh-page .csvh-export-mark-meta {
+  color: color-mix(in srgb, #00ffc2 45%, #6b7280) !important;
+}
+
 .csvh-service-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

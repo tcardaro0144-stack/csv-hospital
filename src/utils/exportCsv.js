@@ -1,3 +1,7 @@
+/** One-line export watermark — comment-style, easy to strip, not a data row. */
+export const CSV_EXPORT_FOOTER =
+  '# healed by CSV Hospital · https://csvhospital.com'
+
 function escapeField(value) {
   const text = String(value ?? '')
   if (/[",\r\n]/.test(text)) {
@@ -10,20 +14,30 @@ function rowToCsv(row) {
   return row.map(escapeField).join(',')
 }
 
-export function serializeCsv({ headers, rows }) {
-  return [rowToCsv(headers), ...rows.map(rowToCsv)].join('\r\n')
+/**
+ * Serialize headers + rows to CSV text.
+ * When includeFooter is true, appends a lightweight `#` attribution line
+ * after the data (not part of the rectangular table).
+ */
+export function serializeCsv({ headers, rows, includeFooter = false }) {
+  const body = [rowToCsv(headers), ...rows.map(rowToCsv)].join('\r\n')
+  if (!includeFooter) return body
+  return `${body}\r\n${CSV_EXPORT_FOOTER}\r\n`
 }
 
 /**
  * Create and trigger a CSV download from an in-memory blob.
  * HARD GATE: refuses to build the blob unless isPaid === true.
  * Never opens a file picker — only saves the generated Blob.
+ *
+ * Discharged files include a subtle `#` attribution footer for share/reference.
  */
 export function downloadCsv({
   headers,
   rows,
   fileName = 'fixed.csv',
   isPaid = false,
+  includeFooter = true,
 }) {
   if (isPaid !== true) {
     throw new Error('PAYMENT_REQUIRED')
@@ -38,7 +52,7 @@ export function downloadCsv({
     ? safeName
     : `${safeName}.csv`
 
-  const content = serializeCsv({ headers, rows })
+  const content = serializeCsv({ headers, rows, includeFooter })
   const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' })
 
   // IE / legacy Edge
