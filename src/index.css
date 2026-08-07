@@ -353,6 +353,94 @@ body {
   max-width: 34ch;
 }
 
+/* AEO — direct-answer citation block (40–60 words) */
+.csvh-aeo-answer {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--csvh-blue) 28%, var(--csvh-silver));
+  background: color-mix(in srgb, var(--csvh-blue-soft) 55%, #fff);
+  max-width: 42rem;
+}
+
+.csvh-aeo-answer-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--csvh-blue-deep);
+}
+
+.csvh-aeo-answer-text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--csvh-ink);
+}
+
+.csvh-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--csvh-silver) 70%, white);
+  background: var(--csvh-paper);
+  box-shadow: var(--csvh-shadow);
+}
+
+.csvh-aeo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.csvh-aeo-table th,
+.csvh-aeo-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid color-mix(in srgb, var(--csvh-silver) 65%, white);
+}
+
+.csvh-aeo-table thead th {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--csvh-blue-deep);
+  background: color-mix(in srgb, var(--csvh-blue-soft) 70%, #fff);
+  white-space: nowrap;
+}
+
+.csvh-aeo-table tbody th[scope='row'] {
+  font-weight: 800;
+  color: var(--csvh-ink);
+  min-width: 9.5rem;
+}
+
+.csvh-aeo-table tbody td {
+  color: var(--csvh-muted);
+}
+
+.csvh-aeo-table tbody tr:last-child th,
+.csvh-aeo-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.csvh-aeo-table-compare tbody td:first-of-type {
+  color: var(--csvh-blue-deep);
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .csvh-aeo-table-compare th[scope='col']:nth-child(2),
+  .csvh-aeo-table-compare td:nth-child(2) {
+    background: color-mix(in srgb, var(--csvh-blue-soft) 35%, transparent);
+  }
+}
+
 .csvh-cta {
   margin-top: 1.6rem;
   display: inline-flex;

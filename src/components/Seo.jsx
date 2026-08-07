@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import {
   applySeo,
   guideArticleJsonLd,
-  hospitalSoftwareJsonLd,
+  hospitalHomeJsonLd,
   SEO_PAGES,
 } from '../utils/seo.js'
 
@@ -27,7 +27,7 @@ export default function Seo({ pageKey = 'home', guide = null }) {
     }
 
     const page = SEO_PAGES[pageKey] || SEO_PAGES.home
-    let jsonLd = hospitalSoftwareJsonLd()
+    let jsonLd = hospitalHomeJsonLd()
 
     if (pageKey === 'terms' || pageKey === 'guides') {
       jsonLd = {
