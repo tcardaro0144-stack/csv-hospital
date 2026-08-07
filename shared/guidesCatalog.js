@@ -25,6 +25,26 @@ export const GUIDES = [
     readingMinutes: 8,
     tags: ['csv', 'data-cleaning', 'encoding', 'delimiters'],
   },
+  {
+    slug: 'how-to-fix-mismatched-columns-and-shifted-data-in-csv-files',
+    title: 'How to Fix Mismatched Columns and Shifted Data in CSV Files',
+    description:
+      'Fix CSV rows that shift because of an extra comma or missing delimiter — and how CSV Hospital automatically aligns column structures in your browser.',
+    publishedAt: '2026-08-07',
+    updatedAt: '2026-08-07',
+    readingMinutes: 7,
+    tags: ['csv', 'columns', 'delimiters', 'data-quality'],
+  },
+  {
+    slug: 'how-to-fix-corrupted-character-encoding-utf-8-vs-latin-1-in-spreadsheets',
+    title: 'How to Fix Corrupted Character Encoding (UTF-8 vs. Latin-1) in Spreadsheets',
+    description:
+      'Why special characters turn into mojibake across systems — and how CSV Hospital cleans and normalizes CSV encoding instantly in the browser.',
+    publishedAt: '2026-08-07',
+    updatedAt: '2026-08-07',
+    readingMinutes: 7,
+    tags: ['csv', 'utf-8', 'latin-1', 'encoding', 'mojibake'],
+  },
 ]
 
 /**
