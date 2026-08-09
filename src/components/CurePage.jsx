@@ -22,9 +22,9 @@ const NAV = [
   { id: 'updates', label: 'UPDATES' },
 ]
 
-/** ~50-word direct answer for AEO / citation blocks (keep 40–60 words). */
-const DIRECT_ANSWER =
-  'CSV Hospital is a browser-based utility that repairs messy CSV spreadsheets. It removes empty rows, trims invisible whitespace, and standardizes crooked headers so imports, VLOOKUPs, and warehouse loads stop failing. Your file never uploads to a server—triage stays on your device, then you download a healed CSV when ready.'
+/** Hero subheadline under the main title. */
+const HERO_SUBHEAD =
+  'Stop import failures and broken formulas. CSV Hospital repairs, cleans, and standardizes your files—100% locally in your browser, so your sensitive data never leaves your device.'
 
 const FEATURE_ROWS = [
   {
@@ -220,18 +220,7 @@ export default function CurePage() {
             <h1 id="csvh-headline" className="csvh-headline">
               IS YOUR DATA TERMINALLY MESSY?
             </h1>
-            <aside
-              className="csvh-aeo-answer"
-              data-aeo="direct-answer"
-              aria-label="Direct answer: what CSV Hospital solves"
-            >
-              <p className="csvh-aeo-answer-label">Direct answer</p>
-              <p className="csvh-aeo-answer-text">{DIRECT_ANSWER}</p>
-            </aside>
-            <p className="csvh-subhead">
-              Don&apos;t be like this guy. Bring your CSV files to CSV Hospital—the
-              only digital ER for data repair.
-            </p>
+            <p className="csvh-subhead">{HERO_SUBHEAD}</p>
             <button type="button" className="csvh-cta" onClick={openAdmitWard}>
               [ ADMIT &amp; HEAL YOUR CSV ]
             </button>

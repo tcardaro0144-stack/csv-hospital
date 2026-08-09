@@ -203,6 +203,10 @@ export const HOSPITAL_FAQS = [
     q: 'What problems does CSV Hospital solve?',
     a: 'It repairs messy CSV spreadsheets in the browser: empty rows, invisible whitespace, crooked headers, and related import failures—without uploading your file to a server.',
   },
+  {
+    q: 'What exactly does CSV Hospital do and how does it protect my data?',
+    a: 'CSV Hospital is a browser-based utility that repairs messy CSV spreadsheets. It automatically removes empty rows, trims invisible whitespace, standardizes crooked headers, and fixes common structure errors so imports, VLOOKUPs, and warehouse loads stop failing. Most importantly, triage stays on your device—your file is processed entirely within your local browser memory and never uploads to an external server. Once repaired, you can download your clean, healed CSV instantly.',
+  },
 ]
 
 export function hospitalFaqPageJsonLd() {

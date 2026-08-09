@@ -350,7 +350,7 @@ body {
   font-size: 1.125rem;
   line-height: 1.55;
   color: var(--csvh-muted);
-  max-width: 34ch;
+  max-width: 42rem;
 }
 
 /* AEO — direct-answer citation block (40–60 words) */
