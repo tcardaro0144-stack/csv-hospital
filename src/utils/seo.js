@@ -24,7 +24,7 @@ export const SEO_PAGES = {
   terms: {
     title: 'Terms of Service — CSV Hospital',
     description:
-      'Terms of Service for CSV Hospital. Owned and operated by T.J.C. Covers as-is data repair, user backup responsibility, and non-refundable one-time credit purchases.',
+      'Terms of Service for CSV Hospital. Owned by T.J.C.; generated and operated by AI. Covers as-is data repair, user backup responsibility, and non-refundable one-time credit purchases.',
     path: '/terms',
     type: 'website',
   },
