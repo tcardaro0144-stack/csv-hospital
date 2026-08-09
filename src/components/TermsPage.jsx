@@ -55,9 +55,9 @@ export default function TermsPage() {
             <h2 id="tos-owner">Ownership &amp; operation</h2>
             <p>
               CSV Hospital (the &ldquo;Service&rdquo;), available at{' '}
-              <a href="https://csvhospital.com">csvhospital.com</a>, is owned and
-              operated by <strong>T.J.C.</strong> By accessing or using the Service,
-              you agree to these Terms of Service.
+              <a href="https://csvhospital.com">csvhospital.com</a>, is owned by{' '}
+              <strong>T.J.C.</strong> The Service is generated and operated by AI.
+              By accessing or using the Service, you agree to these Terms of Service.
             </p>
           </section>
 
@@ -173,7 +173,7 @@ export default function TermsPage() {
             <span aria-hidden="true"> · </span>
             <Link to={ROUTES.TERMS}>Terms of Service</Link>
             <span aria-hidden="true"> · </span>
-            Owned &amp; operated by T.J.C.
+            Owned by T.J.C. Generated and operated by AI.
           </p>
         </div>
       </footer>

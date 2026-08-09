@@ -24,7 +24,7 @@ export const SEO_PAGES = {
   terms: {
     title: 'Terms of Service — CSV Hospital',
     description:
-      'Terms of Service for CSV Hospital. Owned and operated by T.J.C. Covers as-is data repair, user backup responsibility, and non-refundable one-time credit purchases.',
+      'Terms of Service for CSV Hospital. Owned by T.J.C.; generated and operated by AI. Covers as-is data repair, user backup responsibility, and non-refundable one-time credit purchases.',
     path: '/terms',
     type: 'website',
   },
@@ -151,10 +151,11 @@ export function applySeo(page, extraJsonLd = null) {
 export function hospitalSoftwareJsonLd() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebApplication',
+    '@type': 'SoftwareApplication',
     name: 'CSV Hospital',
     applicationCategory: 'BusinessApplication',
-    operatingSystem: 'Any',
+    applicationSubCategory: 'DataCleaningApplication',
+    operatingSystem: 'Web browser (Windows, macOS, Linux, ChromeOS)',
     browserRequirements: 'Requires JavaScript. Runs entirely in the browser.',
     url: `${SITE_URL}/`,
     description: SEO_PAGES.hospital.description,
@@ -162,7 +163,7 @@ export function hospitalSoftwareJsonLd() {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
-      description: 'Free admit & preview; paid unlock for discharged CSV download.',
+      description: 'Free admit and preview; paid unlock for discharged CSV download.',
     },
     creator: {
       '@type': 'Organization',
@@ -179,6 +180,86 @@ export function hospitalSoftwareJsonLd() {
     ],
   }
 }
+
+/** Shared FAQ entities for visible FAQs + FAQPage JSON-LD (keep in sync). */
+export const HOSPITAL_FAQS = [
+  {
+    q: 'Is this a real hospital?',
+    a: 'Only emotionally. We treat CSVs, not humans — though both can look terminal after a long night of “quick edits.”',
+  },
+  {
+    q: 'Does my data leave my device?',
+    a: 'No. Triage runs locally in your browser. We are serious about clean data and quiet privacy.',
+  },
+  {
+    q: 'What files can I admit?',
+    a: '.csv only · max 5 MB · up to 50,000 rows and 200 columns. One patient file at a time, please.',
+  },
+  {
+    q: 'How do I discharge a healed file?',
+    a: 'Admit → review triage stats → complete checkout if download is locked → Download Discharged CSV. It saves as {name}-fixed.csv on your device.',
+  },
+  {
+    q: 'What problems does CSV Hospital solve?',
+    a: 'It repairs messy CSV spreadsheets in the browser: empty rows, invisible whitespace, crooked headers, and related import failures—without uploading your file to a server.',
+  },
+]
+
+export function hospitalFaqPageJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: HOSPITAL_FAQS.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  }
+}
+
+/**
+ * Home / hospital graph for answer engines: SoftwareApplication + FAQPage.
+ */
+export function hospitalHomeJsonLd() {
+  const { '@context': _swCtx, ...software } = hospitalSoftwareJsonLd()
+  const { '@context': _faqCtx, ...faq } = hospitalFaqPageJsonLd()
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        description:
+          'CSV Hospital — the digital ER for messy spreadsheets. Browser-local CSV triage and repair.',
+        logo: `${SITE_URL}/favicon.svg`,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: SITE_NAME,
+        publisher: { '@id': `${SITE_URL}/#organization` },
+        inLanguage: 'en',
+      },
+      {
+        ...software,
+        '@id': `${SITE_URL}/#software`,
+        creator: { '@id': `${SITE_URL}/#organization` },
+      },
+      {
+        ...faq,
+        '@id': `${SITE_URL}/#faq`,
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      },
+    ],
+  }
+}
+
 
 export function organizationWebsiteJsonLd() {
   return {

@@ -54,7 +54,7 @@
     />
     <meta name="twitter:image" content="https://csvhospital.com/favicon.svg" />
 
-    <!-- Organization + WebSite structured data (home). Hospital page swaps WebApplication via Seo.jsx -->
+    <!-- Organization + SoftwareApplication + FAQPage (AEO). Spa Seo.jsx keeps this in sync on route. -->
     <script type="application/ld+json" id="jsonld-page">
       {
         "@context": "https://schema.org",
@@ -76,20 +76,77 @@
             "inLanguage": "en"
           },
           {
-            "@type": "WebApplication",
+            "@type": "SoftwareApplication",
+            "@id": "https://csvhospital.com/#software",
             "name": "CSV Hospital",
             "url": "https://csvhospital.com/",
             "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Any",
+            "applicationSubCategory": "DataCleaningApplication",
+            "operatingSystem": "Web browser (Windows, macOS, Linux, ChromeOS)",
             "browserRequirements": "Requires JavaScript. Runs entirely in the browser.",
-            "description": "CSV Hospital diagnoses and repairs broken CSV files in your browser: remove empty rows, trim whitespace, standardize headers, then download a clean file.",
+            "description": "CSV Hospital is a browser-based utility that repairs messy CSV spreadsheets. It removes empty rows, trims invisible whitespace, and standardizes crooked headers so imports, VLOOKUPs, and warehouse loads stop failing. Your file never uploads to a server—triage stays on your device, then you download a healed CSV when ready.",
             "isAccessibleForFree": true,
+            "featureList": [
+              "Remove empty rows",
+              "Trim whitespace",
+              "Standardize headers",
+              "Local in-browser processing (no file upload)",
+              "Download cleaned CSV after unlock"
+            ],
             "creator": { "@id": "https://csvhospital.com/#organization" },
             "offers": {
               "@type": "Offer",
               "price": "0",
-              "priceCurrency": "USD"
+              "priceCurrency": "USD",
+              "description": "Free admit and preview; paid unlock for discharged CSV download."
             }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://csvhospital.com/#faq",
+            "isPartOf": { "@id": "https://csvhospital.com/#website" },
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is this a real hospital?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Only emotionally. We treat CSVs, not humans — though both can look terminal after a long night of “quick edits.”"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does my data leave my device?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Triage runs locally in your browser. We are serious about clean data and quiet privacy."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What files can I admit?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": ".csv only · max 5 MB · up to 50,000 rows and 200 columns. One patient file at a time, please."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I discharge a healed file?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Admit → review triage stats → complete checkout if download is locked → Download Discharged CSV. It saves as {name}-fixed.csv on your device."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What problems does CSV Hospital solve?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It repairs messy CSV spreadsheets in the browser: empty rows, invisible whitespace, crooked headers, and related import failures—without uploading your file to a server."
+                }
+              }
+            ]
           }
         ]
       }

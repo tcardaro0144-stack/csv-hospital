@@ -24,6 +24,7 @@ import supportTriage from './_handlers/support-triage.js'
 import unlockStatus from './_handlers/unlock-status.js'
 import verifySession from './_handlers/verify-session.js'
 import webhook from './_handlers/webhook.js'
+import emailCapture from './_handlers/email-capture.js'
 
 /** Stripe webhook needs the raw body for signature verification. */
 export const config = {
@@ -40,6 +41,7 @@ const ROUTES = {
   'create-checkout-session': createCheckoutSession,
   'create-payment-intent': createPaymentIntent,
   download,
+  'email-capture': emailCapture,
   'freemius-mock-complete': freemiusMockComplete,
   'freemius-sandbox': freemiusSandbox,
   'order-status': orderStatus,

@@ -7,52 +7,72 @@ import StripePaymentPanel from './StripePaymentPanel.jsx'
 import SupportChat from './SupportChat.jsx'
 import Seo from './Seo.jsx'
 import PricingTiers from './PricingTiers.jsx'
+import EmailCapture from './EmailCapture.jsx'
 import { ingestCsvFile } from '../utils/ingestCsv.js'
 import useProStatus from '../hooks/useProStatus.js'
 import { ROUTES } from '../routes.js'
+import { HOSPITAL_FAQS } from '../utils/seo.js'
 
 const NAV = [
   { id: 'home', label: 'HOME (TRIAL WARD)' },
   { id: 'services', label: 'OUR SERVICES' },
+  { id: 'compare', label: 'COMPARE' },
   { id: 'faqs', label: 'PATIENT FAQS' },
   { id: 'pricing', label: 'PRICING' },
+  { id: 'updates', label: 'UPDATES' },
 ]
 
-const SERVICES = [
+/** ~50-word direct answer for AEO / citation blocks (keep 40–60 words). */
+const DIRECT_ANSWER =
+  'CSV Hospital is a browser-based utility that repairs messy CSV spreadsheets. It removes empty rows, trims invisible whitespace, and standardizes crooked headers so imports, VLOOKUPs, and warehouse loads stop failing. Your file never uploads to a server—triage stays on your device, then you download a healed CSV when ready.'
+
+const FEATURE_ROWS = [
   {
-    title: 'Empty-row excision',
-    blurb: 'We gently remove blank stretcher-rows so your dataset can sit up straight again.',
+    feature: 'Empty-row excision',
+    fixes: 'Blank stretcher-rows that inflate counts and break imports',
+    where: 'In your browser only',
   },
   {
-    title: 'Whitespace physiotherapy',
-    blurb: 'Trim leading/trailing spaces from every cell — no more invisible bandages.',
+    feature: 'Whitespace physiotherapy',
+    fixes: 'Leading/trailing spaces that break joins and VLOOKUP',
+    where: 'In your browser only',
   },
   {
-    title: 'Header alignment',
-    blurb: 'Crooked column names get standardized so your chart board stops arguing with itself.',
+    feature: 'Header alignment',
+    fixes: 'Padded or crooked column names that confuse schemas',
+    where: 'In your browser only',
   },
   {
-    title: 'Bedside privacy',
-    blurb: 'Surgery happens in your browser. The file never checks into our server ward.',
+    feature: 'Bedside privacy',
+    fixes: 'Risk of uploading sensitive sheets to a remote cleaner',
+    where: 'File never leaves your device',
   },
 ]
 
-const FAQS = [
+const COMPARE_ROWS = [
   {
-    q: 'Is this a real hospital?',
-    a: 'Only emotionally. We treat CSVs, not humans — though both can look terminal after a long night of “quick edits.”',
+    need: 'Remove empty rows & trim cells',
+    hospital: 'One admit → automatic triage',
+    excel: 'Manual filters / Find & Replace',
+    scripts: 'Write and maintain a script',
   },
   {
-    q: 'Does my data leave my device?',
-    a: 'No. Triage runs locally in your browser. We are serious about clean data and quiet privacy.',
+    need: 'Keep data on your device',
+    hospital: 'Yes — local browser processing',
+    excel: 'Yes — desktop file',
+    scripts: 'Depends on where you run it',
   },
   {
-    q: 'What files can I admit?',
-    a: '.csv only · max 5 MB · up to 50,000 rows and 200 columns. One patient file at a time, please.',
+    need: 'No engineering required',
+    hospital: 'Yes — admit and review',
+    excel: 'Partial — wizard steps',
+    scripts: 'No — code required',
   },
   {
-    q: 'How do I discharge a healed file?',
-    a: 'Admit → review triage stats → complete checkout if download is locked → Download Discharged CSV. It saves as {name}-fixed.csv on your device.',
+    need: 'Discharge a healed .csv',
+    hospital: 'Download {name}-fixed.csv',
+    excel: 'Save As CSV (easy to re-break)',
+    scripts: 'Custom output path',
   },
 ]
 
@@ -200,6 +220,14 @@ export default function CurePage() {
             <h1 id="csvh-headline" className="csvh-headline">
               IS YOUR DATA TERMINALLY MESSY?
             </h1>
+            <aside
+              className="csvh-aeo-answer"
+              data-aeo="direct-answer"
+              aria-label="Direct answer: what CSV Hospital solves"
+            >
+              <p className="csvh-aeo-answer-label">Direct answer</p>
+              <p className="csvh-aeo-answer-text">{DIRECT_ANSWER}</p>
+            </aside>
             <p className="csvh-subhead">
               Don&apos;t be like this guy. Bring your CSV files to CSV Hospital—the
               only digital ER for data repair.
@@ -329,33 +357,83 @@ export default function CurePage() {
           </div>
         </section>
 
-        {/* Services */}
+        {/* Services — scannable feature table (AEO) */}
         <section id="services" className="csvh-section csvh-band" aria-labelledby="services-heading">
           <div className="csvh-wrap">
             <div className="csvh-section-head">
               <h2 id="services-heading">Our services</h2>
               <p>Four bedside manners. Zero judgment about how the sheet got this bad.</p>
             </div>
-            <div className="csvh-service-grid">
-              {SERVICES.map((s) => (
-                <article key={s.title} className="csvh-service">
-                  <h3>{s.title}</h3>
-                  <p>{s.blurb}</p>
-                </article>
-              ))}
+            <div className="csvh-table-scroll">
+              <table className="csvh-aeo-table">
+                <caption className="sr-only">
+                  CSV Hospital features: what each service fixes and where processing runs
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Feature</th>
+                    <th scope="col">What it fixes</th>
+                    <th scope="col">Where it runs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {FEATURE_ROWS.map((row) => (
+                    <tr key={row.feature}>
+                      <th scope="row">{row.feature}</th>
+                      <td>{row.fixes}</td>
+                      <td>{row.where}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Comparison table (AEO) */}
+        <section id="compare" className="csvh-section" aria-labelledby="compare-heading">
+          <div className="csvh-wrap">
+            <div className="csvh-section-head">
+              <h2 id="compare-heading">CSV Hospital vs common fixes</h2>
+              <p>A quick scan of how the ward compares to Excel busywork and one-off scripts.</p>
+            </div>
+            <div className="csvh-table-scroll">
+              <table className="csvh-aeo-table csvh-aeo-table-compare">
+                <caption className="sr-only">
+                  Comparison of CSV Hospital, Excel, and custom scripts for common CSV repair needs
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Need</th>
+                    <th scope="col">CSV Hospital</th>
+                    <th scope="col">Excel</th>
+                    <th scope="col">Custom script</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARE_ROWS.map((row) => (
+                    <tr key={row.need}>
+                      <th scope="row">{row.need}</th>
+                      <td>{row.hospital}</td>
+                      <td>{row.excel}</td>
+                      <td>{row.scripts}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
 
         {/* FAQs */}
-        <section id="faqs" className="csvh-section" aria-labelledby="faqs-heading">
+        <section id="faqs" className="csvh-section csvh-band" aria-labelledby="faqs-heading">
           <div className="csvh-wrap csvh-narrow">
             <div className="csvh-section-head">
               <h2 id="faqs-heading">Patient FAQs</h2>
               <p>Answers from the front desk, before the clipboard arrives.</p>
             </div>
             <div className="csvh-faq-list">
-              {FAQS.map((item) => (
+              {HOSPITAL_FAQS.map((item) => (
                 <details key={item.q} className="csvh-faq">
                   <summary>{item.q}</summary>
                   <p>{item.a}</p>
@@ -381,6 +459,8 @@ export default function CurePage() {
             />
           </div>
         </section>
+
+        <EmailCapture source="homepage" />
       </main>
 
       <footer className="csvh-footer">
@@ -393,7 +473,7 @@ export default function CurePage() {
             <span aria-hidden="true"> · </span>
             <Link to={ROUTES.TERMS}>Terms of Service</Link>
             <span aria-hidden="true"> · </span>
-            Owned &amp; operated by T.J.C.
+            Owned by T.J.C. Generated and operated by AI.
           </p>
         </div>
       </footer>

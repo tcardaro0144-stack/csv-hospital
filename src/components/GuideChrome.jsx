@@ -55,7 +55,7 @@ export default function GuideChrome({ children, current = 'guides' }) {
             <span aria-hidden="true"> · </span>
             <Link to={ROUTES.TERMS}>Terms of Service</Link>
             <span aria-hidden="true"> · </span>
-            Owned &amp; operated by T.J.C.
+            Owned by T.J.C. Generated and operated by AI.
           </p>
         </div>
       </footer>
