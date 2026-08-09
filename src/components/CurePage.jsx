@@ -24,7 +24,7 @@ const NAV = [
 
 /** Hero subheadline under the main title. */
 const HERO_SUBHEAD =
-  'Stop import failures and broken formulas. CSV Hospital repairs, cleans, and standardizes your files—100% locally in your browser, so your sensitive data never leaves your device.'
+  "Don't be like this guy. Bring your CSV files to CSV Hospital—the only digital ER for data repair. Stop import failures and broken formulas: we repair, clean, and standardize your files—100% locally in your browser, so your sensitive data never leaves your device."
 
 const FEATURE_ROWS = [
   {
