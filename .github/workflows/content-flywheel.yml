@@ -1,6 +1,11 @@
 # Drop the next high-intent long-tail /guides article from TOPIC_QUEUE.
 # Weekly cron + manual dispatch. Output is PR-ready (catalog, body, sitemap).
 #
+# REQUIRED REPO SETTING (or the "Open pull request" step fails):
+#   Settings → Actions → General → Workflow permissions
+#   ☑ Allow GitHub Actions to create and approve pull requests
+#   https://github.com/tcardaro0144-stack/csv-hospital/settings/actions
+#
 # Local:
 #   npm run guides:list
 #   npm run guides:next
@@ -33,11 +38,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history helps create-pull-request compute diffs reliably
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
 
       - name: Setup Python
@@ -69,9 +77,12 @@ jobs:
           python scripts/content_flywheel.py "${ARGS[@]}"
 
       - name: Open pull request
+        id: cpr
         if: ${{ steps.flywheel.outputs.skipped != 'true' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run == true) }}
-        uses: peter-evans/create-pull-request@v6
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "content: drop ${{ steps.flywheel.outputs.slug || 'next evergreen guide' }}"
           branch: content/flywheel-guide
           delete-branch: true
@@ -80,7 +91,7 @@ jobs:
             Automated high-intent long-tail guide from `scripts/content_flywheel.py`.
 
             - Slug: `${{ steps.flywheel.outputs.slug }}`
-            - Guide body under `src/content/guides/` (hand-guide JS formatting)
+            - Guide body under `src/content/guides/`
             - Catalog entry in `shared/guidesCatalog.js`
             - Body registry update in `src/content/guides/index.js`
             - Regenerated `public/sitemap.xml`
@@ -90,3 +101,13 @@ jobs:
             shared/guidesCatalog.js
             src/content/guides/
             public/sitemap.xml
+
+      - name: Fail clearly if Actions cannot open PRs
+        if: ${{ steps.cpr.outcome == 'failure' }}
+        run: |
+          set -euo pipefail
+          echo "::error title=Actions cannot create pull requests::Enable Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests"
+          echo "Repo settings: https://github.com/${{ github.repository }}/settings/actions"
+          echo "Branch with guide changes (if pushed): content/flywheel-guide"
+          echo "Open a PR manually: https://github.com/${{ github.repository }}/compare/main...content/flywheel-guide?quick_pull=1"
+          exit 1
