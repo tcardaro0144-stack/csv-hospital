@@ -55,6 +55,16 @@ export const GUIDES = [
     readingMinutes: 6,
     tags: ['csv', 'whitespace', 'trim', 'data-cleaning'],
   },
+  {
+    slug: 'how-to-fix-excel-serial-dates-and-mixed-datetime-formats-in-csv',
+    title: 'How to Fix Excel Serial Dates and Mixed Date-Time Formats in CSV',
+    description:
+      'Fix Excel serial dates (45321), MDY/DMY swaps, and mixed timestamps in one CSV column — stabilize the export in-browser before you normalize datetimes.',
+    publishedAt: '2026-08-31',
+    updatedAt: '2026-08-31',
+    readingMinutes: 7,
+    tags: ['csv', 'excel-serial-date', 'datetime', 'mdy-dmy', 'spreadsheet'],
+  },
 ]
 
 /**
