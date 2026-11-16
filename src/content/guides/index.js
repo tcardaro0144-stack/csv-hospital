@@ -8,12 +8,14 @@ import { guide as cleanFixCsv } from './how-to-clean-and-fix-broken-csv-files-pr
 import { guide as mismatchedColumns } from './how-to-fix-mismatched-columns-and-shifted-data-in-csv-files.js'
 import { guide as encodingFix } from './how-to-fix-corrupted-character-encoding-utf-8-vs-latin-1-in-spreadsheets.js'
 import { guide as handleInvisibleTrailingSpacesInCsv } from './how-to-handle-invisible-trailing-spaces-in-csv-cells.js'
+import { guide as fixExcelSerialDatesAndMixedDatetimeFormats } from './how-to-fix-excel-serial-dates-and-mixed-datetime-formats-in-csv.js'
 
 const BODIES = {
   [cleanFixCsv.slug]: cleanFixCsv,
   [mismatchedColumns.slug]: mismatchedColumns,
   [encodingFix.slug]: encodingFix,
   [handleInvisibleTrailingSpacesInCsv.slug]: handleInvisibleTrailingSpacesInCsv,
+  [fixExcelSerialDatesAndMixedDatetimeFormats.slug]: fixExcelSerialDatesAndMixedDatetimeFormats,
 }
 
 /**
